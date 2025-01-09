@@ -1,0 +1,96 @@
+ /* body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #2A2E35;
+            color: #fff;
+        }
+
+        header {
+            background-color: #4b0082;
+            padding: 10px;
+            text-align: center;
+            color: #dda0dd;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #4b0082;
+            padding: 10px;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #dda0dd;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group input {
+            padding: 10px;
+            width: 300px;
+            margin: 10px;
+            border: 2px solid #dda0dd;
+            border-radius: 5px;
+            background-color: #000;
+            color: #fff;
+        }
+
+        .button-group {
+            margin-top: 20px;
+        }
+
+        .button {
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .button-green {
+            background-color: #32cd32;
+            color: #fff;
+        }
+
+        .button-red {
+            background-color: #ff0000;
+            color: #fff;
+        }
+
+        .button-green:hover {
+            background-color: #28a428;
+        }
+
+        .button-red:hover {
+            background-color: #cc0000;
+        }
+
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            text-align: center;
+            background-color: #4b0082;
+            color: #dda0dd;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+     */

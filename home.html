@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIC Management System - Home</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #F5F5F5;
+            color: #212121;
+        }
+
+        header {
+            background-color: #1976D2;
+            padding: 10px;
+            text-align: center;
+            color: #F5F5F5;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #00ACC1;
+            padding: 10px;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #F5F5F5;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .welcome {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: #FFFFFF;
+            border: 1px solid #00ACC1;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            width: 200px;
+            margin: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            color: #1976D2;
+            font-size: 24px;
+        }
+
+        .stat-card p {
+            font-size: 16px;
+        }
+
+        .quick-links {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .quick-links button {
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #FFB300;
+            color: #212121;
+        }
+
+        .quick-links button:hover {
+            background-color: #FFA000;
+        }
+
+        .recent-activities {
+            margin-bottom: 30px;
+        }
+
+        .recent-activities table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .recent-activities th, .recent-activities td {
+            border: 1px solid #00ACC1;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .recent-activities th {
+            background-color: #1976D2;
+            color: #F5F5F5;
+        }
+
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            text-align: center;
+            background-color: #1976D2;
+            color: #F5F5F5;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        LIC Management System
+    </header>
+
+    <nav>
+        <a href="/home.html">HOME</a>
+        <a href="/daily.html">DAILY WORK</a>
+        <a href="#">ADD LIC HOLDER</a>
+        <a href="#">REPORTS</a>
+    </nav>
+
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome">
+            <h1>Welcome to the LIC Management System</h1>
+            <p>Efficient management of LIC data made simple and professional.</p>
+        </div>
+
+        <!-- Overview Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3>150</h3>
+                <p>Total LIC Holders</p>
+            </div>
+            <div class="stat-card">
+                <h3>₹50,000</h3>
+                <p>Total Collected This Month</p>
+            </div>
+            <div class="stat-card">
+                <h3>₹5,000</h3>
+                <p>Pending Payments</p>
+            </div>
+            <div class="stat-card">
+                <h3>10</h3>
+                <p>Transactions Today</p>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="quick-links">
+            <button onclick="alert('Navigating to Add LIC Holder')">Add LIC Holder</button>
+            <button onclick="alert('Navigating to View Transactions')">View Transactions</button>
+            <button onclick="alert('Generating Monthly Report')">Generate Report</button>
+            <button onclick="alert('Starting Daily Work')">Start Daily Work</button>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="recent-activities">
+            <h2>Recent Activities</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>₹1,000</td>
+                        <td>Paid</td>
+                        <td>01-08-2025</td>
+                    </tr>
+                    <tr>
+                        <td>Jane Smith</td>
+                        <td>₹500</td>
+                        <td>Unpaid</td>
+                        <td>01-08-2025</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 LIC Management System by Dhiman Sutradhar
+    </footer>
+</body>
+</html>

@@ -1,0 +1,140 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIC Management System</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #F5F5F5;
+            color: #212121;
+        }
+
+        header {
+            background-color: #1976D2;
+            padding: 10px;
+            text-align: center;
+            color: #F5F5F5;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #00ACC1;
+            padding: 10px;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #F5F5F5;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group input {
+            padding: 10px;
+            width: 300px;
+            margin: 10px;
+            border: 2px solid #00ACC1;
+            border-radius: 5px;
+            background-color: #F5F5F5;
+            color: #212121;
+        }
+
+        .button-group {
+            margin-top: 20px;
+        }
+
+        .button {
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .button-paid {
+            background-color: #1976D2;
+            color: #F5F5F5;
+        }
+
+        .button-unpaid {
+            background-color: #FFB300;
+            color: #212121;
+        }
+
+        .button-paid:hover {
+            background-color: #1565C0;
+        }
+
+        .button-unpaid:hover {
+            background-color: #FFA000;
+        }
+
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            text-align: center;
+            background-color: #1976D2;
+            color: #F5F5F5;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+    <script>
+        function updateStatus(status) {
+            alert(`Information updated: ${status}`);
+        }
+    </script>
+</head>
+<body>
+    <header>
+        LIC Management System
+    </header>
+
+    <nav>
+        <a href="/home.html">HOME</a>
+        <a href="/daily.html">DAILY WORK</a>
+        <a href="#">ADD LIC HOLDER</a>
+        <a href="#">REPORTS</a>
+    </nav>
+
+    <div class="container">
+        <div class="input-group">
+            <input type="text" placeholder="Enter Name">
+            <!-- <input type="text" placeholder="Enter Amount"> -->
+        </div>
+
+        <div class="button-group">
+            <button class="button button-paid" onclick="updateStatus('Paid')">PAID</button>
+            <button class="button button-unpaid" onclick="updateStatus('Unpaid')">UNPAID</button>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 LIC Management System by Dhiman Sutradhar
+    </footer>
+</body>
+</html> -->
