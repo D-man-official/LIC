@@ -4,339 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>LIC Collection - Dashboard</title>
-
-<style>
-    :root {
-        --primary: #1e3a8a;
-        --sidebar-top: #2563eb;
-        --sidebar-bottom: #1e40af;
-        --green: #16a34a;
-        --orange: #ea580c;
-        --light-bg: #f1f5f9;
-        --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        --text: #111;
-        --text-light: #444;
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: var(--light-bg);
-        color: var(--text);
-        min-height: 100vh;
-    }
-
-    /* Mobile Header */
-    .header {
-        background: var(--primary);
-        color: white;
-        padding: 1rem 1.2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-    }
-
-    .app-title {
-        font-size: 1.35rem;
-        font-weight: 600;
-    }
-
-    .menu-btn {
-        font-size: 1.8rem;
-        cursor: pointer;
-        background: none;
-        border: none;
-        color: white;
-    }
-
-    /* Sidebar */
-    .sidebar {
-        position: fixed;
-        left: -280px;
-        top: 0;
-        width: 280px;
-        height: 100%;
-        background: linear-gradient(to bottom, var(--sidebar-top), var(--sidebar-bottom));
-        color: white;
-        transition: left 0.3s ease;
-        z-index: 999;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .sidebar.active {
-        left: 0;
-    }
-
-    .logo-container {
-        padding: 1.4rem 1.2rem;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        background: rgba(0,0,0,0.15);
-        border-bottom: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .logo-icon {
-        width: 48px;
-        height: 48px;
-        background: #10b981; /* emerald green like in screenshot */
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.6rem;
-        font-weight: bold;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-
-    .logo-text {
-        font-size: 1.3rem;
-        font-weight: 600;
-    }
-
-    .logo-subtext {
-        font-size: 0.82rem;
-        opacity: 0.85;
-    }
-
-    .menu-list {
-        flex: 1;
-        padding: 1.5rem 0;
-    }
-
-    .menu-item {
-        padding: 1rem 1.2rem;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        color: white;
-        text-decoration: none;
-        font-size: 1.02rem;
-        transition: all 0.2s;
-    }
-
-    .menu-item:hover,
-    .menu-item.active {
-        background: rgba(255,255,255,0.15);
-        border-left: 4px solid #60a5fa;
-    }
-
-    .menu-item.active {
-        font-weight: 500;
-    }
-
-    .menu-icon {
-        font-size: 1.4rem;
-        width: 28px;
-        text-align: center;
-    }
-
-    /* User section at bottom */
-    .user-section {
-        padding: 1.2rem 1.2rem;
-        border-top: 1px solid rgba(255,255,255,0.15);
-        background: rgba(0,0,0,0.12);
-    }
-
-    .user-avatar {
-        width: 54px;
-        height: 54px;
-        background: white;
-        color: var(--primary);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 1.5rem;
-        margin-bottom: 0.6rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-
-    .user-name {
-        font-weight: 500;
-        font-size: 1.05rem;
-    }
-
-    .user-role {
-        font-size: 0.85rem;
-        opacity: 0.85;
-        margin-top: 0.2rem;
-    }
-
-    .logout {
-        margin-top: 1rem;
-        color: #e2e8f0;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 0.98rem;
-        opacity: 0.9;
-    }
-
-    .logout:hover {
-        opacity: 1;
-    }
-
-    /* Overlay */
-    .overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.5);
-        z-index: 998;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s;
-    }
-
-    .overlay.active {
-        opacity: 1;
-        pointer-events: all;
-    }
-
-    /* ── Main content remains mostly the same ── */
-    .main-content {
-        padding: 1.2rem;
-        padding-top: 5.5rem;
-    }
-
-    h1 {
-        color: var(--primary);
-        font-size: 1.7rem;
-        margin-bottom: 1.6rem;
-        font-weight: 600;
-    }
-
-    /* ... rest of your existing styles for stats, cards, etc. ... */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1.1rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        border-radius: 14px;
-        padding: 1.5rem;
-        color: white;
-        box-shadow: var(--card-shadow);
-    }
-
-    .stat-card.blue    { background: var(--primary); }
-    .stat-card.green   { background: var(--green); }
-    .stat-card.orange  { background: var(--orange); }
-
-    .stat-value {
-        font-size: 2.4rem;
-        font-weight: 700;
-        margin: 0.4rem 0;
-    }
-
-    .stat-label {
-        font-size: 1.05rem;
-        opacity: 0.95;
-    }
-
-    .stat-sub {
-        margin-top: 0.7rem;
-        font-size: 0.92rem;
-        opacity: 0.9;
-    }
-
-    .due-section, .quick-section {
-        background: white;
-        border-radius: 14px;
-        box-shadow: var(--card-shadow);
-        margin-bottom: 1.8rem;
-        overflow: hidden;
-    }
-
-    .section-header {
-        padding: 1.3rem 1.5rem;
-        border-bottom: 1px solid #eee;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .section-title {
-        font-size: 1.3rem;
-        color: var(--primary);
-        font-weight: 600;
-    }
-
-    .view-all {
-        color: var(--primary);
-        font-weight: 500;
-        text-decoration: none;
-        font-size: 0.95rem;
-    }
-
-    .due-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.2rem 1.5rem;
-        border-bottom: 1px solid #f0f0f0;
-    }
-
-    .quick-item {
-        display: flex;
-        align-items: center;
-        gap: 1.2rem;
-        padding: 1.2rem 1.5rem;
-        border-bottom: 1px solid #f0f0f0;
-        text-decoration: none;
-        color: var(--text);
-        transition: background 0.2s;
-    }
-
-    .quick-item:hover {
-        background: #f8f9ff;
-    }
-
-    .quick-icon {
-        width: 54px;
-        height: 54px;
-        border-radius: 12px;
-        background: var(--primary);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-    }
-
-    /* Desktop adjustments */
-    @media (min-width: 992px) {
-        .header { display: none; }
-        .sidebar {
-            left: 0;
-            width: 260px;
-            padding-top: 0;
-            box-shadow: 2px 0 12px rgba(0,0,0,0.12);
-        }
-        .main-content {
-            margin-left: 260px;
-            padding: 2rem 2.5rem;
-        }
-        .stats-grid {
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.6rem;
-        }
-    }
-</style>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="./home.css" /  >
 </head>
 <body>
 
@@ -350,7 +20,7 @@
 <aside class="sidebar" id="sidebar">
 
     <div class="logo-container">
-        <div class="logo-icon">🛡️</div>
+        <div class="logo-icon"><i class="fa-solid fa-shield"></i></div>
         <div>
             <div class="logo-text">LIC Collection</div>
             <div class="logo-subtext">Book Manager</div>
@@ -359,29 +29,29 @@
 
     <div class="menu-list">
         <a href="#" class="menu-item active">
-            <span class="menu-icon">≡≡</span> Dashboard
+            <span class="menu-icon"><i class="fa-solid fa-diagram-next"></i></span> Dashboard
         </a>
         <a href="#" class="menu-item">
-            <span class="menu-icon">📅</span> Daily Collection
+            <span class="menu-icon"><i class="fa-regular fa-calendar"></i></span> Daily Collection
         </a>
         <a href="#" class="menu-item">
-            <span class="menu-icon">👥</span> View Clients
+            <span class="menu-icon"><i class="fa-solid fa-users"></i></span> View Clients
         </a>
         <a href="#" class="menu-item">
-            <span class="menu-icon">👤+</span> Add Client
+            <span class="menu-icon"><i class="fa-solid fa-user-plus"></i></span> Add Client
         </a>
         <a href="#" class="menu-item">
-            <span class="menu-icon">📄</span> Reports
+            <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span> Reports
         </a>
     </div>
 
     <div class="user-section">
-        <div class="user-avatar">L</div>
-        <div class="user-name">LIC Collection Officer</div>
-        <div class="user-role">Officer</div>
+        <div class="user-avatar"><img src="../cheif-officier.jpg" alt=""></div>
+        <div class="user-name">DHIMAN SUTRADHAR</div>
+        <div class="user-role">Cheif Officer</div>
         
-        <a href="#" class="logout">
-            <span>→</span> Logout
+        <a href="../index.html" class="logout">
+            <span><i class="fa-solid fa-arrow-right-from-bracket"></i></span> Logout
         </a>
     </div>
 </aside>
@@ -420,15 +90,51 @@
     </div>
 
     <!-- Due list and Quick Actions remain the same -->
+<div class="quick-actions-container">
+    <div class="header">Quick Actions</div>
+    
+    <a href="#" class="action-item">
+        <div class="icon-container icon-teal">
+            <i class="fa-solid fa-calendar"></i>
+        </div>
+        <div class="action-content">
+            <div class="action-title">Daily Collection</div>
+            <div class="action-subtitle">Mark payments as collected</div>
+        </div>
+        <span class="arrow">→</span>
+    </a>
+
+    <a href="#" class="action-item">
+        <div class="icon-container icon-blue">
+            <i class="fa-solid fa-user-plus"></i>
+        </div>
+        <div class="action-content">
+            <div class="action-title">Add New Client</div>
+            <div class="action-subtitle">Register a new policy holder</div>
+        </div>
+        <span class="arrow">→</span>
+    </a>
+
+    <a href="#" class="action-item">
+        <div class="icon-container icon-green">
+            <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div class="action-content">
+            <div class="action-title">Generate Reports</div>
+            <div class="action-subtitle">Download monthly collection reports</div>
+        </div>
+        <span class="arrow">→</span>
+    </a>
+</div>
     <!-- ... paste your existing due-section and quick-section here ... -->
 </main>
 
-<script>
-function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('active');
-    document.getElementById('overlay').classList.toggle('active');
-}
-</script>
+
+
+
+
+
+<script src="./home.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,480 @@
+    :root {
+        --primary: #1e3a8a;
+        --sidebar-top: #2563eb;
+        --sidebar-bottom: #1e6f8a;
+        --green: #16a34a;
+        --orange: #ea580c;
+        --light-bg: #f1f5f9;
+        --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        --text: #111;
+        --text-light: #444;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--light-bg);
+        color: var(--text);
+        min-height: 100vh;
+    }
+
+    /* Mobile Header */
+    .header {
+        background: var(--primary);
+        color: white;
+        padding: 1rem 1.2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        /* z-index: 1000; */
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+
+    .app-title {
+        font-size: 1.35rem;
+        font-weight: 600;
+    }
+
+    .menu-btn {
+        font-size: 1.7rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: white;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        width: 280px;
+        height: 100%;
+        background: linear-gradient(135deg, #0c3a5a 0%, #1e6f8a 100%);
+        color: white;
+        transition: left 0.3s ease;
+        z-index: 999;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .logo-container {
+        padding: 1.4rem 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(0,0,0,0.15);
+        border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .logo-icon {
+        width: 48px;
+        height: 48px;
+        background: #10b981; /* emerald green like in screenshot */
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        font-weight: bold;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .logo-text {
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+
+    .logo-subtext {
+        font-size: 0.82rem;
+        opacity: 0.85;
+    }
+
+    .menu-list {
+        flex: 1;
+        padding: 1.5rem 0;
+    }
+
+    .menu-item {
+        padding: 1rem 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: white;
+        text-decoration: none;
+        font-size: 1.02rem;
+        transition: all 0.2s;
+    }
+
+    .menu-item:hover,
+    .menu-item.active {
+        background: rgba(255,255,255,0.15);
+        border-left: 4px solid #60a5fa;
+    }
+
+    .menu-item.active {
+        font-weight: 500;
+    }
+
+    .menu-icon {
+        font-size: 1.4rem;
+        width: 28px;
+        text-align: center;
+    }
+
+    /* User section at bottom */
+    .user-section {
+        padding: 1.2rem 1.2rem;
+        border-top: 1px solid rgba(255,255,255,0.15);
+        background: rgba(0,0,0,0.12);
+    }
+
+    .user-avatar {
+        width: 54px;
+        height: 54px;
+        background: white;
+        color: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.5rem;
+        margin-bottom: 0.6rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .user-name {
+        font-weight: 500;
+        font-size: 1.05rem;
+    }
+
+    .user-role {
+        font-size: 0.85rem;
+        opacity: 0.85;
+        margin-top: 0.2rem;
+    }
+
+    .logout {
+        margin-top: 1rem;
+        color: #e2e8f0;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.98rem;
+        opacity: 0.9;
+        padding: 0.4rem;
+        border-radius: 6px;
+    }
+    .logout:hover,
+    .logout.active {
+        background: rgba(255,255,255,0.15);
+        /* border-left: 4px solid #60a5fa; */
+    }
+
+    .logout:hover {
+        opacity: 1;
+    }
+    .user-avatar{
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-bottom: 0.6rem;
+    }
+    .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Overlay */
+    .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 998;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+    }
+
+    .overlay.active {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    /* ── Main content remains mostly the same ── */
+    .main-content {
+        padding: 1.2rem;
+        padding-top: 5.5rem;
+    }
+
+    h1 {
+        color: var(--primary);
+        font-size: 1.7rem;
+        margin-bottom: 1.6rem;
+        font-weight: 600;
+    }
+
+    /* ... rest of your existing styles for stats, cards, etc. ... */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        border-radius: 14px;
+        padding: 1.5rem;
+        color: white;
+        box-shadow: var(--card-shadow);
+    }
+
+    .stat-card.blue    { background: var(--primary); }
+    .stat-card.green   { background: var(--green); }
+    .stat-card.orange  { background: var(--orange); }
+
+    .stat-value {
+        font-size: 2.4rem;
+        font-weight: 700;
+        margin: 0.4rem 0;
+    }
+
+    .stat-label {
+        font-size: 1.05rem;
+        opacity: 0.95;
+    }
+
+    .stat-sub {
+        margin-top: 0.7rem;
+        font-size: 0.92rem;
+        opacity: 0.9;
+    }
+
+    .due-section, .quick-section {
+        background: white;
+        border-radius: 14px;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 1.8rem;
+        overflow: hidden;
+    }
+
+    .section-header {
+        padding: 1.3rem 1.5rem;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    .view-all {
+        color: var(--primary);
+        font-weight: 500;
+        text-decoration: none;
+        font-size: 0.95rem;
+    }
+
+    .due-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.2rem 1.5rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .quick-item {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        padding: 1.2rem 1.5rem;
+        border-bottom: 1px solid #f0f0f0;
+        text-decoration: none;
+        color: var(--text);
+        transition: background 0.2s;
+    }
+
+    .quick-item:hover {
+        background: #f8f9ff;
+    }
+
+    .quick-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 12px;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    /* Desktop adjustments */
+    @media (min-width: 992px) {
+        
+        .sidebar {
+            left: 0;
+            width: 260px;
+            padding-top: 0;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.12);
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem 2.5rem;
+        }
+        .stats-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.6rem;
+        }
+    }
+
+
+
+
+
+/* this is the quick action center  */
+.quick-actions-container {
+        max-width: 70rem;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .header {
+        background: #f8f9fc;
+        padding: 18px 24px;
+        border-bottom: 1px solid #e9ecef;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .action-item {
+        display: flex;
+        align-items: center;
+        padding: 20px 24px;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .action-item:last-child {
+        border-bottom: none;
+    }
+
+    .action-item:hover {
+        background-color: #f8f9ff;
+        transform: translateX(4px);
+    }
+
+    .icon-container {
+        width: 54px;
+        height: 54px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 18px;
+        flex-shrink: 0;
+        font-size: 1.6rem;
+        color: white;
+    }
+
+    .icon-blue    { background: #4267ff; }
+    .icon-teal    { background: #00c4b4; }
+    .icon-green   { background: #28a745; }
+
+    .action-content {
+        flex: 1;
+    }
+
+    .action-title {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #1a1f36;
+        margin-bottom: 3px;
+    }
+
+    .action-subtitle {
+        font-size: 0.86rem;
+        color: #6c757d;
+    }
+
+    .arrow {
+        color: #adb5bd;
+        font-size: 1.3rem;
+        margin-left: 12px;
+        transition: transform 0.2s ease;
+    }
+
+    .action-item:hover .arrow {
+        transform: translateX(4px);
+    }
+
+    /* ===== SIDEBAR BLEND FIX ===== */
+
+/* Make sidebar one continuous surface */
+.sidebar {
+    background: linear-gradient(180deg, #0c3a5a 0%, #1e6f8a 100%);
+}
+
+/* Remove boxed feeling from logo area */
+.logo-container {
+    background: transparent;
+    border-bottom: none;
+}
+
+/* Remove separator lines */
+.user-section {
+    border-top: none;
+    background: transparent;
+}
+
+/* Remove hover borders that look like partitions */
+.menu-item:hover,
+.menu-item.active {
+    border-left: none;
+    background: rgba(255,255,255,0.12);
+}
+
+/* Optional: soften menu spacing so it flows naturally */
+.menu-item {
+    margin: 2px 8px;
+    border-radius: 8px;
+}
+
+
+/* Fix mobile header color override */
+body > .header {
+    background: linear-gradient(180deg, #0c3a5a 0%, #1e6f8a 100%);
+    color: white;
+}
+body.sidebar-open {
+    position: fixed;
+    width: 100%;
+}
+
