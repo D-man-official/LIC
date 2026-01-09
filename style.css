@@ -248,7 +248,13 @@
             color: #666;
             font-size: 16px;
         }
-        
+
+        footer a{
+            color: #0c3a5a;
+            text-decoration: none;
+            font-family: "Merriweather", serif;
+        }
+
         .footer-logo {
             display: flex;
             align-items: center;
