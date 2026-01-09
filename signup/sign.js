@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Very basic credentials check
         if (username === 'Dman' && password === 'dman7047') {
             // Success - redirect
-            window.location.href = "./home.html";
+         window.location.href = "../home/home.html";
+
         } else {
             // Show error (you can style this better)
             showError('Incorrect username or password!');
