@@ -417,3 +417,7 @@
     margin-left: 0;
   }
 }
+
+body.sidebar-open {
+  overflow: hidden;
+}
