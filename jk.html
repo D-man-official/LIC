@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard Layout</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<!-- Sidebar CSS -->
+<link rel="stylesheet" href="./sidebar.css">
+
+<!-- Your Page CSS -->
+<link rel="stylesheet" href="./page.css">
+</head>
+
+<style>
+    :root {
+  --sidebar-bg1: #0c3a5a;
+  --sidebar-bg2: #1e6f8a;
+}
+
+/* ========== HEADER ========== */
+.header {
+  background: linear-gradient(180deg, var(--sidebar-bg1), var(--sidebar-bg2));
+  color: white;
+  padding: 1rem 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1200;
+}
+
+.app-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.menu-btn {
+  font-size: 1.6rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: none;
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 260px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--sidebar-bg1), var(--sidebar-bg2));
+  color: white;
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s ease;
+  z-index: 1300;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+/* Logo */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1.2rem;
+}
+
+.logo-icon {
+  width: 46px;
+  height: 46px;
+  background: #10b981;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 1.4rem;
+}
+
+.logo-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.logo-subtext {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+/* Menu */
+.menu-list {
+  flex: 1;
+  padding: 1rem 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.9rem 1.2rem;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  margin: 4px 10px;
+  transition: 0.2s;
+}
+
+.menu-item:hover,
+.menu-item.active {
+  background: rgba(255,255,255,0.15);
+}
+
+.menu-icon {
+  width: 26px;
+  text-align: center;
+}
+
+/* User */
+.user-section {
+  padding: 1.2rem;
+}
+
+.user-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-name {
+  font-weight: 500;
+}
+
+.user-role {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.logout {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 1rem;
+  color: #e5e7eb;
+  text-decoration: none;
+}
+
+/* ========== OVERLAY ========== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s;
+  z-index: 1100;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ========== DESKTOP ========== */
+@media (min-width: 992px) {
+  .sidebar {
+    left: 0;
+  }
+}
+
+/* ========== MOBILE ========== */
+@media (max-width: 768px) {
+  .menu-btn {
+    display: block;
+  }
+}
+
+
+/* Push content away from sidebar on desktop */
+.main-content {
+    padding: 2rem;
+    padding-top: 5.5rem;   /* space for header */
+}
+
+@media (min-width: 992px) {
+    .main-content {
+        margin-left: 260px;   /* same width as sidebar */
+    }
+}
+
+</style>
+
+
+
+<body>
+<script>
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+
+  sidebar.classList.toggle("active");
+  overlay.classList.toggle("active");
+}
+
+</script>
+
+
+
+
+<!-- ================= HEADER ================= -->
+<header class="header">
+  <div class="app-title">LIC Collection</div>
+  <button class="menu-btn" onclick="toggleSidebar()">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+</header>
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar" id="sidebar">
+  <div class="logo-container">
+    <div class="logo-icon">
+      <i class="fa-solid fa-shield"></i>
+    </div>
+    <div>
+      <div class="logo-text">LIC Collection</div>
+      <div class="logo-subtext">Book Manager</div>
+    </div>
+  </div>
+
+  <nav class="menu-list">
+    <a href="#" class="menu-item active">
+      <span class="menu-icon"><i class="fa-solid fa-diagram-next"></i></span>
+      Dashboard
+    </a>
+
+    <a href="#" class="menu-item">
+      <span class="menu-icon"><i class="fa-regular fa-calendar"></i></span>
+      Daily Collection
+    </a>
+
+    <a href="#" class="menu-item">
+      <span class="menu-icon"><i class="fa-solid fa-users"></i></span>
+      View Clients
+    </a>
+
+    <a href="#" class="menu-item">
+      <span class="menu-icon"><i class="fa-solid fa-user-plus"></i></span>
+      Add Client
+    </a>
+  </nav>
+
+  <div class="user-section">
+    <div class="user-avatar">
+      <img src="./cheif-officier.jpg" alt="User">
+    </div>
+    <div class="user-name">DHIMAN SUTRADHAR</div>
+    <div class="user-role">Chief Officer</div>
+
+    <a href="#" class="logout">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      Logout
+    </a>
+  </div>
+</aside>
+
+<!-- ================= OVERLAY ================= -->
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar JS -->
+<!-- <script src="./sidebar.js"></script> -->
+
+</body>
+</html>
