@@ -72,10 +72,9 @@ setInterval(updateDate, 60000);
   setInterval(refreshDate, 60000);
 })();
 
-
 function loadClientCount() {
-    const count = localStorage.getItem("totalClients") || 0;
-    document.getElementById("totalClients").textContent = count;
+  const clients = JSON.parse(localStorage.getItem("clients")) || [];
+  document.getElementById("totalClients").textContent = clients.length;
 }
 
 loadClientCount();
