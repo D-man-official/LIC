@@ -69,6 +69,22 @@
         left: 0;
     }
 
+/* Hide hamburger by default (desktop) */
+.menu-btn {
+    display: none;
+}
+
+/* Show hamburger only on small screens */
+@media (max-width: 768px) {
+    .menu-btn {
+        display: block;
+        cursor: pointer;
+    }
+}
+
+
+
+
     .logo-container {
         padding: 1.4rem 1.2rem;
         display: flex;
