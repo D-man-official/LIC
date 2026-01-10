@@ -71,3 +71,11 @@ setInterval(updateDate, 60000);
   // Auto refresh every minute
   setInterval(refreshDate, 60000);
 })();
+
+
+function loadClientCount() {
+    const count = localStorage.getItem("totalClients") || 0;
+    document.getElementById("totalClients").textContent = count;
+}
+
+loadClientCount();

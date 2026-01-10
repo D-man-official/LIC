@@ -421,3 +421,26 @@
 body.sidebar-open {
   overflow: hidden;
 }
+
+
+
+
+
+
+.edit-btn,
+.delete-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.3rem;
+  margin: 0 4px;
+}
+
+.delete-btn {
+  color: #dc2626;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+  transform: scale(1.1);
+}

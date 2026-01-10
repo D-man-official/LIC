@@ -1,159 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Add New Client</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Add New Client</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- Fonts & Icons -->
-<link
-  href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-  rel="stylesheet"
-/>
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-/>
+    <!-- Fonts & Icons -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
-<!-- Your Page CSS -->
-<link rel="stylesheet" href="./add.css">
+    <!-- Your Page CSS -->
+    <link rel="stylesheet" href="./add.css" />
 
-<!-- Sidebar CSS -->
-<link rel="stylesheet" href="../home/home.css">
-</head>
+    <!-- Sidebar CSS -->
+    <link rel="stylesheet" href="../home/home.css" />
+  </head>
 
-<body>
-
-<!-- ================= MOBILE HEADER ================= -->
-<div class="header" style="margin:0">
-  <div class="app-title">LIC Collection</div>
-  <button class="menu-btn" onclick="toggleSidebar()">
-    <i class="fa-solid fa-bars"></i>
-  </button>
-</div>
-
-<!-- ================= SIDEBAR ================= -->
-<aside class="sidebar" id="sidebar">
-  <div class="logo-container">
-    <div class="logo-icon"><i class="fa-solid fa-shield"></i></div>
-    <div>
-      <div class="logo-text">LIC Collection</div>
-      <div class="logo-subtext">Book Manager</div>
-    </div>
-  </div>
-
-  <div class="menu-list">
-    <a href="../home/home.html" class="menu-item">
-      <span class="menu-icon"><i class="fa-solid fa-diagram-next"></i></span>
-      Dashboard
-    </a>
-
-    <a href="#" class="menu-item">
-      <span class="menu-icon"><i class="fa-regular fa-calendar"></i></span>
-      Daily Collection
-    </a>
-
-    <a href="../view_client/view.html" class="menu-item">
-      <span class="menu-icon"><i class="fa-solid fa-users"></i></span>
-      View Clients
-    </a>
-
-    <a href="#" class="menu-item active">
-      <span class="menu-icon"><i class="fa-solid fa-user-plus"></i></span>
-      Add Client
-    </a>
-  </div>
-
-  <div class="user-section">
-    <div class="user-avatar">
-      <img src="../cheif-officier.jpg">
-    </div>
-    <div class="user-name">DHIMAN SUTRADHAR</div>
-    <div class="user-role">Chief Officer</div>
-
-    <a href="../index.html" class="logout">
-      <i class="fa-solid fa-arrow-right-from-bracket"></i>
-      Logout
-    </a>
-  </div>
-</aside>
-
-<!-- Overlay -->
-<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-
-<!-- ================= MAIN CONTENT ================= -->
-<main class="main-content">
-
-<h1 class="page-title">Add New Client</h1>
-
-<div class="wrapper">
-  <div class="card">
-
-    <!-- Card Header -->
-    <div class="card-header">
-      <div class="icon-box">👤+</div>
-      <div>
-        <div class="card-title">New Client Registration</div>
-        <div class="card-subtitle">Enter the client details below</div>
-      </div>
+  <body>
+    <!-- ================= MOBILE HEADER ================= -->
+    <div class="header" style="margin: 0">
+      <div class="app-title">LIC Collection</div>
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+      </button>
     </div>
 
-    <!-- Form -->
-    <form>
-
-      <div class="form-group">
-        <label>Client Name *</label>
-        <input type="text" placeholder="Enter full name" required>
-      </div>
-
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Policy Number *</label>
-          <input type="text" placeholder="e.g., LIC123456" required>
-        </div>
-
-        <div class="form-group">
-          <label>Phone Number *</label>
-          <input type="tel" placeholder="e.g., 9876543210" required>
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <div class="logo-icon"><i class="fa-solid fa-shield"></i></div>
+        <div>
+          <div class="logo-text">LIC Collection</div>
+          <div class="logo-subtext">Book Manager</div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Address *</label>
-        <input type="text" placeholder="Enter complete address" required>
+      <div class="menu-list">
+        <a href="../home/home.html" class="menu-item">
+          <span class="menu-icon"
+            ><i class="fa-solid fa-diagram-next"></i
+          ></span>
+          Dashboard
+        </a>
+
+        <a href="#" class="menu-item">
+          <span class="menu-icon"><i class="fa-regular fa-calendar"></i></span>
+          Daily Collection
+        </a>
+
+        <a href="../view_client/view.html" class="menu-item">
+          <span class="menu-icon"><i class="fa-solid fa-users"></i></span>
+          View Clients
+        </a>
+
+        <a href="#" class="menu-item active">
+          <span class="menu-icon"><i class="fa-solid fa-user-plus"></i></span>
+          Add Client
+        </a>
       </div>
 
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Premium Amount (₹) *</label>
-          <input type="number" placeholder="e.g., 1000" required>
+      <div class="user-section">
+        <div class="user-avatar">
+          <img src="../cheif-officier.jpg" />
         </div>
+        <div class="user-name">DHIMAN SUTRADHAR</div>
+        <div class="user-role">Chief Officer</div>
 
-        <div class="form-group">
-          <label>Due Date (Day of Month) *</label>
-          <input type="number" min="1" max="28" placeholder="1–28" required>
-          <div class="helper">
-            The day of each month when premium is due
+        <a href="../index.html" class="logout">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          Logout
+        </a>
+      </div>
+    </aside>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="main-content">
+      <h1 class="page-title" style="color: black;">Add New Client</h1>
+
+      <div class="wrapper">
+        <div class="card">
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="icon-box"><i class="fa-solid fa-user-plus"></i></div>
+            <div>
+              <div class="card-title">New Client Registration</div>
+              <div class="card-subtitle">Enter the client details below</div>
+            </div>
           </div>
-        </div>
-      </div>
+<!-- Form -->
+<form id="clientForm">
 
-      <div class="button-row">
-        <button type="reset" class="btn btn-cancel">Cancel</button>
-        <button type="submit" class="btn btn-primary">Add Client</button>
-      </div>
-
-    </form>
+  <!-- SL -->
+  <div class="form-group">
+    <label>SL *</label>
+    <input id="sl" type="text" placeholder="Enter serial number" required />
   </div>
-</div>
 
-</main>
+  <!-- Client Name -->
+  <div class="form-group">
+    <label>Client Name *</label>
+    <input id="name" type="text" placeholder="Enter full name" required />
+  </div>
 
-<!-- Page JS -->
-<script src="./add.js"></script>
+  <!-- Policy Number -->
+  <div class="form-group">
+    <label>Policy Number *</label>
+    <input id="policy" type="text" placeholder="e.g., LIC123456" required />
+  </div>
 
-<!-- Sidebar JS -->
-<script src="../sidebar.js"></script>
+  <!-- Date of Creation -->
+  <div class="form-group">
+    <label>Date of Creation *</label>
+    <input id="date" type="date" required />
+  </div>
 
-</body>
+  <!-- Phone + Premium Type -->
+  <div class="form-grid">
+
+    <!-- Phone -->
+    <div class="form-group">
+      <label>Phone Number *</label>
+      <input id="phone" type="tel" placeholder="e.g., 9876543210" required />
+    </div>
+
+    <!-- Premium Type -->
+    <div class="form-group">
+      <label>Premium Type *</label>
+      <select id="premiumType" required>
+        <option value="" disabled selected>Select Premium Type</option>
+        <option>Monthly</option>
+        <option>Quarterly</option>
+        <option>Half-Yearly</option>
+        <option>Yearly</option>
+      </select>
+    </div>
+
+  </div>
+
+  <!-- Premium Amount -->
+  <div class="form-group">
+    <label>Premium Amount (₹) *</label>
+    <input id="amount" type="number" placeholder="e.g., 1000" required />
+  </div>
+
+  <!-- Buttons -->
+  <div class="button-row">
+    <button type="reset" class="btn btn-cancel">Cancel</button>
+    <button type="submit" class="btn btn-primary">Add Client</button>
+  </div>
+
+</form>
+
+    <!-- Page JS -->
+    <script src="./add.js"></script>
+
+    <!-- Sidebar JS -->
+    <script src="../sidebar.js"></script>
+  </body>
 </html>
