@@ -34,13 +34,13 @@
       </div>
 
       <div class="menu-list">
-        <a href="#" class="menu-item active">
+        <a href="./home.html" class="menu-item active">
           <span class="menu-icon"
             ><i class="fa-solid fa-diagram-next"></i
           ></span>
           Dashboard
         </a>
-        <a href="#" class="menu-item">
+        <a href="../daily_collection/daily.html" class="menu-item">
           <span class="menu-icon"><i class="fa-regular fa-calendar"></i></span>
           Daily Collection
         </a>
@@ -52,7 +52,7 @@
           <span class="menu-icon"><i class="fa-solid fa-user-plus"></i></span>
           Add Client
         </a>
-        <a href="#" class="menu-item">
+        <a href="../jk.html" class="menu-item">
           <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
           Reports
         </a>
@@ -123,7 +123,7 @@
       <div class="quick-actions-container">
         <div class="header">Quick Actions</div>
 
-        <a href="#" class="action-item">
+        <a href="../daily_collection/daily.html" class="action-item">
           <div class="icon-container icon-teal">
             <i class="fa-solid fa-calendar"></i>
           </div>
@@ -160,6 +160,18 @@
       </div>
       <!-- ... paste your existing due-section and quick-section here ... -->
     </main>
+<script>
+  const currentPage = window.location.pathname.split("/").pop();
+  const menuItems = document.querySelectorAll(".menu-item");
+
+  menuItems.forEach(item => {
+    const linkPage = item.getAttribute("href").split("/").pop();
+
+    if (linkPage === currentPage) {
+      item.classList.add("active");
+    }
+  });
+</script>
 
     <script src="./home.js"></script>
   </body>

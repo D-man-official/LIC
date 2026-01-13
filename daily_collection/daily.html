@@ -12,23 +12,16 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
 <!-- Sidebar CSS -->
-<link rel="stylesheet" href="./sidebar.css">
+<link rel="stylesheet" href="../home/home.css">
 
 <!-- Your Page CSS -->
-<link rel="stylesheet" href="./home/home.css">
+<!-- <link rel="stylesheet" href="./daily.css"> -->
 </head>
 
+
+
 <body>
-<script>
-function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("overlay");
-
-  sidebar.classList.toggle("active");
-  overlay.classList.toggle("active");
-}
-
-</script>
+<script src="./daily.js"></script>
 
 
 
@@ -54,25 +47,26 @@ function toggleSidebar() {
   </div>
 
   <nav class="menu-list">
-    <a href="../home/home.html" class="menu-item active">
-          <span class="menu-icon"
-            ><i class="fa-solid fa-diagram-next"></i
-          ></span>
-          Dashboard
-        </a>
-        <a href="../daily_collection/daily.html" class="menu-item">
-          <span class="menu-icon"><i class="fa-regular fa-calendar"></i></span>
-          Daily Collection
-        </a>
-        <a href="../view_client/view.html" class="menu-item">
-          <span class="menu-icon"><i class="fa-solid fa-users"></i></span> View
-          Clients
-        </a>
-        <a href="../add_client/add.html" class="menu-item">
-          <span class="menu-icon"><i class="fa-solid fa-user-plus"></i></span>
-          Add Client
-        </a>
-        <a href="../jk.html" class="menu-item">
+    <a href="../home/home.html" class="menu-item ">
+      <span class="menu-icon"><i class="fa-solid fa-diagram-next"></i></span>
+      Dashboard
+    </a>
+
+    <a href="../daily_collection/daily.html" class="menu-item active">
+      <span class="menu-icon"><i class="fa-regular fa-calendar"></i></span>
+      Daily Collection
+    </a>
+
+    <a href="../view_client/view.html" class="menu-item">
+      <span class="menu-icon"><i class="fa-solid fa-users"></i></span>
+      View Clients
+    </a>
+
+    <a href="../add_client/add.html" class="menu-item">
+      <span class="menu-icon"><i class="fa-solid fa-user-plus"></i></span>
+      Add Client
+    </a>
+     <a href="#" class="menu-item">
           <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
           Reports
         </a>
@@ -85,12 +79,25 @@ function toggleSidebar() {
     <div class="user-name">DHIMAN SUTRADHAR</div>
     <div class="user-role">Chief Officer</div>
 
-    <a href="#" class="logout">
+    <a href="../index.html" class="logout">
       <i class="fa-solid fa-arrow-right-from-bracket"></i>
       Logout
     </a>
   </div>
 </aside>
+
+<script>
+  const currentPage = window.location.pathname.split("/").pop();
+  const menuItems = document.querySelectorAll(".menu-item");
+
+  menuItems.forEach(item => {
+    const linkPage = item.getAttribute("href").split("/").pop();
+
+    if (linkPage === currentPage) {
+      item.classList.add("active");
+    }
+  });
+</script>
 
 <!-- ================= OVERLAY ================= -->
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
