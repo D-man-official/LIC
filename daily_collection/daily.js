@@ -17,3 +17,30 @@ const currentPage = window.location.pathname.split("/").pop();
       item.classList.add("active");
     }
   });
+
+ // ===== Today Date Module =====
+function updateDate() {
+  const today = new Date();
+
+  const options = {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  };
+
+  const formattedDate = today
+    .toLocaleDateString("en-GB", options)
+    .toUpperCase();
+
+  const dateEl = document.getElementById("todayDate");
+
+  if (dateEl) {
+    dateEl.textContent = formattedDate;
+  }
+}
+
+// Wait until HTML is fully loaded
+document.addEventListener("DOMContentLoaded", () => {
+  updateDate();
+  setInterval(updateDate, 60000);
+});

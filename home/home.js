@@ -25,6 +25,8 @@ function toggleSidebar() {
   }
 }
 
+
+// ===== Today Date Module =====
 function updateDate() {
   const today = new Date();
 
