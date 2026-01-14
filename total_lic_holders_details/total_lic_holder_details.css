@@ -1,0 +1,204 @@
+:root{
+  --bg:#f4f6fb;
+  --card:#ffffff;
+  --primary:#2563eb;
+  --text:#111827;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --success:#16a34a;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* ================= CLIENT HEADER ================= */
+.client-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:1rem;
+}
+
+.client-header h1{
+  font-size:1.8rem;
+  font-weight:700;
+}
+
+.client-badge{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  padding:.6rem 1rem;
+  background:#e9f7ef;
+  color:var(--success);
+  border-radius:999px;
+  font-weight:600;
+}
+
+/* ================= INFO CARD ================= */
+.client-info-row{
+  display:flex;
+  gap:1.5rem;
+  flex-wrap:wrap;
+  margin-bottom:1.5rem;
+}
+
+.client-info-card{
+  background:var(--card);
+  padding:1.4rem;
+  border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,.06);
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  min-width:260px;
+}
+
+.client-info-icon{
+  width:52px;
+  height:52px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff2e8;
+  color:#f97316;
+  font-size:1.4rem;
+}
+
+.client-info-text p{
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+.client-info-text h2{
+  font-size:1.6rem;
+  font-weight:700;
+}
+
+/* ================= SEARCH ================= */
+.client-search-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+  gap:1rem;
+}
+
+.client-search-box{
+  position:relative;
+  width:340px;
+  max-width:100%;
+}
+
+.client-search-box input{
+  width:100%;
+  padding:.8rem 1rem .8rem 2.6rem;
+  border-radius:12px;
+  border:1px solid var(--border);
+  outline:none;
+  font-size:.95rem;
+}
+
+.client-search-box i{
+  position:absolute;
+  left:.9rem;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
+}
+
+.client-result-count{
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+/* ================= TABLE ================= */
+.client-table-wrapper{
+  background:var(--card);
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.07);
+  overflow-x:auto;
+  width:100%;
+}
+
+.client-table-wrapper table{
+  width:100%;
+  min-width:900px;
+  border-collapse:collapse;
+}
+
+.client-table-wrapper thead{
+  background:#f3f4f6;
+}
+
+.client-table-wrapper th{
+  text-align:left;
+  padding:1rem;
+  font-size:.8rem;
+  letter-spacing:.04em;
+  color:#374151;
+  white-space:nowrap;
+}
+
+.client-table-wrapper td{
+  padding:1rem;
+  border-bottom:1px solid var(--border);
+  font-size:.95rem;
+  white-space:nowrap;
+}
+
+.client-table-wrapper tbody tr:hover{
+  background:#888b8d2e;
+}
+
+.client-table-wrapper td strong{
+  font-weight:600;
+}
+
+/* ================= SCROLLBAR ================= */
+.client-table-wrapper::-webkit-scrollbar{
+  height:8px;
+}
+
+.client-table-wrapper::-webkit-scrollbar-thumb{
+  background:#cbd5e1;
+  border-radius:10px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+  .client-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:.8rem;
+  }
+}
+
+/* ================= LAYOUT (SIDEBAR SAFE) ================= */
+.main-content{
+  padding:2rem;
+  padding-top:5.5rem;
+}
+
+@media(min-width:992px){
+  .main-content{
+    margin-left:260px;
+  }
+}
+
+/* ================= MISC CLEANUP ================= */
+.user-section{
+  border-top:none;
+  background:transparent;
+}
