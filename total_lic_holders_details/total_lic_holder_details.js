@@ -1,212 +1,221 @@
 
-const clientSearchInput = document.getElementById("clientSearchInput");
-const clientTable = document.getElementById("clientTableMain");
-const clientRows = clientTable.querySelectorAll("tbody tr");
-const clientResultCount = document.getElementById("clientResultCount");
 
-const clientTotalRows = clientRows.length;
 
-clientSearchInput.addEventListener("keyup", () => {
-  const filter = clientSearchInput.value.toLowerCase();
-  let visible = 0;
 
-  clientRows.forEach(row => {
-    const text = row.innerText.toLowerCase();
-    if (text.includes(filter)) {
-      row.style.display = "";
-      visible++;
-    } else {
-      row.style.display = "none";
-    }
-  });
-
-  clientResultCount.textContent = `Showing ${visible} of ${clientTotalRows} entries`;
-});
-
-/* ================= RAW CLIENT DATA (SL + NAME ONLY) ================= */
 const rawClientData = [
-  { sl: 1, name: "Amit Sutradhar" },
-  { sl: 2, name: "" },
-  { sl: 3, name: "Bipul Sarkar" },
-  { sl: 4, name: "Sunil Barman" },
-  { sl: 5, name: "Sanjay Roy" },
-  { sl: 6, name: "Bijoy Roy" },
-  { sl: 7, name: "Subrata Barman" },
-  { sl: 8, name: "Dilip Sarkar" },
-  { sl: 9, name: "Niranjan Mandal" },
-  { sl: 10, name: "Krishna Barman" },
-  { sl: 11, name: "Amit" },
-  { sl: 12, name: "Apu Sarakr" },
-  { sl: 13, name: "Santosh Biswas" },
-  { sl: 14, name: "" },
-  { sl: 15, name: "Sephali Debsharma" },
-  { sl: 16, name: "Tarani Shil" },
-  { sl: 17, name: "" },
-  { sl: 18, name: "" },
-  { sl: 19, name: "Jibon Kumar Barman" },
-  { sl: 20, name: "" },
-  { sl: 21, name: "" },
-  { sl: 22, name: "" },
-  { sl: 23, name: "Sujon Barman" },
-  { sl: 24, name: "" },
-  { sl: 25, name: "Raju Modok" },
-  { sl: 26, name: "Madan Sarkar" },
-  { sl: 27, name: "Dhiman Sutradhar" },
-  { sl: 28, name: "Prodip Sutradhar" },
-  { sl: 29, name: "" },
-  { sl: 30, name: "Jayanti Roy" },
-  { sl: 31, name: "" },
-  { sl: 32, name: "Dayamay Sutradhar" },
-  { sl: 33, name: "Moushumi Roy" },
-  { sl: 34, name: "Govindo Sutradhar" },
-  { sl: 35, name: "" },
-  { sl: 36, name: "" },
-  { sl: 37, name: "Abaidur Rahaman" },
-  { sl: 38, name: "" },
-  { sl: 39, name: "" },
-  { sl: 40, name: "" },
-  { sl: 41, name: "" },
-  { sl: 42, name: "Mukta Sutradhar" },
-  { sl: 43, name: "Subrata Roy" },
-  { sl: 44, name: "" },
-  { sl: 45, name: "" },
-  { sl: 46, name: "Alpana Sarkar Barman" },
-  { sl: 47, name: "Susama Sutradhar" },
-  { sl: 48, name: "Beli Barman" },
-  { sl: 49, name: "Kamal Debnath" },
-  { sl: 50, name: "" },
-  { sl: 51, name: "Bhim Sarkar" },
-  { sl: 52, name: "" },
-  { sl: 53, name: "Ranjit Barman" },
-  { sl: 54, name: "" },
-  { sl: 55, name: "Nitai Chaki" },
-  { sl: 56, name: "" },
-  { sl: 57, name: "MD. Mohaalam" },
-  { sl: 58, name: "Bishnu Roy" },
-  { sl: 59, name: "Gobindo Barman" },
-  { sl: 60, name: "Gunadhar Sutradhar" },
-  { sl: 61, name: "" },
-  { sl: 62, name: "" },
-  { sl: 63, name: "Sabita Sutradhar" },
-  { sl: 64, name: "" },
-  { sl: 65, name: "Khokon Sarkar" },
-  { sl: 66, name: "" },
-  { sl: 67, name: "" },
-  { sl: 68, name: "" },
-  { sl: 69, name: "" },
-  { sl: 70, name: "Sri Ram Prodhan" },
-  { sl: 71, name: "" },
-  { sl: 72, name: "" },
-  { sl: 73, name: "Sanjit Das" },
-  { sl: 74, name: "" },
-  { sl: 75, name: "Jharna Sarkar" },
-  { sl: 76, name: "Gopal Sarkar" },
-  { sl: 77, name: "" },
-  { sl: 78, name: "Debasish Debnath" },
-  { sl: 79, name: "Sobha Sutradhar" },
-  { sl: 80, name: "Moni Roy" },
-  { sl: 81, name: "" },
-  { sl: 82, name: "" },
-  { sl: 83, name: "" },
-  { sl: 84, name: "Laxmi Sarkar" },
-  { sl: 85, name: "Rajesh Roy" },
-  { sl: 86, name: "Bikahs Sarkar" },
-  { sl: 87, name: "Bishambar Sarkar" },
-  { sl: 88, name: "" },
-  { sl: 89, name: "" },
-  { sl: 90, name: "Sanjay Sarkar" },
-  { sl: 91, name: "" },
-  { sl: 92, name: "Porimol Sutradhar" },
-  { sl: 93, name: "" },
-  { sl: 94, name: "Mukul Roy" },
-  { sl: 95, name: "Nayan Prodhan" },
-  { sl: 96, name: "Prodip Roy" },
-  { sl: 97, name: "Shibnath Sarkar" },
-  { sl: 98, name: "" },
-  { sl: 99, name: "Pankaj Roy" },
-  { sl: 100, name: "Manik Sutradhar" },
-  { sl: 101, name: "Subir Das" },
-  { sl: 102, name: "" },
-  { sl: 103, name: "Tushar Kanti Roy" },
-  { sl: 104, name: "" },
-  { sl: 105, name: "Kanak Karmakar" },
-  { sl: 106, name: "Palash Roy" },
-  { sl: 107, name: "" },
-  { sl: 108, name: "Hem Chandra Barman" },
-  { sl: 109, name: "Babita Barman" },
-  { sl: 110, name: "" },
-  { sl: 111, name: "Dipankar Barman" },
-  { sl: 112, name: "" },
-  { sl: 113, name: "" },
-  { sl: 114, name: "Goutam Sutradhar" },
-  { sl: 115, name: "" },
-  { sl: 116, name: "Anamika Sutradhar" },
-  { sl: 117, name: "Pankaj Roy(bijoy)" },
-  { sl: 118, name: "Amenul Hossen" },
-  { sl: 119, name: "" },
-  { sl: 120, name: "Dilip Barman" },
-  { sl: 121, name: "" },
-  { sl: 122, name: "Ratna Sarkar" },
-  { sl: 123, name: "Karno Sarkar" },
-  { sl: 124, name: "Mona Sarkar" },
-  { sl: 125, name: "Asit Chandra Prodhan" },
-  { sl: 126, name: "Kartick Chandra Barman" },
-  { sl: 127, name: "Biresh Sarkar" },
-  { sl: 128, name: "" },
-  { sl: 129, name: "Sochi Barman" },
-  { sl: 130, name: "Kanchan Roy" },
-  { sl: 131, name: "Dulal Sutradhar" },
-  { sl: 132, name: "Mahadev Sutradhar" },
-  { sl: 133, name: "Tapan Sutradhar" },
-  { sl: 134, name: "Sanjit Sutradhar" },
-  { sl: 135, name: "Lipi Roy" },
-  { sl: 136, name: "Subal Sutradhar" },
-  { sl: 137, name: "Ashis Sutradhar" },
-  { sl: 138, name: "" },
-  { sl: 139, name: "Shyamal Roy" },
-  { sl: 140, name: "Tanmay Roy" },
-  { sl: 141, name: "Mithu Debnath" },
-  { sl: 142, name: "Ramratan Barman" },
-  { sl: 143, name: "Shakti Barman" }
+  { sl:1, name:"Amit Sutradhar", policyNo:"LIC-AS-0001", doc:"12-04-2024", tableNo:"T-01", premium:"₹1,500", premiumType:"Monthly", sumAsset:"₹5,00,000" },
+
+  { sl:2, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:3, name:"Bipul Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:4, name:"Sunil Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:5, name:"Sanjay Roy", policyNo:"458016091", doc:"26/05/2014", tableNo:"814/12", premium:"-", premiumType:"Quarterly", sumAsset:"200,000" },
+  { sl:6, name:"Bijoy Roy", policyNo:"458016302", doc:"28/05/2014", tableNo:"814/15", premium:"-", premiumType:"Quarterly", sumAsset:"10,00,000" },
+  { sl:7, name:"Subrata Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:8, name:"Dilip Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:9, name:"Niranjan Mandal", policyNo:"458016096", doc:"26/05/2014", tableNo:"-814/17", premium:"-", premiumType:"Quarterly", sumAsset:"100,000" },
+  { sl:10, name:"Krishna Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:11, name:"Amit", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:12, name:"Apu Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:13, name:"Santosh Biswas", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:14, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:15, name:"Sephali Debsharma", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:16, name:"Tarani Shil", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:17, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:18, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:19, name:"Jibon Kumar Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:20, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:21, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:22, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:23, name:"Sujon Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:24, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:25, name:"Raju Modok", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:26, name:"Madan Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:27, name:"Dhiman Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:28, name:"Prodip Sutradhar", policyNo:"456960313", doc:"28/03/2014", tableNo:"814/17", premium:"", premiumType:"Half-Yearly", sumAsset:"200,000" },
+  { sl:29, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:30, name:"Jayanti Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:31, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:32, name:"Dayamay Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:33, name:"Moushumi Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:34, name:"Gobinda Sutradhar", policyNo:"456960311", doc:"28/3/2014", tableNo:"814/18", premium:"-", premiumType:"Half-Yearly", sumAsset:"200,000" },
+  { sl:35, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:36, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:37, name:"Abaidur Rahaman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:38, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:39, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:40, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:41, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:42, name:"Mukta Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:43, name:"Subrata Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:44, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:45, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:46, name:"Alpana Sarkar Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:47, name:"Sushama Sutradhar", policyNo:"458016089", doc:"26/05/2014", tableNo:"814/16", premium:"-", premiumType:"Half-Yearly", sumAsset:"100,000" },
+  { sl:48, name:"Beli Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:49, name:"Kamal Debnath", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:50, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:51, name:"Bhim Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:52, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:53, name:"Ranjit Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:54, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:55, name:"Nitai Chaki", policyNo:"456960489", doc:"28/03/2014", tableNo:"814/21", premium:"-", premiumType:"Half-Yearly", sumAsset:"100,000" },
+
+  { sl:56, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:57, name:"MD. Mohaalam", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:58, name:"Bishnu Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:59, name:"Gobindo Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:60, name:"Gunadhar Sutradhar",policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:61, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:62, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:63, name:"Sabita Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:64, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:65, name:"Khokon Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:66, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:67, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:68, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:69, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:70, name:"Sri Ram Prodhan", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:71, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:72, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:73, name:"Sanjit Das", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:74, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:75, name:"Jharna Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:76, name:"Gopal Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:77, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:78, name:"Debasish Debnath", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:79, name:"Sobha Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:80, name:"Moni Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:81, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:82, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:83, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:84, name:"Laxmi Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:85, name:"Rajesh Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:86, name:"Bikahs Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:87, name:"Bishambar Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:88, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:89, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:90, name:"Sanjay Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:91, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:92, name:"Porimol Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:93, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:94, name:"Mukul Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:95, name:"Nayan Prodhan", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:96, name:"Prodip Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:97, name:"Shibnath Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:98, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:99, name:"Pankaj Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:100, name:"Manik Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:101, name:"Subir Das", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:102, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:103, name:"Tushar Kanti Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:104, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:105, name:"Kanak Karmakar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:106, name:"Palash Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:107, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:108, name:"Hem Chandra Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:109, name:"Babita Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:110, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:111, name:"Dipankar Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:112, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:113, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:114, name:"Goutam Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:115, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:116, name:"Anamika Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:117, name:"Pankaj Roy(bijoy)", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:118, name:"Amenul Hossen", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:119, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:120, name:"Dilip Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:121, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:122, name:"Ratna Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:123, name:"Karno Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:124, name:"Mona Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:125, name:"Asit Chandra Prodhan", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:126, name:"Kartick Chandra Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:127, name:"Biresh Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:128, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:129, name:"Sochi Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:130, name:"Kanchan Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:131, name:"Dulal Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:132, name:"Mahadev Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:133, name:"Tapan Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:134, name:"Sanjit Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:135, name:"Lipi Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:136, name:"Subal Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:137, name:"Ashis Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:138, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:139, name:"Shyamal Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:140, name:"Tanmay Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+
+  { sl:141, name:"Mithu Debnath", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:142, name:"Ramratan Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
+  { sl:143, name:"Shakti Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" }
+
 ];
 
-/* ================= RENDER TABLE ================= */
-const tableBody = document.getElementById("clientTableBody");
-const resultCount = document.getElementById("clientResultCount");
 
-function renderTable(data) {
-  tableBody.innerHTML = "";
 
-  data.forEach(item => {
-    const tr = document.createElement("tr");
 
-    tr.innerHTML = `
-      <td>${item.sl}</td>
-      <td><strong>${item.name || "-"}</strong></td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-    `;
 
-    tableBody.appendChild(tr);
+document.addEventListener("DOMContentLoaded", () => {
+
+  const tableBody = document.getElementById("clientTableBody");
+  const searchInput = document.getElementById("clientSearchInput");
+
+  function renderTable(data) {
+    tableBody.innerHTML = "";
+
+    data.forEach(item => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${item.sl}</td>
+        <td><strong>${item.name || "-"}</strong></td>
+        <td>${item.policyNo || "-"}</td>
+        <td>${item.doc || "-"}</td>
+        <td>${item.tableNo || "-"}</td>
+        <td>${item.premium || "-"}</td>
+        <td>${item.premiumType || "-"}</td>
+        <td>${item.sumAsset || "-"}</td>
+      `;
+      tableBody.appendChild(tr);
+    });
+  }
+
+  renderTable(rawClientData);
+
+  searchInput.addEventListener("keyup", () => {
+    const value = searchInput.value.toLowerCase();
+
+    const filteredData = rawClientData.filter(item =>
+      item.sl.toString().includes(value) ||
+      item.name.toLowerCase().includes(value)
+    );
+
+    renderTable(filteredData);
   });
 
-  resultCount.textContent = `Showing ${data.length} of ${rawClientData.length} entries`;
-}
-
-/* ================= SEARCH ================= */
-document.getElementById("clientSearchInput").addEventListener("keyup", e => {
-  const value = e.target.value.toLowerCase();
-
-  const filtered = rawClientData.filter(item =>
-    item.sl.toString().includes(value) ||
-    item.name.toLowerCase().includes(value)
-  );
-
-  renderTable(filtered);
 });
 
-/* ================= INIT ================= */
-renderTable(rawClientData);
