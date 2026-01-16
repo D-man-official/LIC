@@ -93,3 +93,33 @@ document.addEventListener("DOMContentLoaded", () => {
     amountEl.textContent = `₹${todayAmount}`;
   }
 });
+
+
+// ===== Load Monthly Collection (SAFE METHOD) =====
+document.addEventListener("DOMContentLoaded", () => {
+  const now = new Date();
+  const currentMonth = now.toISOString().slice(0, 7); // YYYY-MM
+
+  let monthlyTotal = 0;
+
+  // Loop through all localStorage keys
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+
+    // Match only dailyStatus of current month
+    if (key.startsWith("dailyStatus-") && key.includes(currentMonth)) {
+      const dailyData = JSON.parse(localStorage.getItem(key)) || [];
+
+      dailyData.forEach(entry => {
+        if (entry.status === "collected" && entry.paidAmount) {
+          monthlyTotal += Number(entry.paidAmount);
+        }
+      });
+    }
+  }
+
+  const monthlyEl = document.getElementById("monthlyCollectionAmount");
+  if (monthlyEl) {
+    monthlyEl.textContent = `₹${monthlyTotal}`;
+  }
+});

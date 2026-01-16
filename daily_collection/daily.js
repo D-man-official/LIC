@@ -113,6 +113,24 @@ document.addEventListener("DOMContentLoaded", () => {
     0
   );
 
+  // ===== Monthly Collection Accumulate =====
+const monthKey = `monthlyCollection-${currentMonth}`;
+
+const previousMonthlyTotal =
+  Number(localStorage.getItem(monthKey)) || 0;
+
+// Update monthly total ONLY for today load
+const todaySavedKey = `monthlySaved-${today}`;
+const alreadyAddedToday = localStorage.getItem(todaySavedKey);
+
+if (!alreadyAddedToday) {
+  const updatedMonthlyTotal = previousMonthlyTotal + totalCollectedAmount;
+
+  localStorage.setItem(monthKey, updatedMonthlyTotal);
+  localStorage.setItem(todaySavedKey, "true");
+}
+
+
   // Save for Dashboard (Today's Collection)
   localStorage.setItem("todayCollectionAmount", totalCollectedAmount);
 
