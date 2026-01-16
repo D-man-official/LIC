@@ -1,0 +1,102 @@
+
+
+/* Center Card */
+.wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.card {
+    width: 100%;
+    max-width: 780px;
+    background: var(--card);
+    background-color: aliceblue;
+    border-radius: 16px;
+    padding: 28px 30px 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid var(--border);
+}
+
+/* Header inside card */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.icon-box {
+    width: 54px;
+    height: 54px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 26px;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.card-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+
+/* Form Layout */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+}
+
+input {
+    width: 100%;
+    padding: 11px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    outline: none;
+    font-size: 14px;
+}
+
+input:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+}
+
+/* Helper text */
+.helper {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+/* Buttons */
+.button-row {
+    display: flex;
+    gap: 14px;
+    margin-top: 25px;
+}
+/* Responsive */
+@media (max-width: 640px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

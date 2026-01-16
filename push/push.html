@@ -12,10 +12,10 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
 <!-- Sidebar CSS -->
-<link rel="stylesheet" href="./sidebar.css">
+<link rel="stylesheet" href="../add_client/add.css">
 
 <!-- Your Page CSS -->
-<link rel="stylesheet" href="./home/home.css">
+<link rel="stylesheet" href="../home/home.css">
 </head>
 
 <body>
@@ -54,7 +54,7 @@ function toggleSidebar() {
   </div>
 
   <nav class="menu-list">
-      <a href="../home/home.html" class="menu-item active">
+    <a href="../home/home.html" class="menu-item active">
           <span class="menu-icon"
             ><i class="fa-solid fa-diagram-next"></i
           ></span>
@@ -76,6 +76,7 @@ function toggleSidebar() {
           <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
           Reports
         </a>
+
   </nav>
 
   <div class="user-section">
@@ -94,9 +95,37 @@ function toggleSidebar() {
 
 <!-- ================= OVERLAY ================= -->
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<form id="clientForm">
+ <div class="wrapper">
+        <div class="card" style="margin-top: 2rem;">
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="icon-box"><i class="fa-solid fa-user-plus"></i></div>
+            <div>
+              <div class="card-title">Add to Monthly Client List</div>
+              <div class="card-subtitle">Enter the client SL or name to search and add records</div>
+            </div>
+          </div>
+  <!-- SL -->
+  <div class="form-group">
+    <label>SL *</label>
+    <input id="sl" type="text" placeholder="Enter serial number" required />
+  </div>
 
-<!-- Sidebar JS -->
-<!-- <script src="./sidebar.js"></script> -->
+  <!-- Client Name -->
+  <div class="form-group">
+    <label>Client Name *</label>
+    <input id="name" type="text" placeholder="Enter full name" required />
+  </div>
+
+  <div class="button-row">
+    <button type="reset" class="btn btn-cancel">Clear</button>
+    <button type="submit" class="btn btn-primary">Push Client</button>
+  </div>
+</form>
+
+
+<script src="./push.js"></script>
 
 </body>
 </html>
