@@ -107,13 +107,24 @@ document.addEventListener("DOMContentLoaded", () => {
   pending.sort((a, b) => a.sl - b.sl);
   collected.sort((a, b) => a.sl - b.sl);
 
+  // ===== Daily Total Collected Amount =====
+  const totalCollectedAmount = collected.reduce(
+    (sum, item) => sum + Number(item.amount),
+    0
+  );
+
+  // Save for Dashboard (Today's Collection)
+  localStorage.setItem("todayCollectionAmount", totalCollectedAmount);
+
   // _______________________________________________________________
 
   pendingHeader.innerHTML = `<i class="fa-solid fa-clock" style="color:var(--orange)"></i>
     Pending (${pending.length})`;
 
-  collectedHeader.innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--green)"></i>
-    Collected (${collected.length})`;
+  collectedHeader.innerHTML = `
+<i class="fa-solid fa-circle-check" style="color:var(--green)"></i>
+Collected (${collected.length}) • ₹${totalCollectedAmount}
+`;
 
   pendingBody.innerHTML = "";
   collectedBody.innerHTML = "";
@@ -173,8 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
       location.reload();
 
-      localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
-      location.reload();
+
     });
 
     card.querySelector(".remove-btn").addEventListener("click", () => {
@@ -224,8 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dailyStatus = dailyStatus.filter((d) => d.sl !== item.sl);
         localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
         location.reload();
-        // Alternatively, to just change status without removing entry:
-        location.reload();
+        
       });
 
       collectedBody.appendChild(card);

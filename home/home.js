@@ -80,3 +80,16 @@ function loadClientCount() {
 }
 
 loadClientCount();
+
+
+// ===== Load Today's Collection from Daily Page =====
+document.addEventListener("DOMContentLoaded", () => {
+  const todayAmount =
+    Number(localStorage.getItem("todayCollectionAmount")) || 0;
+
+  const amountEl = document.getElementById("todayCollectionAmount");
+
+  if (amountEl) {
+    amountEl.textContent = `₹${todayAmount}`;
+  }
+});
