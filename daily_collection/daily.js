@@ -6,6 +6,15 @@ function toggleSidebar() {
   overlay.classList.toggle("active");
 }
 
+// ===== Multiplier Logic =====
+function onMultiplierChange(selectEl, baseAmount) {
+  const multiplier = Number(selectEl.value);
+  const card = selectEl.closest(".client-card");
+  const amountInput = card.querySelector(".paid-amount");
+
+  amountInput.value = baseAmount * multiplier;
+}
+
 const currentPage = window.location.pathname.split("/").pop();
 const menuItems = document.querySelectorAll(".menu-item");
 
@@ -86,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const record = {
       sl: client.sl,
       name: client.name,
-      amount: client.amount,
+      amount: statusEntry?.paidAmount ?? client.amount,
       status,
     };
 
@@ -120,47 +129,72 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
 
    <div style="display:flex;align-items:center;gap:8px;">
-  <div class="amount">₹${item.amount}</div>
-  <button class="mark-btn">Mark Paid</button>
-  <button class="remove-btn">Remove</button>
+<div class="payment-box">
+ <select 
+  class="multiplier"
+  onchange="onMultiplierChange(this, ${item.amount})"
+>
+
+    <option value="1">1×</option>
+    <option value="2">2×</option>
+    <option value="3">3×</option>
+  </select>
+
+  <input
+    type="number"
+    class="paid-amount"
+    value="${item.amount}"
+    min="0"
+  />
+
+  <div class="button-group">
+    <button class="mark-btn">Mark Paid</button>
+    <button class="remove-btn">Remove</button>
+  </div>
+</div>
+
 </div>
 
     `;
 
     card.querySelector(".mark-btn").addEventListener("click", () => {
       dailyStatus = dailyStatus.filter((d) => d.sl !== item.sl);
-      dailyStatus.push({ sl: item.sl, status: "collected" });
+
+      const paidAmount = Number(card.querySelector(".paid-amount").value);
+
+      dailyStatus = dailyStatus.filter((d) => d.sl !== item.sl);
+
+      dailyStatus.push({
+        sl: item.sl,
+        status: "collected",
+        paidAmount,
+      });
 
       localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
       location.reload();
 
+      localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
       location.reload();
     });
 
     card.querySelector(".remove-btn").addEventListener("click", () => {
-  const confirmRemove = confirm(
-    `Remove ${item.name} from this month's list?`
-  );
+      const confirmRemove = confirm(
+        `Remove ${item.name} from this month's list?`
+      );
 
-  if (!confirmRemove) return;
+      if (!confirmRemove) return;
 
-  // 1️⃣ Remove from monthly list
-  monthlyData.clients = monthlyData.clients.filter(
-    c => c.sl !== item.sl
-  );
+      // 1️⃣ Remove from monthly list
+      monthlyData.clients = monthlyData.clients.filter((c) => c.sl !== item.sl);
 
-  localStorage.setItem(
-    "monthlyClients",
-    JSON.stringify(monthlyData)
-  );
+      localStorage.setItem("monthlyClients", JSON.stringify(monthlyData));
 
-  // 2️⃣ Also remove from today's status if exists
-  dailyStatus = dailyStatus.filter(d => d.sl !== item.sl);
-  localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
+      // 2️⃣ Also remove from today's status if exists
+      dailyStatus = dailyStatus.filter((d) => d.sl !== item.sl);
+      localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
 
-  location.reload();
-});
-
+      location.reload();
+    });
 
     pendingBody.appendChild(card);
   });
