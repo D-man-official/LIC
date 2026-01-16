@@ -255,33 +255,61 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   /* ===== Form submit ===== */
-  form.addEventListener("submit", e => {
-    e.preventDefault();
+  /* ===== Form submit ===== */
+form.addEventListener("submit", e => {
+  e.preventDefault();
 
-    const sl = slInput.value.trim();
-    const name = nameInput.value.trim();
+  const sl = slInput.value.trim();
+  const name = nameInput.value.trim();
+  const amount = document.getElementById("amount").value.trim();
 
-    const client = rawClientData.find(
-      c => c.sl.toString() === sl || c.name.toLowerCase() === name.toLowerCase()
-    );
+  if (!sl || !name || !amount) {
+    alert("Please fill all required fields");
+    return;
+  }
 
-    if (!client) {
-      alert("Client not found in master list");
-      return;
-    }
+  const client = rawClientData.find(
+    c => c.sl.toString() === sl || c.name.toLowerCase() === name.toLowerCase()
+  );
 
-    monthlyClientList.push(client);
-    console.log("Added to Monthly Client List:", client);
-    console.log("Current Monthly List:", monthlyClientList);
+  if (!client) {
+    alert("Client not found in master list");
+    return;
+  }
 
-    form.reset();
-    suggestionBox.style.display = "none";
-  });
+  const now = new Date();
+const currentMonth = now.toISOString().slice(0, 7); // YYYY-MM
 
-  /* ===== Hide suggestions on outside click ===== */
-  document.addEventListener("click", e => {
-    if (!form.contains(e.target)) {
-      suggestionBox.style.display = "none";
-    }
-  });
+let monthlyData =
+  JSON.parse(localStorage.getItem("monthlyClients"));
+
+if (!monthlyData || monthlyData.month !== currentMonth) {
+  monthlyData = {
+    month: currentMonth,
+    clients: []
+  };
+}
+
+const alreadyExists = monthlyData.clients.some(
+  c => c.sl === client.sl
+);
+
+if (alreadyExists) {
+  alert("This client is already added for this month");
+  return;
+}
+
+monthlyData.clients.push({
+  sl: client.sl,
+  name: client.name,
+  amount: Number(amount)
+});
+
+localStorage.setItem("monthlyClients", JSON.stringify(monthlyData));
+
+alert("Client added to Monthly List");
+
+form.reset();
+suggestionBox.style.display = "none";
+});
 });

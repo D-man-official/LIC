@@ -94,14 +94,7 @@
     <!-- Header -->
     <div class="top-bar">
         <h1>Daily Collection</h1>
-        <!-- <div class="right-info">
-            <div class="badge">
-                <i class="fa-solid fa-user"></i> 1 due
-            </div>
-            <div class="badge money">
-                ₹ 0
-            </div>
-        </div> -->
+        
     </div>
 
     <div class="date-pill">
@@ -111,49 +104,37 @@
 
 </div>
 
-    <!-- Panels -->
-    <div class="panels">
+   <!-- Panels -->
+<div class="panels">
 
-        <!-- Pending -->
-        <div class="panel">
-            <div class="panel-header">
-                <i class="fa-solid fa-clock" style="color:var(--orange)"></i>
-                Pending (1)
-            </div>
-            <div class="panel-body">
-
-                <div class="client-card">
-                    <div class="client-info">
-                        <h3>Tushar Kanti Roy</h3>
-                        <p>POL001102</p>
-                    </div>
-
-                    <div style="display:flex;align-items:center;">
-                        <div class="amount">₹2,000</div>
-                        <button class="mark-btn">Mark Paid</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Collected -->
-        <div class="panel">
-            <div class="panel-header">
-                <i class="fa-solid fa-circle-check" style="color:var(--green)"></i>
-                Collected (0)
-            </div>
-            <div class="panel-body">
-
-                <div class="empty">
-                    <i class="fa-regular fa-clock" style="font-size:42px;"></i>
-                    No payments collected yet
-                </div>
-            </div>
-        </div>
+  <!-- Pending -->
+  <div class="panel">
+    <div class="panel-header" id="pendingHeader">
+      <i class="fa-solid fa-clock" style="color:var(--orange)"></i>
+      Pending (0)
     </div>
 
- </div>
+    <div class="panel-body" id="pendingBody">
+      <!-- Pending client cards will be injected here -->
+    </div>
+  </div>
+
+  <!-- Collected -->
+  <div class="panel">
+    <div class="panel-header" id="collectedHeader">
+      <i class="fa-solid fa-circle-check" style="color:var(--green)"></i>
+      Collected (0)
+    </div>
+
+    <div class="panel-body" id="collectedBody">
+      <div class="empty" id="collectedEmpty">
+        <i class="fa-regular fa-clock" style="font-size:42px;"></i>
+        No payments collected yet
+      </div>
+    </div>
+  </div>
+
+</div>
 
 
 <script>

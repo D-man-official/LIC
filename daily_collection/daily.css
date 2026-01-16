@@ -465,3 +465,31 @@ h1{
 .date-pill i {
   font-size: 1rem;
 }
+
+
+.undo-btn {
+  background: #fef3c7;
+  color: #92400e;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.undo-btn:hover {
+  background: #fde68a;
+}
+.remove-btn {
+  background: #fee2e2;
+  color: #991b1b;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  background: #fecaca;
+}
