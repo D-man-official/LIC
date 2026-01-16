@@ -277,6 +277,8 @@ form.addEventListener("submit", e => {
     return;
   }
 
+  
+
   const now = new Date();
 const currentMonth = now.toISOString().slice(0, 7); // YYYY-MM
 
@@ -297,6 +299,23 @@ const alreadyExists = monthlyData.clients.some(
 if (alreadyExists) {
   alert("This client is already added for this month");
   return;
+}
+
+
+// ===== SAVE CLIENT FOR VIEW PAGE =====
+let clients = JSON.parse(localStorage.getItem("clients")) || [];
+
+const exists = clients.some(c => c.sl === client.sl);
+
+if (!exists) {
+  clients.push({
+    sl: client.sl,
+    name: client.name
+  });
+
+  clients.sort((a, b) => a.sl - b.sl);
+
+  localStorage.setItem("clients", JSON.stringify(clients));
 }
 
 monthlyData.clients.push({

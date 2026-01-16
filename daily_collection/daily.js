@@ -205,6 +205,30 @@ Collected (${collected.length}) • ₹${totalCollectedAmount}
 
     });
 
+
+    card.querySelector(".remove-btn").addEventListener("click", () => {
+  const confirmRemove = confirm(
+    `Remove ${item.name} from this month's list?`
+  );
+
+  if (!confirmRemove) return;
+
+  // 1️⃣ Remove from monthly list
+  monthlyData.clients = monthlyData.clients.filter(
+    (c) => c.sl !== item.sl
+  );
+
+  localStorage.setItem("monthlyClients", JSON.stringify(monthlyData));
+
+  // 2️⃣ Remove from daily status
+  dailyStatus = dailyStatus.filter((d) => d.sl !== item.sl);
+  localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
+
+  location.reload();
+});
+
+
+
     card.querySelector(".remove-btn").addEventListener("click", () => {
       const confirmRemove = confirm(
         `Remove ${item.name} from this month's list?`

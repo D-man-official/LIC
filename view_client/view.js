@@ -60,7 +60,25 @@ generateMonthDates();
 const table = document.getElementById("clientTable");
 const countBox = document.querySelector(".client-count");
 
-let clients = JSON.parse(localStorage.getItem("clients")) || [];
+function loadMonthlyClients() {
+  const now = new Date();
+  const currentMonth = now.toISOString().slice(0, 7); // YYYY-MM
+
+  const monthlyData = JSON.parse(localStorage.getItem("monthlyClients"));
+
+  if (!monthlyData || monthlyData.month !== currentMonth) {
+    renderTable([]);
+    return;
+  }
+
+  // 🔹 SL ascending order
+  const sortedClients = [...monthlyData.clients].sort(
+    (a, b) => a.sl - b.sl
+  );
+
+  renderTable(sortedClients);
+}
+
 
 function renderTable(data) {
   table.innerHTML = "";
@@ -88,4 +106,5 @@ function renderTable(data) {
   countBox.textContent = `Total Clients: ${data.length}`;
 }
 
-renderTable(clients);
+loadMonthlyClients();
+
