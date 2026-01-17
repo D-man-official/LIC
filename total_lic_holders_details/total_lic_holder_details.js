@@ -178,44 +178,217 @@ const rawClientData = [
 
 
 
-
-
+// Initialize the application
 document.addEventListener("DOMContentLoaded", () => {
-
   const tableBody = document.getElementById("clientTableBody");
   const searchInput = document.getElementById("clientSearchInput");
-
+  const showingCount = document.getElementById("showingCount");
+  const totalCount = document.getElementById("totalCount");
+  const clientTotalEntries = document.getElementById("clientTotalEntries");
+  
+  // Store data globally
+  window.rawClientData = rawClientData;
+  window.clientData = [...rawClientData];
+  window.currentFilter = 'all';
+  
+  // Calculate stats
+  function calculateStats() {
+    const totalClients = rawClientData.length;
+    const withPolicy = rawClientData.filter(c => c.policyNo !== "-").length;
+    const blankEntries = rawClientData.filter(c => c.name === "-").length;
+    
+    // Calculate total premium
+    let totalPremium = 0;
+    rawClientData.forEach(client => {
+      if (client.premium !== "-" && client.premium !== "") {
+        const premiumValue = parseFloat(client.premium.replace(/[₹,]/g, '')) || 0;
+        totalPremium += premiumValue;
+      }
+    });
+    
+    // Update stats cards
+    document.getElementById('totalClientsCount').textContent = totalClients;
+    document.getElementById('withPolicyCount').textContent = withPolicy;
+    document.getElementById('blankEntriesCount').textContent = blankEntries;
+    document.getElementById('totalPremium').textContent = `₹${(totalPremium/1000).toFixed(1)}K`;
+    
+    // Update data insights
+    const completionRate = ((withPolicy / totalClients) * 100).toFixed(0);
+    document.getElementById('dataInsights').textContent = `${completionRate}% Complete`;
+    
+    // Update result counts
+    totalCount.textContent = totalClients;
+    clientTotalEntries.textContent = `${totalClients} Entries`;
+  }
+  
+  // Render table with enhanced styling
   function renderTable(data) {
     tableBody.innerHTML = "";
-
+    
+    if (data.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="9" style="padding: 3rem; text-align: center;">
+            <div style="font-size: 3rem; color: var(--border-color); margin-bottom: 1rem;">
+              <i class="fa-solid fa-user-slash"></i>
+            </div>
+            <h3 style="color: var(--text-secondary); margin-bottom: 0.5rem;">No clients found</h3>
+            <p style="color: var(--text-light);">Try adjusting your search or filter</p>
+          </td>
+        </tr>
+      `;
+      showingCount.textContent = "0";
+      return;
+    }
+    
     data.forEach(item => {
       const tr = document.createElement("tr");
+      
+      // Determine if this is a complete or incomplete entry
+      const hasPolicy = item.policyNo !== "-";
+      const hasName = item.name !== "-";
+      
+      // Create avatar for name
+      const nameAvatar = hasName ? 
+        `<div class="client-avatar">${item.name.charAt(0)}</div>` :
+        `<div class="client-avatar" style="background: var(--danger-red);">?</div>`;
+      
+      // Format cell content with styling
+      const formatCell = (value, isMonetary = false, isImportant = false) => {
+        if (value === "-" || value === "") {
+          return `<span style="color: var(--text-light); font-style: italic;">-</span>`;
+        }
+        const colorClass = isMonetary ? (isImportant ? 'style="color: var(--success-green);"' : '') : '';
+        return `<span ${colorClass}>${value}</span>`;
+      };
+      
+      // Determine row class based on completeness
+      const rowClass = hasPolicy ? "complete-entry" : "incomplete-entry";
+      
+      tr.className = rowClass;
+      tr.setAttribute('data-sl', item.sl);
+      tr.setAttribute('data-has-policy', hasPolicy);
+      
+      // Add double-click event for details
+      tr.ondblclick = () => showClientDetails(item.sl);
+      
       tr.innerHTML = `
-        <td>${item.sl}</td>
-        <td><strong>${item.name || "-"}</strong></td>
-        <td>${item.policyNo || "-"}</td>
-        <td>${item.doc || "-"}</td>
-        <td>${item.tableNo || "-"}</td>
-        <td>${item.premium || "-"}</td>
-        <td>${item.premiumType || "-"}</td>
-        <td>${item.sumAsset || "-"}</td>
+        <td style="font-weight: 600; color: var(--primary-blue);">${item.sl}</td>
+        <td>
+          <div style="display: flex; align-items: center;">
+            ${nameAvatar}
+            <div>
+              <div style="font-weight: 600; color: var(--text-primary);">${formatCell(item.name)}</div>
+              ${!hasName ? '<div style="font-size: 0.75rem; color: var(--danger-red); font-weight: 500;">Name Required</div>' : ''}
+            </div>
+          </div>
+        </td>
+        <td>
+          ${formatCell(item.policyNo)}
+          ${!hasPolicy ? '<div style="font-size: 0.75rem; color: var(--danger-red); font-weight: 500;">Policy Required</div>' : ''}
+        </td>
+        <td>${formatCell(item.doc)}</td>
+        <td>${formatCell(item.tableNo)}</td>
+        <td style="font-weight: 600;">${formatCell(item.premium, true, true)}</td>
+        <td>${formatCell(item.premiumType)}</td>
+        <td style="font-weight: 700; color: var(--secondary-purple);">${formatCell(item.sumAsset, true)}</td>
+        <td>
+          <div class="table-row-actions">
+            <div class="action-icon action-view" title="View Details" onclick="showClientDetails(${item.sl})">
+              <i class="fa-solid fa-eye"></i>
+            </div>
+            <div class="action-icon action-edit" title="Edit Client" onclick="editClient(${item.sl})">
+              <i class="fa-solid fa-pen"></i>
+            </div>
+          </div>
+        </td>
       `;
+      
+      // Add hover effect
+      tr.addEventListener('mouseenter', () => {
+        tr.style.backgroundColor = 'var(--primary-blue-light)';
+      });
+      
+      tr.addEventListener('mouseleave', () => {
+        if (!tr.classList.contains('selected')) {
+          tr.style.backgroundColor = '';
+        }
+      });
+      
       tableBody.appendChild(tr);
     });
+    
+    showingCount.textContent = data.length;
   }
-
-  renderTable(rawClientData);
-
-  searchInput.addEventListener("keyup", () => {
-    const value = searchInput.value.toLowerCase();
-
-    const filteredData = rawClientData.filter(item =>
-      item.sl.toString().includes(value) ||
-      item.name.toLowerCase().includes(value)
-    );
-
-    renderTable(filteredData);
+  
+  // Filter table data
+  window.filterTableData = function(filterType) {
+    window.currentFilter = filterType;
+    let filtered = [...rawClientData];
+    
+    switch(filterType) {
+      case 'withPolicy':
+        filtered = filtered.filter(item => item.policyNo !== "-");
+        break;
+      case 'noPolicy':
+        filtered = filtered.filter(item => item.policyNo === "-");
+        break;
+      case 'blank':
+        filtered = filtered.filter(item => item.name === "-");
+        break;
+      default: // 'all'
+        filtered = [...rawClientData];
+    }
+    
+    // Apply search if there's a search term
+    const searchTerm = searchInput.value.toLowerCase();
+    if (searchTerm) {
+      filtered = filtered.filter(item =>
+        item.sl.toString().includes(searchTerm) ||
+        (item.name && item.name.toLowerCase().includes(searchTerm)) ||
+        (item.policyNo && item.policyNo.toLowerCase().includes(searchTerm)) ||
+        (item.tableNo && item.tableNo.toLowerCase().includes(searchTerm)) ||
+        (item.premiumType && item.premiumType.toLowerCase().includes(searchTerm)) ||
+        (item.sumAsset && item.sumAsset.toLowerCase().includes(searchTerm))
+      );
+    }
+    
+    window.clientData = filtered;
+    renderTable(filtered);
+  };
+  
+  // Search functionality
+  searchInput.addEventListener("input", (e) => {
+    const value = e.target.value.toLowerCase();
+    window.filterTableData(window.currentFilter);
   });
-
+  
+  // Initialize the table
+  calculateStats();
+  renderTable(rawClientData);
 });
 
+// Additional helper functions
+function editClient(sl) {
+  alert(`Edit client SL: ${sl}\nThis would open an edit form in a real application.`);
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  // Ctrl/Cmd + F to focus search
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+    e.preventDefault();
+    document.getElementById('clientSearchInput').focus();
+  }
+  
+  // Esc to close modal
+  if (e.key === 'Escape') {
+    closeModal();
+  }
+  
+  // Ctrl/Cmd + E to export
+  if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+    e.preventDefault();
+    exportData();
+  }
+});
