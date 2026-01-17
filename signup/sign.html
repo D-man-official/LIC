@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Login - LIC Collection Book</title>
+    <title>Secure Login | LIC Collection Book</title>
     <link rel="stylesheet" href="./sign.css">
     <!-- Google Font: Plus Jakarta Sans -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-    
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔐</text></svg>">
 </head>
 <body>
 
@@ -21,44 +21,91 @@
                 <i class="fa-solid fa-shield-halved"></i>
             </div>
             <h1>LIC Collection Book</h1>
-            <p>Manage your client records and premium collections with ease.</p>
+            <p>Securely manage your client records and premium collections with our enterprise-grade platform.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-shield-check"></i>
+                    <span>Bank-level security & encryption</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Real-time analytics dashboard</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-cloud-arrow-up"></i>
+                    <span>Automated cloud backups</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-headset"></i>
+                    <span>24/7 dedicated support</span>
+                </div>
+            </div>
         </div>
 
         <!-- Right Side - Login Form -->
         <div class="right-side">
             <div class="form-wrapper">
                 <h2>Welcome Back</h2>
-                <p class="subtitle">Sign in to your account</p>
+                <p class="subtitle">Sign in to access your dashboard</p>
 
-                <form>
+                <form id="loginForm">
                     <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" placeholder="Enter your username" required/>
+                        <label for="username">
+                            <i class="fas fa-user"></i> Username
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="text" id="username" placeholder="Enter your username" required/>
+                            <i class="fas fa-check-circle" id="usernameCheck" style="display: none; position: absolute; right: 50px; top: 50%; transform: translateY(-50%); color: #2ecc71;"></i>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="password">Password</label>
+                        <label for="password">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
                         <div class="input-wrapper">
                             <input type="password" id="password" placeholder="Enter your password" required/>
                             <i class="fa-solid fa-eye password-toggle" id="togglePassword"></i>
                         </div>
                     </div>
 
-                    <button type="submit" class="signin-btn">Sign In</button>
+                    <div class="remember-forgot">
+                        <div class="remember-me">
+                            <input type="checkbox" id="rememberMe">
+                            <label for="rememberMe">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="signin-btn" id="submitBtn">
+                        <span id="btnText">Sign In</span>
+                    </button>
                 </form>
 
-                <div class="demo-credentials">
-                    <i class="fa-brands fa-google"></i>
-                    <i class="fa-brands fa-facebook"></i>
-                    <i class="fa-brands fa-github"></i> 
-                    <i class="fa-brands fa-microsoft"></i>
-                    <i class="fa-brands fa-linkedin"></i>
+                
+
+                <div class="social-login">
+                    <div class="social-icon google" title="Sign in with Google">
+                        <i class="fab fa-google"></i>
+                    </div>
+                    <div class="social-icon facebook" title="Sign in with Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                    <div class="social-icon github" title="Sign in with GitHub">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <div class="social-icon microsoft" title="Sign in with Microsoft">
+                        <i class="fab fa-microsoft"></i>
+                    </div>
+                    <div class="social-icon linkedin" title="Sign in with LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
- 
-<script src="./sign.js"></script>
+    <script src="./sign.js"></script>
 </body>
 </html>
