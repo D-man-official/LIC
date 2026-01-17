@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>View Clients - Insurance Dashboard</title>
+    <title>View Clients - LIC Collection</title>
 
     <!-- Fonts & Icons -->
     <link
@@ -16,9 +16,8 @@
     />
   
     <!-- Sidebar CSS -->
-    <link rel="stylesheet" href="./view.css" />
     <link rel="stylesheet" href="../home/home.css" />
-    <!-- <link rel="stylesheet" href=""> -->
+    <link rel="stylesheet" href="./view.css" />
   </head>
   <body>
     <!-- ================= HEADER ================= -->
@@ -42,10 +41,8 @@
       </div>
 
       <nav class="menu-list">
-     <a href="../home/home.html" class="menu-item ">
-          <span class="menu-icon"
-            ><i class="fa-solid fa-diagram-next"></i
-          ></span>
+        <a href="../home/home.html" class="menu-item">
+          <span class="menu-icon"><i class="fa-solid fa-diagram-next"></i></span>
           Dashboard
         </a>
         <a href="../daily_collection/daily.html" class="menu-item">
@@ -64,7 +61,6 @@
           <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
           Reports
         </a>
-
       </nav>
 
       <div class="user-section">
@@ -72,9 +68,9 @@
           <img src="../cheif-officier.jpg" alt="User" />
         </div>
         <div class="user-name">DHIMAN SUTRADHAR</div>
-        <div class="user-role">Chief Officer</div>
+        <div class="user-role">Chief Executive Officer</div>
 
-        <a href="#" class="logout">
+        <a href="../index.html" class="logout">
           <i class="fa-solid fa-arrow-right-from-bracket"></i>
           Logout
         </a>
@@ -83,54 +79,149 @@
 
     <!-- ================= OVERLAY ================= -->
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-   <div class="main-content">
-  <div class="container">
+   
+    <!-- ================= MAIN CONTENT ================= -->
+    <div class="main-content">
+      <div class="container">
+        <h1>Client Collection Overview</h1>
+        <p style="color: var(--text-light); margin-bottom: 1.5rem; font-weight: 500;">
+          Track monthly collection status for all clients
+        </p>
 
-    <h1>View Clients</h1>
+        <!-- Month Navigation -->
+        <div class="month-navigation">
+          <div class="month-nav-buttons">
+            <button class="month-btn" id="prevMonth">
+              <i class="fa-solid fa-chevron-left"></i> Previous
+            </button>
+            <button class="month-btn active" id="currentMonthBtn">
+              Current Month
+            </button>
+            <button class="month-btn" id="nextMonth">
+              Next <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+          <div class="current-month" id="currentMonthDisplay">
+            January 2026
+          </div>
+        </div>
 
-    <!-- 🔍 SEARCH + DATE -->
-    <div class="top-bar">
-      <input type="text" class="search-box"
-        placeholder="Search by name, policy number, or phone..." />
+        <!-- 🔍 SEARCH + STATS -->
+        <div class="top-bar">
+          <input type="text" class="search-box"
+            placeholder="Search by client name or SL number..." />
+          <div class="right-info">
+            <div id="todayDate" class="today-date"></div>
+            <div class="client-count" id="clientCount">Total Clients: 0</div>
+          </div>
+        </div>
 
-      <div class="right-info">
-        <div id="todayDate" class="today-date"></div>
-        <div class="client-count"></div>
+        <!-- 📊 TABLE -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr id="tableHeader">
+                <th>SL</th>
+                <th>Client Name</th>
+                <!-- Dates will be injected by JS -->
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="clientTable">
+              <!-- Data will be injected by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards" style="display: none;" id="summaryCards">
+          <div class="summary-card">
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+            <div>
+              <span>Total Collected</span>
+              <h3 id="totalCollected">₹0</h3>
+            </div>
+          </div>
+          <div class="summary-card">
+            <i class="fa-solid fa-clock"></i>
+            <div>
+              <span>Pending Payments</span>
+              <h3 id="pendingPayments">0</h3>
+            </div>
+          </div>
+          <div class="summary-card">
+            <i class="fa-solid fa-percentage"></i>
+            <div>
+              <span>Collection Rate</span>
+              <h3 id="collectionRate">0%</h3>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- 📊 TABLE -->
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr id="tableHeader">
-            <th>SL</th>
-            <th>Name</th>
-            <!-- dates injected by JS -->
-          </tr>
-        </thead>
+    <style>
+      .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+      
+      .summary-card {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+      }
+      
+      .summary-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--card-shadow-hover);
+      }
+      
+      .summary-card i {
+        font-size: 2rem;
+        width: 64px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+        color: var(--primary);
+        border-radius: 16px;
+      }
+      
+      .summary-card span {
+        font-size: 0.9rem;
+        color: var(--text-light);
+        font-weight: 500;
+      }
+      
+      .summary-card h3 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--text);
+        margin-top: 0.25rem;
+      }
+    </style>
 
-        <tbody id="clientTable"></tbody>
-      </table>
-    </div>
+    <script>
+      const currentPage = window.location.pathname.split("/").pop();
+      const menuItems = document.querySelectorAll(".menu-item");
 
-  </div>
-</div>
-
-
-
-<script>
-  const currentPage = window.location.pathname.split("/").pop();
-  const menuItems = document.querySelectorAll(".menu-item");
-
-  menuItems.forEach(item => {
-    const linkPage = item.getAttribute("href").split("/").pop();
-
-    if (linkPage === currentPage) {
-      item.classList.add("active");
-    }
-  });
-</script>
+      menuItems.forEach(item => {
+        const linkPage = item.getAttribute("href").split("/").pop();
+        if (linkPage === currentPage) {
+          item.classList.add("active");
+        }
+      });
+    </script>
 
     <script src="./view.js"></script>
   </body>

@@ -1,3 +1,4 @@
+// ===== Sidebar Toggle =====
 let scrollPosition = 0;
 
 function toggleSidebar() {
@@ -11,105 +12,93 @@ function toggleSidebar() {
   overlay.classList.toggle("active");
 
   if (isOpening) {
-    // Save current scroll position
     scrollPosition = window.scrollY;
-
     body.classList.add("sidebar-open");
     body.style.top = `-${scrollPosition}px`;
   } else {
-    // Restore scroll position
     body.classList.remove("sidebar-open");
     body.style.top = "";
-
     window.scrollTo(0, scrollPosition);
   }
 }
 
-
-// ===== Today Date Module =====
+// ===== Month & Year Display (e.g. JAN 2026) =====
 function updateDate() {
   const today = new Date();
-
   const options = {
-  
     month: "short",
     year: "numeric",
   };
-
-  const formattedDate = today
-    .toLocaleDateString("en-GB", options)
-    .toUpperCase();
-
-  document.getElementById("todayDate").textContent = formattedDate;
+  const formatted = today.toLocaleDateString("en-GB", options).toUpperCase();
+  document.getElementById("todayDate").textContent = formatted;
 }
-
-// Run once when page loads
 updateDate();
+setInterval(updateDate, 60000); // Refresh every minute
 
-// Optional: refresh every minute (keeps date correct after midnight)
-setInterval(updateDate, 60000);
-
-
-// ===== Auto Date Module =====
+// ===== Day & Short Month (e.g. 17 JAN) =====
 (function () {
   const dateElement = document.getElementById("autoDate");
 
   function refreshDate() {
     const today = new Date();
-
     const formatted = today
-      .toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short"
-      })
+      .toLocaleDateString("en-GB", { day: "2-digit", month: "short" })
       .toUpperCase();
-
     dateElement.textContent = formatted;
   }
 
-  // Initial load
   refreshDate();
-
-  // Auto refresh every minute
   setInterval(refreshDate, 60000);
 })();
 
-function loadClientCount() {
-  const clients = JSON.parse(localStorage.getItem("clients")) || [];
-  document.getElementById("totalClients").textContent = clients.length;
+// ===== Current Month Total Clients =====
+function loadCurrentMonthClientCount() {
+  const now = new Date();
+  const currentMonth = now.toISOString().slice(0, 7); // "2026-01"
+
+  const monthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || null;
+
+  const count = (monthlyData && monthlyData.month === currentMonth)
+    ? monthlyData.clients.length
+    : 0;
+
+  const totalClientsEl = document.getElementById("totalClients");
+  if (totalClientsEl) {
+    totalClientsEl.textContent = count;
+  }
 }
 
-loadClientCount();
+// ===== Today's Collection (with auto reset on new day) =====
+function loadTodayCollection() {
+  const todayISO = new Date().toISOString().split("T")[0]; // "2026-01-17"
 
+  let todayAmount = Number(localStorage.getItem("todayCollectionAmount")) || 0;
+  const savedDate = localStorage.getItem("todayCollectionDate");
 
-// ===== Load Today's Collection from Daily Page =====
-document.addEventListener("DOMContentLoaded", () => {
-  const todayAmount =
-    Number(localStorage.getItem("todayCollectionAmount")) || 0;
+  // If date changed → reset to 0
+  if (savedDate !== todayISO) {
+    todayAmount = 0;
+    localStorage.setItem("todayCollectionAmount", "0");
+    localStorage.setItem("todayCollectionDate", todayISO);
+  }
 
   const amountEl = document.getElementById("todayCollectionAmount");
-
   if (amountEl) {
     amountEl.textContent = `₹${todayAmount}`;
   }
-});
+}
 
-
-// ===== Load Monthly Collection (SAFE METHOD) =====
-document.addEventListener("DOMContentLoaded", () => {
+// ===== Monthly Collection (sum from all dailyStatus of current month) =====
+function loadMonthlyCollection() {
   const now = new Date();
-  const currentMonth = now.toISOString().slice(0, 7); // YYYY-MM
+  const currentMonth = now.toISOString().slice(0, 7);
 
   let monthlyTotal = 0;
 
-  // Loop through all localStorage keys
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
-
-    // Match only dailyStatus of current month
     if (key.startsWith("dailyStatus-") && key.includes(currentMonth)) {
       const dailyData = JSON.parse(localStorage.getItem(key)) || [];
-
       dailyData.forEach(entry => {
         if (entry.status === "collected" && entry.paidAmount) {
           monthlyTotal += Number(entry.paidAmount);
@@ -122,4 +111,18 @@ document.addEventListener("DOMContentLoaded", () => {
   if (monthlyEl) {
     monthlyEl.textContent = `₹${monthlyTotal}`;
   }
+}
+
+// ===== Load everything when page loads =====
+document.addEventListener("DOMContentLoaded", () => {
+  loadCurrentMonthClientCount();
+  loadTodayCollection();
+  loadMonthlyCollection();
+
+  // Refresh counts when coming back to tab
+  window.addEventListener("focus", () => {
+    loadCurrentMonthClientCount();
+    loadTodayCollection();
+    loadMonthlyCollection();
+  });
 });

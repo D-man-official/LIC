@@ -15,81 +15,93 @@ function onMultiplierChange(selectEl, baseAmount) {
   amountInput.value = baseAmount * multiplier;
 }
 
+// ===== Active Menu Highlight =====
 const currentPage = window.location.pathname.split("/").pop();
 const menuItems = document.querySelectorAll(".menu-item");
 
 menuItems.forEach((item) => {
   const linkPage = item.getAttribute("href").split("/").pop();
-
   if (linkPage === currentPage) {
     item.classList.add("active");
   }
 });
 
-// ===== Today Date Module =====
-function updateDate() {
-  const today = new Date();
+// ===== Main Daily Collection Logic =====
+document.addEventListener("DOMContentLoaded", () => {
+  const dateDisplay = document.getElementById("todayDate");
+  const dateInput = document.getElementById("selectedDate");
 
-  const options = {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  };
-
-  const formattedDate = today
-    .toLocaleDateString("en-GB", options)
-    .toUpperCase();
-
-  const dateEl = document.getElementById("todayDate");
-
-  if (dateEl) {
-    dateEl.textContent = formattedDate;
+  // Format date: 17 JAN 2026
+  function formatDisplayDate(isoString) {
+    const date = new Date(isoString);
+    const options = { day: "2-digit", month: "short", year: "numeric" };
+    return date.toLocaleDateString("en-GB", options).toUpperCase();
   }
-}
 
-// Wait until HTML is fully loaded
-document.addEventListener("DOMContentLoaded", () => {
-  updateDate();
-  setInterval(updateDate, 60000);
-});
+  // Initialize date (always start with today if invalid)
+  const todayISO = new Date().toISOString().split("T")[0];
+  let activeDate = localStorage.getItem("activeDate");
 
-// ===== Daily Collection Module =====
-document.addEventListener("DOMContentLoaded", () => {
-  updateDate();
+  if (!activeDate || activeDate > todayISO) {
+    activeDate = todayISO;
+    localStorage.setItem("activeDate", activeDate);
+  }
+
+  dateInput.value = activeDate;
+  dateDisplay.textContent = formatDisplayDate(activeDate);
+
+  // Date change → save and reload
+  dateInput.addEventListener("change", () => {
+    if (dateInput.value) {
+      localStorage.setItem("activeDate", dateInput.value);
+      dateDisplay.textContent = formatDisplayDate(dateInput.value);
+      location.reload();
+    }
+  });
+
+  // Gentle live update for today's date only
+  setInterval(() => {
+    const currentActive = localStorage.getItem("activeDate");
+    if (currentActive === todayISO) {
+      dateDisplay.textContent = formatDisplayDate(todayISO);
+    }
+  }, 60000);
+
+  // ────────────────────────────────────────────────────────
+  //                DAILY COLLECTION CORE
+  // ────────────────────────────────────────────────────────
 
   const pendingBody = document.getElementById("pendingBody");
   const collectedBody = document.getElementById("collectedBody");
   const collectedEmpty = document.getElementById("collectedEmpty");
-
   const pendingHeader = document.getElementById("pendingHeader");
   const collectedHeader = document.getElementById("collectedHeader");
 
   const now = new Date();
-  const today = now.toISOString().split("T")[0];
-  const currentMonth = now.toISOString().slice(0, 7);
+  const currentMonth = now.toISOString().slice(0, 7); // e.g. "2026-01"
 
-  const monthlyData = JSON.parse(localStorage.getItem("monthlyClients"));
+  let monthlyData = JSON.parse(localStorage.getItem("monthlyClients"));
 
+  // Auto-reset when month changes
   if (!monthlyData || monthlyData.month !== currentMonth) {
-    // Month ended → everything resets automatically
     localStorage.removeItem("monthlyClients");
     Object.keys(localStorage)
-      .filter((k) => k.startsWith("dailyStatus-"))
-      .forEach((k) => localStorage.removeItem(k));
+      .filter(k => k.startsWith("dailyStatus-"))
+      .forEach(k => localStorage.removeItem(k));
+
+    pendingBody.innerHTML = '<p style="text-align:center; padding:2rem; color:#666;">New month started — no clients yet</p>';
+    collectedEmpty.style.display = "block";
     return;
   }
 
-  const dailyKey = `dailyStatus-${today}`;
-
+  const dailyKey = `dailyStatus-${activeDate}`;
   let dailyStatus = JSON.parse(localStorage.getItem(dailyKey)) || [];
-
-  // _______________________________________________________________
 
   const pending = [];
   const collected = [];
 
-  monthlyData.clients.forEach((client) => {
-    const statusEntry = dailyStatus.find((d) => d.sl === client.sl);
+  monthlyData.clients.forEach(client => {
+    const statusEntry = dailyStatus.find(d => d.sl === client.sl);
     const status = statusEntry ? statusEntry.status : "pending";
 
     const record = {
@@ -103,51 +115,29 @@ document.addEventListener("DOMContentLoaded", () => {
     else collected.push(record);
   });
 
-  // sort both by SL
+  // Sort by serial number
   pending.sort((a, b) => a.sl - b.sl);
   collected.sort((a, b) => a.sl - b.sl);
 
-  // ===== Daily Total Collected Amount =====
-  const totalCollectedAmount = collected.reduce(
-    (sum, item) => sum + Number(item.amount),
-    0
-  );
+  // Daily total collected
+  const totalCollectedAmount = collected.reduce((sum, item) => sum + Number(item.amount), 0);
 
-  // ===== Monthly Collection Accumulate =====
-const monthKey = `monthlyCollection-${currentMonth}`;
-
-const previousMonthlyTotal =
-  Number(localStorage.getItem(monthKey)) || 0;
-
-// Update monthly total ONLY for today load
-const todaySavedKey = `monthlySaved-${today}`;
-const alreadyAddedToday = localStorage.getItem(todaySavedKey);
-
-if (!alreadyAddedToday) {
-  const updatedMonthlyTotal = previousMonthlyTotal + totalCollectedAmount;
-
-  localStorage.setItem(monthKey, updatedMonthlyTotal);
-  localStorage.setItem(todaySavedKey, "true");
-}
-
-
-  // Save for Dashboard (Today's Collection)
+ 
   localStorage.setItem("todayCollectionAmount", totalCollectedAmount);
 
-  // _______________________________________________________________
-
-  pendingHeader.innerHTML = `<i class="fa-solid fa-clock" style="color:var(--orange)"></i>
-    Pending (${pending.length})`;
+  // Update headers
+  pendingHeader.innerHTML = `<i class="fa-solid fa-clock" style="color:var(--orange)"></i> Pending (${pending.length})`;
 
   collectedHeader.innerHTML = `
-<i class="fa-solid fa-circle-check" style="color:var(--green)"></i>
-Collected (${collected.length}) • ₹${totalCollectedAmount}
-`;
+    <i class="fa-solid fa-circle-check" style="color:var(--green)"></i>
+    Collected (${collected.length}) • ₹${totalCollectedAmount}
+  `;
 
   pendingBody.innerHTML = "";
   collectedBody.innerHTML = "";
 
-  pending.forEach((item) => {
+  // ─── Pending Clients ──────────────────────────────────────
+  pending.forEach(item => {
     const card = document.createElement("div");
     card.className = "client-card";
 
@@ -157,92 +147,54 @@ Collected (${collected.length}) • ₹${totalCollectedAmount}
         <p>SL ${item.sl}</p>
       </div>
 
-   <div style="display:flex;align-items:center;gap:8px;">
-<div class="payment-box">
- <select 
-  class="multiplier"
-  onchange="onMultiplierChange(this, ${item.amount})"
->
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div class="payment-box">
+          <select class="multiplier" onchange="onMultiplierChange(this, ${item.amount})">
+            <option value="1">1×</option>
+            <option value="2">2×</option>
+            <option value="3">3×</option>
+          </select>
 
-    <option value="1">1×</option>
-    <option value="2">2×</option>
-    <option value="3">3×</option>
-  </select>
+          <input type="number" class="paid-amount" value="${item.amount}" min="0" />
 
-  <input
-    type="number"
-    class="paid-amount"
-    value="${item.amount}"
-    min="0"
-  />
-
-  <div class="button-group">
-    <button class="mark-btn">Mark Paid</button>
-    <button class="remove-btn">Remove</button>
-  </div>
-</div>
-
-</div>
-
+          <div class="button-group">
+            <button class="mark-btn">Mark Paid</button>
+            <button class="remove-btn">Remove</button>
+          </div>
+        </div>
+      </div>
     `;
 
+    // Mark as Paid
     card.querySelector(".mark-btn").addEventListener("click", () => {
-      dailyStatus = dailyStatus.filter((d) => d.sl !== item.sl);
-
       const paidAmount = Number(card.querySelector(".paid-amount").value);
 
-      dailyStatus = dailyStatus.filter((d) => d.sl !== item.sl);
+      const paymentKey = `payment-${activeDate}`;
+      let paymentData = JSON.parse(localStorage.getItem(paymentKey)) || [];
 
+      paymentData = paymentData.filter(p => p.sl !== item.sl);
+      paymentData.push({ sl: item.sl, amount: paidAmount });
+      localStorage.setItem(paymentKey, JSON.stringify(paymentData));
+
+      dailyStatus = dailyStatus.filter(d => d.sl !== item.sl);
       dailyStatus.push({
         sl: item.sl,
         status: "collected",
-        paidAmount,
+        paidAmount
       });
 
       localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
       location.reload();
-
-
     });
 
-
+    // Remove from monthly list
     card.querySelector(".remove-btn").addEventListener("click", () => {
-  const confirmRemove = confirm(
-    `Remove ${item.name} from this month's list?`
-  );
+      if (!confirm(`Remove ${item.name} from this month's list?`)) return;
 
-  if (!confirmRemove) return;
-
-  // 1️⃣ Remove from monthly list
-  monthlyData.clients = monthlyData.clients.filter(
-    (c) => c.sl !== item.sl
-  );
-
-  localStorage.setItem("monthlyClients", JSON.stringify(monthlyData));
-
-  // 2️⃣ Remove from daily status
-  dailyStatus = dailyStatus.filter((d) => d.sl !== item.sl);
-  localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
-
-  location.reload();
-});
-
-
-
-    card.querySelector(".remove-btn").addEventListener("click", () => {
-      const confirmRemove = confirm(
-        `Remove ${item.name} from this month's list?`
-      );
-
-      if (!confirmRemove) return;
-
-      // 1️⃣ Remove from monthly list
-      monthlyData.clients = monthlyData.clients.filter((c) => c.sl !== item.sl);
-
+      monthlyData.clients = monthlyData.clients.filter(c => c.sl !== item.sl);
       localStorage.setItem("monthlyClients", JSON.stringify(monthlyData));
 
-      // 2️⃣ Also remove from today's status if exists
-      dailyStatus = dailyStatus.filter((d) => d.sl !== item.sl);
+      dailyStatus = dailyStatus.filter(d => d.sl !== item.sl);
       localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
 
       location.reload();
@@ -251,37 +203,40 @@ Collected (${collected.length}) • ₹${totalCollectedAmount}
     pendingBody.appendChild(card);
   });
 
+  // ─── Collected Section ────────────────────────────────────
   if (collected.length === 0) {
     collectedEmpty.style.display = "block";
   } else {
     collectedEmpty.style.display = "none";
 
-    collected.forEach((item) => {
+    collected.forEach(item => {
       const card = document.createElement("div");
       card.className = "client-card";
 
       card.innerHTML = `
-    <div class="client-info">
-      <h3>${item.name}</h3>
-      <p>SL ${item.sl}</p>
-    </div>
-
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div class="amount">₹${item.amount}</div>
-      <button class="undo-btn">Undo</button>
-    </div>
-  `;
+        <div class="client-info">
+          <h3>${item.name}</h3>
+          <p>SL ${item.sl}</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="amount">₹${item.amount}</div>
+          <button class="undo-btn">Undo</button>
+        </div>
+      `;
 
       card.querySelector(".undo-btn").addEventListener("click", () => {
-        dailyStatus = dailyStatus.filter((d) => d.sl !== item.sl);
+        dailyStatus = dailyStatus.filter(d => d.sl !== item.sl);
         localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
+
+        const paymentKey = `payment-${activeDate}`;
+        let paymentData = JSON.parse(localStorage.getItem(paymentKey)) || [];
+        paymentData = paymentData.filter(p => p.sl !== item.sl);
+        localStorage.setItem(paymentKey, JSON.stringify(paymentData));
+
         location.reload();
-        
       });
 
       collectedBody.appendChild(card);
     });
   }
-
-  setInterval(updateDate, 60000);
 });
