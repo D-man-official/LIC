@@ -408,7 +408,7 @@ function downloadPDF() {
           row.push(String(paid.amount)); // ✅ number only
           clientTotal += Number(paid.amount);
         } else {
-          row.push("Pending");
+          row.push("x");
         }
       }
 
