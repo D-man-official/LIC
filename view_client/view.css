@@ -595,3 +595,198 @@ tbody tr:nth-child(n+6) { animation-delay: 0.6s; }
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ========== STICKY COLUMNS IMPROVEMENT ========== */
+
+/* Sticky header */
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: linear-gradient(180deg, #f8fafc, #f1f5f9) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px -2px rgba(0,0,0,0.05);
+}
+
+/* Sticky SL column - FIXED */
+thead th:first-child,
+tbody td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 25;
+  background: #f8fafc !important;
+  box-shadow: 4px 0 8px -2px rgba(0,0,0,0.12);
+  min-width: 70px;
+  max-width: 70px;
+  width: 70px !important;
+  text-align: center;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Sticky Name column - FIXED */
+thead th:nth-child(2),
+tbody td:nth-child(2) {
+  position: sticky;
+  left: 70px; /* SL column width */
+  z-index: 24;
+  background: #f8fafc !important;
+  box-shadow: 4px 0 8px -2px rgba(0,0,0,0.12);
+  min-width: 220px;
+  max-width: 220px;
+  width: 220px !important;
+  text-align: left;
+  padding-left: 1.5rem;
+  font-weight: 600;
+}
+
+/* Sticky Total column (SUM) - FIXED */
+thead th:last-child,
+tbody td:last-child {
+  position: sticky !important;
+  right: 0 !important;
+  z-index: 25 !important;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
+  box-shadow: -4px 0 8px -2px rgba(0,0,0,0.12);
+  min-width: 130px !important;
+  max-width: 130px !important;
+  width: 130px !important;
+  text-align: center !important;
+  font-weight: 800 !important;
+  color: #065f46 !important;
+  font-size: 1rem !important;
+  padding: 1rem !important;
+}
+
+/* For total row (last row) - Special styling */
+.total-row td:last-child {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  color: white !important;
+  font-size: 1.1rem !important;
+  font-weight: 900 !important;
+  box-shadow: -4px 0 12px -2px rgba(5, 150, 105, 0.3) !important;
+}
+
+/* Date columns styling - Non-sticky */
+thead th:nth-child(n + 3):not(:last-child),
+tbody td:nth-child(n + 3):not(:last-child) {
+  min-width: 95px;
+  text-align: center;
+  background: white;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure table container has proper scrolling */
+.table-container {
+  position: relative;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for row hover effect */
+tbody tr:hover td:first-child,
+tbody tr:hover td:nth-child(2),
+tbody tr:hover td:last-child {
+  background: linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 1024px) {
+  thead th:first-child,
+  tbody td:first-child {
+    min-width: 60px;
+    max-width: 60px;
+    width: 60px !important;
+    left: 0;
+  }
+  
+  thead th:nth-child(2),
+  tbody td:nth-child(2) {
+    left: 60px;
+    min-width: 180px;
+    max-width: 180px;
+    width: 180px !important;
+  }
+  
+  thead th:last-child,
+  tbody td:last-child {
+    min-width: 110px !important;
+    max-width: 110px !important;
+    width: 110px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  thead th:first-child,
+  tbody td:first-child {
+    min-width: 50px;
+    max-width: 50px;
+    width: 50px !important;
+  }
+  
+  thead th:nth-child(2),
+  tbody td:nth-child(2) {
+    left: 50px;
+    min-width: 150px;
+    max-width: 150px;
+    width: 150px !important;
+  }
+  
+  thead th:last-child,
+  tbody td:last-child {
+    min-width: 100px !important;
+    max-width: 100px !important;
+    width: 100px !important;
+    font-size: 0.9rem !important;
+    padding: 0.75rem !important;
+  }
+}
+
+/* ========== TABLE CONTAINER FIX ========== */
+.table-container {
+  background: white;
+  border-radius: 24px;
+  box-shadow: var(--card-shadow);
+  overflow: auto !important; /* Important fix */
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  border: 1px solid var(--border);
+  position: relative;
+  margin-top: 1rem;
+  max-height: 70vh;
+  min-height: 400px;
+}
+
+/* Force table to be at least as wide as container */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1200px; /* Minimum width to ensure columns don't collapse */
+}
+
+/* Better scrollbar styling */
+.table-container::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* For Firefox */
+.table-container {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}

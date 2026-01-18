@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Monthly Report - LIC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- jsPDF + AutoTable -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      padding: 20px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    select, button {
+      padding: 10px 14px;
+      font-size: 14px;
+    }
+
+    button {
+      background: #e53935;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #c62828;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Monthly Collection Report</h2>
+
+  <div class="controls">
+    <select id="monthSelect"></select>
+    <select id="yearSelect"></select>
+    <button onclick="downloadPDF()">Download PDF Report</button>
+  </div>
+
+  <script src="./report.js"></script>
+</body>
+</html>
