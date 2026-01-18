@@ -563,24 +563,51 @@ function downloadPDF() {
   });
 
   // Line 3 (credit text - normal part)
-  doc.text("© 2026 LIC Collection Book. All rights reserved to", 110, 192);
+  doc.text("© 2026 LIC Collection Book. All rights reserved to:", 110, 192);
 
-  // Line 4 (CLICKABLE NAME)
-  doc.setTextColor(30, 58, 138); // blue link color
-  doc.textWithLink("Dhiman Sutradhar", 195, 192, {
-    url: "https://www.linkedin.com/in/dhiman-sutradhar-097283329/",
-  });
+ // Line 4 – LinkedIn name
+doc.setTextColor(30, 58, 138); // blue link color
+doc.textWithLink("Dhiman Sutradhar", 190, 192, {
+  url: "https://www.linkedin.com/in/dhiman-sutradhar-097283329/",
+});
+// Common Y position for contact row
+const contactY = 198;
+
+// Left text
+doc.setTextColor(120, 120, 120);
+doc.setFontSize(10);
+doc.text("You can reach out to us :", 110, contactY);
+
+// Links start from right side
+doc.setTextColor(30, 58, 138); // blue links
+
+// LinkedIn
+doc.textWithLink("LinkedIn", 151, contactY, {
+  url: "https://www.linkedin.com/in/dhiman-sutradhar-097283329/",
+});
+
+// Instagram (a bit right)
+doc.textWithLink("Instagram", 170, contactY, {
+  url: "https://www.instagram.com/d.man_official/",
+});
+
+// Email (more right)
+doc.textWithLink("Email", 192, contactY, {
+  url: "mailto:dhimans7047@gmail.com",
+});
+
+
 
   // Reset color
   doc.setTextColor(150, 150, 150);
 
-  // Line 5 (page number)
-  doc.text(
-    `Page: ${Math.ceil(daysInMonth / 10) + 1} of ${Math.ceil(daysInMonth / 10) + 1}`,
-    148,
-    198,
-    { align: "center" },
-  );
+  // // Line 5 (page number)
+  // doc.text(
+  //   `Page: ${Math.ceil(daysInMonth / 10) + 1} of ${Math.ceil(daysInMonth / 10) + 1}`,
+  //   148,
+  //   198,
+  //   { align: "center" },
+  // );
 
   const filename = `LIC_Report_${monthNames[month]}_${year}.pdf`;
   doc.save(filename);
@@ -640,3 +667,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
