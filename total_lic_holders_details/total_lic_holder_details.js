@@ -1,183 +1,3 @@
-
-
-
-
-const rawClientData = [
-  { sl:1, name:"Amit Sutradhar", policyNo:"LIC-AS-0001", doc:"12-04-2024", tableNo:"T-01", premium:"₹1,500", premiumType:"Monthly", sumAsset:"₹5,00,000" },
-
-  { sl:2, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:3, name:"Bipul Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:4, name:"Sunil Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:5, name:"Sanjay Roy", policyNo:"458016091", doc:"26/05/2014", tableNo:"814/12", premium:"-", premiumType:"Quarterly", sumAsset:"200,000" },
-  { sl:6, name:"Bijoy Roy", policyNo:"458016302", doc:"28/05/2014", tableNo:"814/15", premium:"-", premiumType:"Quarterly", sumAsset:"10,00,000" },
-  { sl:7, name:"Subrata Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:8, name:"Dilip Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:9, name:"Niranjan Mandal", policyNo:"458016096", doc:"26/05/2014", tableNo:"-814/17", premium:"-", premiumType:"Quarterly", sumAsset:"100,000" },
-  { sl:10, name:"Krishna Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:11, name:"Amit", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:12, name:"Apu Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:13, name:"Santosh Biswas", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:14, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:15, name:"Sephali Debsharma", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:16, name:"Tarani Shil", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:17, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:18, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:19, name:"Jibon Kumar Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:20, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:21, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:22, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:23, name:"Sujon Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:24, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:25, name:"Raju Modok", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:26, name:"Madan Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:27, name:"Dhiman Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:28, name:"Prodip Sutradhar", policyNo:"456960313", doc:"28/03/2014", tableNo:"814/17", premium:"", premiumType:"Half-Yearly", sumAsset:"200,000" },
-  { sl:29, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:30, name:"Jayanti Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:31, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:32, name:"Dayamay Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:33, name:"Moushumi Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:34, name:"Gobinda Sutradhar", policyNo:"456960311", doc:"28/3/2014", tableNo:"814/18", premium:"-", premiumType:"Half-Yearly", sumAsset:"200,000" },
-  { sl:35, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:36, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:37, name:"Abaidur Rahaman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:38, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:39, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:40, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:41, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:42, name:"Mukta Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:43, name:"Subrata Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:44, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:45, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:46, name:"Alpana Sarkar Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:47, name:"Sushama Sutradhar", policyNo:"458016089", doc:"26/05/2014", tableNo:"814/16", premium:"-", premiumType:"Half-Yearly", sumAsset:"100,000" },
-  { sl:48, name:"Beli Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:49, name:"Kamal Debnath", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:50, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:51, name:"Bhim Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:52, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:53, name:"Ranjit Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:54, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:55, name:"Nitai Chaki", policyNo:"456960489", doc:"28/03/2014", tableNo:"814/21", premium:"-", premiumType:"Half-Yearly", sumAsset:"100,000" },
-
-  { sl:56, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:57, name:"MD. Mohaalam", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:58, name:"Bishnu Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:59, name:"Gobindo Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:60, name:"Gunadhar Sutradhar",policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:61, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:62, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:63, name:"Sabita Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:64, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:65, name:"Khokon Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:66, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:67, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:68, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:69, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:70, name:"Sri Ram Prodhan", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:71, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:72, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:73, name:"Sanjit Das", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:74, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:75, name:"Jharna Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:76, name:"Gopal Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:77, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:78, name:"Debasish Debnath", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:79, name:"Sobha Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:80, name:"Moni Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:81, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:82, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:83, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:84, name:"Laxmi Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:85, name:"Rajesh Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:86, name:"Bikahs Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:87, name:"Bishambar Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:88, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:89, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:90, name:"Sanjay Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:91, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:92, name:"Porimol Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:93, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:94, name:"Mukul Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:95, name:"Nayan Prodhan", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:96, name:"Prodip Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:97, name:"Shibnath Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:98, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:99, name:"Pankaj Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:100, name:"Manik Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:101, name:"Subir Das", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:102, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:103, name:"Tushar Kanti Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:104, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:105, name:"Kanak Karmakar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:106, name:"Palash Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:107, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:108, name:"Hem Chandra Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:109, name:"Babita Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:110, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:111, name:"Dipankar Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:112, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:113, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:114, name:"Goutam Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:115, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:116, name:"Anamika Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:117, name:"Pankaj Roy(bijoy)", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:118, name:"Amenul Hossen", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:119, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:120, name:"Dilip Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:121, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:122, name:"Ratna Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:123, name:"Karno Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:124, name:"Mona Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:125, name:"Asit Chandra Prodhan", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:126, name:"Kartick Chandra Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:127, name:"Biresh Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:128, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:129, name:"Sochi Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:130, name:"Kanchan Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:131, name:"Dulal Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:132, name:"Mahadev Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:133, name:"Tapan Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:134, name:"Sanjit Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:135, name:"Lipi Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:136, name:"Subal Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:137, name:"Ashis Sutradhar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:138, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:139, name:"Shyamal Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:140, name:"Tanmay Roy", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-
-  { sl:141, name:"Mithu Debnath", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:142, name:"Ramratan Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
-  { sl:143, name:"Shakti Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" }
-
-];
-
-
-
 // Initialize the application
 document.addEventListener("DOMContentLoaded", () => {
   const tableBody = document.getElementById("clientTableBody");
@@ -186,58 +6,51 @@ document.addEventListener("DOMContentLoaded", () => {
   const totalCount = document.getElementById("totalCount");
   const clientTotalEntries = document.getElementById("clientTotalEntries");
   
+  // Get data from localStorage
+  function getAllClientData() {
+    const data = JSON.parse(localStorage.getItem("clients")) || [];
+    console.log("Loaded from localStorage:", data); // Debugging
+    return data;
+  }
+  
   // Store data globally
-  window.rawClientData = rawClientData;
-  window.clientData = [...rawClientData];
+  window.rawClientData = getAllClientData();
+  window.clientData = [...window.rawClientData];
   window.currentFilter = 'all';
   
-  // Calculate stats
+  // Calculate stats and update counts
   function calculateStats() {
-    const totalClients = rawClientData.length;
-    const withPolicy = rawClientData.filter(c => c.policyNo !== "-").length;
-    const blankEntries = rawClientData.filter(c => c.name === "-").length;
+    const totalClients = window.rawClientData.length;
+    console.log("Total clients:", totalClients); // Debugging
     
-    // Calculate total premium
-    let totalPremium = 0;
-    rawClientData.forEach(client => {
-      if (client.premium !== "-" && client.premium !== "") {
-        const premiumValue = parseFloat(client.premium.replace(/[₹,]/g, '')) || 0;
-        totalPremium += premiumValue;
-      }
-    });
+    // ✅ সরাসরি আপডেট করো (আরেকবার চেক করে)
+    if (totalCount) totalCount.textContent = totalClients;
+    if (showingCount) showingCount.textContent = totalClients;
+    if (clientTotalEntries) {
+      clientTotalEntries.textContent = `${totalClients} ${totalClients === 1 ? 'Entry' : 'Entries'}`;
+    }
     
-    // Update stats cards
-    document.getElementById('totalClientsCount').textContent = totalClients;
-    document.getElementById('withPolicyCount').textContent = withPolicy;
-    document.getElementById('blankEntriesCount').textContent = blankEntries;
-    document.getElementById('totalPremium').textContent = `₹${(totalPremium/1000).toFixed(1)}K`;
-    
-    // Update data insights
-    const completionRate = ((withPolicy / totalClients) * 100).toFixed(0);
-    document.getElementById('dataInsights').textContent = `${completionRate}% Complete`;
-    
-    // Update result counts
-    totalCount.textContent = totalClients;
-    clientTotalEntries.textContent = `${totalClients} Entries`;
+    console.log("Updated counts - Total:", totalClients); // Debugging
   }
   
   // Render table with enhanced styling
   function renderTable(data) {
+    if (!tableBody) return;
+    
     tableBody.innerHTML = "";
     
     if (data.length === 0) {
       tableBody.innerHTML = `
         <tr>
-          <td colspan="9" style="padding: 3rem; text-align: center;">
+          <td colspan="10" style="padding: 3rem; text-align: center;">
             <div style="font-size: 3rem; color: var(--border-color); margin-bottom: 1rem;">
               <i class="fa-solid fa-user-slash"></i>
             </div>
             <h3 style="color: var(--text-secondary); margin-bottom: 0.5rem;">No clients found</h3>
-            <p style="color: var(--text-light);">Try adjusting your search or filter</p>
+            <p style="color: var(--text-light);">Add your first client using the "Add New Client" button</p>
           </td>
         </tr>
       `;
-      showingCount.textContent = "0";
       return;
     }
     
@@ -245,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const tr = document.createElement("tr");
       
       // Determine if this is a complete or incomplete entry
-      const hasPolicy = item.policyNo !== "-";
+      const hasPolicy = item.policyNo !== "-" && item.policyNo !== "";
       const hasName = item.name !== "-";
       
       // Create avatar for name
@@ -255,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // Format cell content with styling
       const formatCell = (value, isMonetary = false, isImportant = false) => {
-        if (value === "-" || value === "") {
+        if (value === "-" || value === "" || value === null || value === undefined) {
           return `<span style="color: var(--text-light); font-style: italic;">-</span>`;
         }
         const colorClass = isMonetary ? (isImportant ? 'style="color: var(--success-green);"' : '') : '';
@@ -292,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td style="font-weight: 600;">${formatCell(item.premium, true, true)}</td>
         <td>${formatCell(item.premiumType)}</td>
         <td style="font-weight: 700; color: var(--secondary-purple);">${formatCell(item.sumAsset, true)}</td>
+        <td>${formatCell(item.policyName)}</td>
         <td>
           <div class="table-row-actions">
             <div class="action-icon action-view" title="View Details" onclick="showClientDetails(${item.sl})">
@@ -299,6 +113,9 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="action-icon action-edit" title="Edit Client" onclick="editClient(${item.sl})">
               <i class="fa-solid fa-pen"></i>
+            </div>
+            <div class="action-icon action-delete" title="Delete Client" onclick="deleteClient(${item.sl})" style="background: rgba(239, 71, 111, 0.1); color: var(--danger-red);">
+              <i class="fa-solid fa-trash"></i>
             </div>
           </div>
         </td>
@@ -317,27 +134,25 @@ document.addEventListener("DOMContentLoaded", () => {
       
       tableBody.appendChild(tr);
     });
-    
-    showingCount.textContent = data.length;
   }
   
   // Filter table data
   window.filterTableData = function(filterType) {
     window.currentFilter = filterType;
-    let filtered = [...rawClientData];
+    let filtered = [...window.rawClientData];
     
     switch(filterType) {
       case 'withPolicy':
-        filtered = filtered.filter(item => item.policyNo !== "-");
+        filtered = filtered.filter(item => item.policyNo !== "-" && item.policyNo !== "");
         break;
       case 'noPolicy':
-        filtered = filtered.filter(item => item.policyNo === "-");
+        filtered = filtered.filter(item => item.policyNo === "-" || item.policyNo === "");
         break;
       case 'blank':
         filtered = filtered.filter(item => item.name === "-");
         break;
       default: // 'all'
-        filtered = [...rawClientData];
+        filtered = [...window.rawClientData];
     }
     
     // Apply search if there's a search term
@@ -349,46 +164,233 @@ document.addEventListener("DOMContentLoaded", () => {
         (item.policyNo && item.policyNo.toLowerCase().includes(searchTerm)) ||
         (item.tableNo && item.tableNo.toLowerCase().includes(searchTerm)) ||
         (item.premiumType && item.premiumType.toLowerCase().includes(searchTerm)) ||
-        (item.sumAsset && item.sumAsset.toLowerCase().includes(searchTerm))
+        (item.sumAsset && item.sumAsset.toLowerCase().includes(searchTerm)) ||
+        (item.policyName && item.policyName.toLowerCase().includes(searchTerm))
       );
     }
     
     window.clientData = filtered;
     renderTable(filtered);
+    if (showingCount) showingCount.textContent = filtered.length;
   };
   
   // Search functionality
-  searchInput.addEventListener("input", (e) => {
-    const value = e.target.value.toLowerCase();
-    window.filterTableData(window.currentFilter);
-  });
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const value = e.target.value.toLowerCase();
+      window.filterTableData(window.currentFilter);
+    });
+  }
   
   // Initialize the table
   calculateStats();
-  renderTable(rawClientData);
+  renderTable(window.rawClientData);
+  window.filterTableData('all');
+  
+  console.log("Table initialized with", window.rawClientData.length, "clients"); // Debugging
 });
 
 // Additional helper functions
 function editClient(sl) {
-  alert(`Edit client SL: ${sl}\nThis would open an edit form in a real application.`);
+  const client = window.clientData.find(c => c.sl === sl) || 
+                 window.rawClientData.find(c => c.sl === sl);
+  
+  if (client) {
+    // Redirect to edit page
+    window.location.href = `../add_client/add.html?edit=${sl}`;
+  }
 }
 
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-  // Ctrl/Cmd + F to focus search
-  if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-    e.preventDefault();
-    document.getElementById('clientSearchInput').focus();
+function deleteClient(sl) {
+  if (confirm(`Are you sure you want to delete client SL: ${sl}?`)) {
+    // Remove from localStorage
+    let savedClients = JSON.parse(localStorage.getItem("clients")) || [];
+    savedClients = savedClients.filter(c => c.sl !== sl);
+    localStorage.setItem("clients", JSON.stringify(savedClients));
+    
+    // Refresh the table
+    window.rawClientData = JSON.parse(localStorage.getItem("clients")) || [];
+    window.filterTableData(window.currentFilter);
+    calculateStats();
+    
+    alert(`Client SL: ${sl} deleted successfully!`);
   }
+}
+
+function showClientDetails(sl) {
+  const client = window.clientData.find(c => c.sl === sl) || 
+                 window.rawClientData.find(c => c.sl === sl);
   
-  // Esc to close modal
-  if (e.key === 'Escape') {
+  if (!client) return;
+  
+  const modal = document.getElementById('clientDetailModal');
+  const content = document.getElementById('clientDetailContent');
+  
+  if (!modal || !content) return;
+  
+  content.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
+      <div class="client-avatar" style="width: 60px; height: 60px; font-size: 1.5rem;">
+        ${client.name !== '-' ? client.name.charAt(0) : '?'}
+      </div>
+      <div>
+        <h3 style="margin: 0; color: var(--text-primary);">${client.name !== '-' ? client.name : 'No Name'}</h3>
+        <p style="margin: 0.25rem 0 0 0; color: var(--text-light);">Serial Number: ${client.sl}</p>
+      </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+      <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px;">
+        <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Policy Number</div>
+        <div style="font-weight: 600; color: var(--text-primary);">${client.policyNo !== '-' ? client.policyNo : 'Not Available'}</div>
+      </div>
+      
+      <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px;">
+        <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Document Date</div>
+        <div style="font-weight: 600; color: var(--text-primary);">${client.doc !== '-' ? client.doc : 'Not Available'}</div>
+      </div>
+      
+      <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px;">
+        <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Table Number</div>
+        <div style="font-weight: 600; color: var(--text-primary);">${client.tableNo !== '-' ? client.tableNo : 'Not Available'}</div>
+      </div>
+      
+      <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px;">
+        <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Premium Type</div>
+        <div style="font-weight: 600; color: var(--text-primary);">${client.premiumType !== '-' ? client.premiumType : 'Not Available'}</div>
+      </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+      <div style="text-align: center; padding: 1.5rem; background: rgba(6, 214, 160, 0.1); border-radius: 12px;">
+        <div style="font-size: 0.875rem; color: var(--text-light);">Premium Amount</div>
+        <div style="font-size: 1.75rem; font-weight: 800; color: var(--success-green); margin-top: 0.5rem;">${client.premium !== '-' ? client.premium : 'Not Set'}</div>
+      </div>
+      
+      <div style="text-align: center; padding: 1.5rem; background: rgba(67, 97, 238, 0.1); border-radius: 12px;">
+        <div style="font-size: 0.875rem; color: var(--text-light);">Sum Assured</div>
+        <div style="font-size: 1.75rem; font-weight: 800; color: var(--primary-blue); margin-top: 0.5rem;">${client.sumAsset !== '-' ? client.sumAsset : 'Not Set'}</div>
+      </div>
+    </div>
+    
+    <div style="margin-top: 1.5rem; padding: 1rem; background: ${client.policyNo === '-' ? 'rgba(239, 71, 111, 0.1)' : 'rgba(6, 214, 160, 0.1)'}; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fa-solid ${client.policyNo === '-' ? 'fa-triangle-exclamation' : 'fa-check-circle'}" 
+           style="color: ${client.policyNo === '-' ? 'var(--danger-red)' : 'var(--success-green)'};"></i>
+        <span style="font-weight: 600; color: ${client.policyNo === '-' ? 'var(--danger-red)' : 'var(--success-green)'}">
+          ${client.policyNo === '-' ? 'Policy Information Required' : 'Policy Active'}
+        </span>
+      </div>
+      <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: var(--text-secondary);">
+        ${client.policyNo === '-' ? 'This client record is incomplete. Please add policy details.' : 'All policy information is complete.'}
+      </p>
+    </div>
+  `;
+  
+  modal.style.display = 'flex';
+  modal.setAttribute('data-current-sl', sl);
+}
+
+function closeModal() {
+  const modal = document.getElementById('clientDetailModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function editCurrentClient() {
+  const modal = document.getElementById('clientDetailModal');
+  const sl = modal.getAttribute('data-current-sl');
+  if (sl) {
+    editClient(parseInt(sl));
     closeModal();
   }
+}
+
+// Refresh data function
+function refreshData() {
+  console.log("Refresh clicked"); // Debugging
+  window.rawClientData = JSON.parse(localStorage.getItem("clients")) || [];
+  calculateStats();
+  window.filterTableData(window.currentFilter);
+  alert("✅ Data refreshed!");
+}
+
+// Export function
+function exportData() {
+  const dataToExport = window.clientData || window.rawClientData;
   
-  // Ctrl/Cmd + E to export
-  if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
-    e.preventDefault();
-    exportData();
+  if (dataToExport.length === 0) {
+    alert("No data to export!");
+    return;
   }
+  
+  const csvContent = "data:text/csv;charset=utf-8," 
+    + "SL,Name,Policy No.,DOC,Table No.,Premium,Premium Type,Sum Asset,Policy Name\n"
+    + dataToExport.map(item => 
+        `${item.sl},"${item.name}",${item.policyNo},"${item.doc}",${item.tableNo},${item.premium},${item.premiumType},${item.sumAsset},"${item.policyName}"`
+      ).join("\n");
+  
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `lic-clients-${new Date().toISOString().split('T')[0]}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  // Show success message
+  const exportBtn = document.querySelector('.export-btn');
+  if (exportBtn) {
+    const originalHTML = exportBtn.innerHTML;
+    exportBtn.innerHTML = '<i class="fa-solid fa-check"></i> Exported!';
+    setTimeout(() => {
+      exportBtn.innerHTML = originalHTML;
+    }, 2000);
+  }
+}
+
+// Add new client
+function addNewClient() {
+  window.location.href = "../add_client/add.html";
+}
+
+// Filter data function (for buttons)
+function filterData(filterType) {
+  // Update active button
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  // Filter logic will be handled in the main JavaScript
+  if (window.filterTableData) {
+    window.filterTableData(filterType);
+  }
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = document.getElementById('clientDetailModal');
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+  }
+  
+  // Auto-refresh on page load (just in case)
+  setTimeout(() => {
+    if (window.rawClientData && window.rawClientData.length === 0) {
+      const data = JSON.parse(localStorage.getItem("clients")) || [];
+      if (data.length > 0) {
+        console.log("Auto-refreshing data on load...");
+        window.rawClientData = data;
+        calculateStats();
+        window.filterTableData('all');
+      }
+    }
+  }, 100);
 });
+
+// Add new client function - make sure it works without anchor tag
+function addNewClient() {
+  window.location.href = "../add_client/add.html";
+}

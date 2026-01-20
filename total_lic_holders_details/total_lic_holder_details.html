@@ -19,6 +19,53 @@
 <link rel="stylesheet" href="total_lic_holder_details.css">
 
 <!-- Additional CSS for enhancements -->
+ <style>
+  /* Ensure proper mobile view */
+  html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+  
+  /* Improve table cell display on mobile */
+  @media (max-width: 639px) {
+    #clientTableMain td:nth-child(2) {
+      min-width: 160px !important;
+    }
+    
+    #clientTableMain td:nth-child(3) {
+      min-width: 120px !important;
+    }
+    
+    .client-avatar {
+      width: 28px;
+      height: 28px;
+      font-size: 0.8rem;
+    }
+  }
+</style>
+<style>
+  /* Remove all underline from buttons and links */
+  .action-btn,
+  .action-btn:hover,
+  .action-btn:focus,
+  .action-btn:active {
+    text-decoration: none !important;
+    text-decoration-line: none !important;
+    text-decoration-style: none !important;
+    text-decoration-color: none !important;
+  }
+  
+  /* Remove underline from any link in quick-actions */
+  .quick-actions a {
+    text-decoration: none !important;
+  }
+  
+  /* Remove focus outline style */
+  button:focus {
+    outline: 2px solid var(--primary-blue);
+    outline-offset: 2px;
+  }
+</style>
 <style>
   .client-avatar {
     width: 36px;
@@ -151,40 +198,11 @@
     </div>
     <div class="client-badge">
       <i class="fa-solid fa-database"></i>
-      <span id="clientTotalEntries">143 Entries</span>
+      <span id="clientTotalEntries">0 Entries</span>
     </div>
   </div>
 
-  <!-- Stats Cards -->
-  <div class="stats-grid">
-    <div class="stat-card blue">
-      <div class="stat-label">Total Clients</div>
-      <div class="stat-value" id="totalClientsCount">143</div>
-      <div class="icon"><i class="fa-solid fa-users"></i></div>
-      <div class="stat-sub">Registered in system</div>
-    </div>
-    
-    <div class="stat-card green">
-      <div class="stat-label">With Policy</div>
-      <div class="stat-value" id="withPolicyCount">12</div>
-      <div class="icon"><i class="fa-solid fa-file-contract"></i></div>
-      <div class="stat-sub">Active policies</div>
-    </div>
-    
-    <div class="stat-card purple">
-      <div class="stat-label">Blank Entries</div>
-      <div class="stat-value" id="blankEntriesCount">32</div>
-      <div class="icon"><i class="fa-solid fa-circle-exclamation"></i></div>
-      <div class="stat-sub">Require updates</div>
-    </div>
-    
-    <div class="stat-card orange">
-      <div class="stat-label">Total Premium</div>
-      <div class="stat-value" id="totalPremium">₹1.8L</div>
-      <div class="icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
-      <div class="stat-sub">Monthly collection</div>
-    </div>
-  </div>
+
 
   <!-- Search & Filter Section -->
   <div class="search-section">
@@ -226,39 +244,6 @@
     </div>
   </div>
 
-  <!-- Client Info Card -->
-  <div class="client-info-row">
-    <div class="client-info-card">
-      <div class="client-info-icon">
-        <i class="fa-solid fa-chart-line"></i>
-      </div>
-      <div class="client-info-text">
-        <p>Data Insights</p>
-        <h2 id="dataInsights">32% Complete</h2>
-      </div>
-    </div>
-    
-    <div class="client-info-card">
-      <div class="client-info-icon">
-        <i class="fa-solid fa-clock-rotate-left"></i>
-      </div>
-      <div class="client-info-text">
-        <p>Last Updated</p>
-        <h2 id="lastUpdated">Today</h2>
-      </div>
-    </div>
-    
-    <div class="client-info-card">
-      <div class="client-info-icon">
-        <i class="fa-solid fa-filter-circle-dollar"></i>
-      </div>
-      <div class="client-info-text">
-        <p>Avg. Premium</p>
-        <h2 id="avgPremium">₹1,200</h2>
-      </div>
-    </div>
-  </div>
-
   <!-- Table Container -->
   <div class="client-table-wrapper">
     <table id="clientTableMain">
@@ -272,6 +257,7 @@
           <th>PREMIUM</th>
           <th>PREMIUM TYPE</th>
           <th>SUM ASSET</th>
+          <th>POLICY NAME</th>
           <th style="width: 80px;">ACTIONS</th>
         </tr>
       </thead>
@@ -284,7 +270,7 @@
   <!-- Result Count & Actions -->
   <div class="client-result-count">
     <div id="clientResultCount">
-      Showing <strong id="showingCount">143</strong> of <strong id="totalCount">143</strong> entries
+      Showing <strong id="showingCount">0</strong> of <strong id="totalCount">0</strong> entries
       <span style="margin-left: 1rem; color: var(--text-light); font-size: 0.85rem;">
         <i class="fa-solid fa-info-circle"></i> Double-click row for details
       </span>
@@ -295,7 +281,7 @@
         Refresh
       </button>
       <a href="../add_client/add.html">
-      <button class="action-btn primary" onclick="addNewClient()">
+      <button class="action-btn primary" onclick="addNewClient()" style="text-decoration: none;">
         <i class="fa-solid fa-user-plus"></i>
         Add New Client
       </button>
@@ -334,157 +320,6 @@ function toggleSidebar() {
 
   sidebar.classList.toggle("active");
   overlay.classList.toggle("active");
-}
-
-// Modal functions
-let currentClientSL = null;
-
-function showClientDetails(sl) {
-  currentClientSL = sl;
-  const client = window.clientData?.find(c => c.sl === sl) || 
-                 window.rawClientData?.find(c => c.sl === sl);
-  
-  if (!client) return;
-  
-  const modal = document.getElementById('clientDetailModal');
-  const content = document.getElementById('clientDetailContent');
-  
-  content.innerHTML = `
-    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
-      <div class="client-avatar" style="width: 60px; height: 60px; font-size: 1.5rem;">
-        ${client.name !== '-' ? client.name.charAt(0) : '?'}
-      </div>
-      <div>
-        <h3 style="margin: 0; color: var(--text-primary);">${client.name !== '-' ? client.name : 'No Name'}</h3>
-        <p style="margin: 0.25rem 0 0 0; color: var(--text-light);">Serial Number: ${client.sl}</p>
-      </div>
-    </div>
-    
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-      <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px;">
-        <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Policy Number</div>
-        <div style="font-weight: 600; color: var(--text-primary);">${client.policyNo !== '-' ? client.policyNo : 'Not Available'}</div>
-      </div>
-      
-      <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px;">
-        <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Document Date</div>
-        <div style="font-weight: 600; color: var(--text-primary);">${client.doc !== '-' ? client.doc : 'Not Available'}</div>
-      </div>
-      
-      <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px;">
-        <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Table Number</div>
-        <div style="font-weight: 600; color: var(--text-primary);">${client.tableNo !== '-' ? client.tableNo : 'Not Available'}</div>
-      </div>
-      
-      <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px;">
-        <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Premium Type</div>
-        <div style="font-weight: 600; color: var(--text-primary);">${client.premiumType !== '-' ? client.premiumType : 'Not Available'}</div>
-      </div>
-    </div>
-    
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
-      <div style="text-align: center; padding: 1.5rem; background: rgba(6, 214, 160, 0.1); border-radius: 12px;">
-        <div style="font-size: 0.875rem; color: var(--text-light);">Premium Amount</div>
-        <div style="font-size: 1.75rem; font-weight: 800; color: var(--success-green); margin-top: 0.5rem;">${client.premium !== '-' ? client.premium : 'Not Set'}</div>
-      </div>
-      
-      <div style="text-align: center; padding: 1.5rem; background: rgba(67, 97, 238, 0.1); border-radius: 12px;">
-        <div style="font-size: 0.875rem; color: var(--text-light);">Sum Assured</div>
-        <div style="font-size: 1.75rem; font-weight: 800; color: var(--primary-blue); margin-top: 0.5rem;">${client.sumAsset !== '-' ? client.sumAsset : 'Not Set'}</div>
-      </div>
-    </div>
-    
-    <div style="margin-top: 1.5rem; padding: 1rem; background: ${client.policyNo === '-' ? 'rgba(239, 71, 111, 0.1)' : 'rgba(6, 214, 160, 0.1)'}; border-radius: 8px;">
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
-        <i class="fa-solid ${client.policyNo === '-' ? 'fa-triangle-exclamation' : 'fa-check-circle'}" 
-           style="color: ${client.policyNo === '-' ? 'var(--danger-red)' : 'var(--success-green)'};"></i>
-        <span style="font-weight: 600; color: ${client.policyNo === '-' ? 'var(--danger-red)' : 'var(--success-green)'}">
-          ${client.policyNo === '-' ? 'Policy Information Required' : 'Policy Active'}
-        </span>
-      </div>
-      <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: var(--text-secondary);">
-        ${client.policyNo === '-' ? 'This client record is incomplete. Please add policy details.' : 'All policy information is complete.'}
-      </p>
-    </div>
-  `;
-  
-  modal.style.display = 'flex';
-}
-
-function closeModal() {
-  document.getElementById('clientDetailModal').style.display = 'none';
-}
-
-function editCurrentClient() {
-  if (currentClientSL) {
-    alert(`Edit client SL: ${currentClientSL}\nThis would open an edit form.`);
-    closeModal();
-  }
-}
-
-// Close modal when clicking outside
-document.getElementById('clientDetailModal').addEventListener('click', function(e) {
-  if (e.target === this) {
-    closeModal();
-  }
-});
-
-// Other functions
-function refreshData() {
-  const btn = event?.target.closest('button');
-  const originalHTML = btn?.innerHTML || '';
-  
-  if (btn) {
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Refreshing...';
-    btn.disabled = true;
-  }
-  
-  // Simulate API call
-  setTimeout(() => {
-    if (btn) {
-      btn.innerHTML = originalHTML;
-      btn.disabled = false;
-    }
-    // In a real app, this would reload data from server
-    alert('Data refreshed successfully!');
-  }, 1000);
-}
-
-function addNewClient() {
-  alert('Add New Client form would open here.');
-}
-
-function exportData() {
-  const dataStr = JSON.stringify(window.clientData || window.rawClientData, null, 2);
-  const dataBlob = new Blob([dataStr], { type: 'application/json' });
-  const url = URL.createObjectURL(dataBlob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `lic-clients-${new Date().toISOString().split('T')[0]}.json`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  
-  // Show success message
-  const exportBtn = event?.target.closest('.export-btn');
-  if (exportBtn) {
-    const originalHTML = exportBtn.innerHTML;
-    exportBtn.innerHTML = '<i class="fa-solid fa-check"></i> Exported!';
-    setTimeout(() => {
-      exportBtn.innerHTML = originalHTML;
-    }, 2000);
-  }
-}
-
-function filterData(filterType) {
-  // Update active button
-  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
-  
-  // Filter logic will be handled in the main JavaScript
-  if (window.filterTableData) {
-    window.filterTableData(filterType);
-  }
 }
 
 // Initialize data tracking

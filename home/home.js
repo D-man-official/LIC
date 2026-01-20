@@ -118,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadCurrentMonthClientCount();
   loadTodayCollection();
   loadMonthlyCollection();
+  loadTotalLICHolders();
 
   // Refresh counts when coming back to tab
   window.addEventListener("focus", () => {
@@ -125,4 +126,20 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTodayCollection();
     loadMonthlyCollection();
   });
+});
+
+
+// ===== Total LIC Holders (from all clients in database) =====
+function loadTotalLICHolders() {
+  const clients = JSON.parse(localStorage.getItem("clients")) || [];
+  const total = clients.length;
+  const totalEl = document.getElementById("totalLICHolders");
+  if (totalEl) {
+    totalEl.textContent = total;
+  }
+}
+
+window.addEventListener("focus", () => {
+  // ... existing code ...
+  loadTotalLICHolders();
 });

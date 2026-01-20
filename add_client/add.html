@@ -62,9 +62,9 @@
       <span class="menu-icon"><i class="fa-solid fa-user-plus"></i></span>
       Add Client
     </a>
-     <a href="../report/report.html" class="menu-item">
-          <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
-          Reports
+     <a href="../total_lic_holders_details/total_lic_holder_details.html" class="menu-item">
+          <span class="menu-icon"><i class="fa-solid fa-circle-info"></i></span>
+          LIC HOLDERS DETAILS
         </a>
       </div>
 
@@ -99,82 +99,78 @@
               <div class="card-subtitle">Enter the client details below</div>
             </div>
           </div>
-<!-- Form -->
-<form id="clientForm">
 
-  <!-- SL -->
-  <div class="form-group">
-    <label>SL *</label>
-    <input id="sl" type="text" placeholder="Enter serial number" required />
-  </div>
+          <!-- Form -->
+          <form id="clientForm">
+            <!-- SL -->
+            <div class="form-group">
+              <label>SL *</label>
+              <input id="sl" type="text" placeholder="Enter serial number" required />
+            </div>
 
-  <!-- Client Name -->
-  <div class="form-group">
-    <label>Client Name *</label>
-    <input id="name" type="text" placeholder="Enter full name" required />
-  </div>
+            <!-- Client Name -->
+            <div class="form-group">
+              <label>Client Name *</label>
+              <input id="name" type="text" placeholder="Enter full name" required />
+            </div>
 
-  <!-- Policy Number -->
-  <div class="form-group">
-    <label>Policy Number *</label>
-    <input id="policy" type="text" placeholder="e.g., LIC123456" required />
-  </div>
+            <!-- Policy Number -->
+            <div class="form-group">
+              <label>Policy Number *</label>
+              <input id="policyNo" type="text" placeholder="e.g., LIC123456" required />
+            </div>
 
-  <!-- Date of Creation -->
-  <div class="form-group">
-    <label>Date of Creation *</label>
-    <input id="date" type="date" required />
-  </div>
+            <!-- Date of Creation -->
+            <div class="form-group">
+              <label>Date of Creation *</label>
+              <input id="doc" type="date" required />
+            </div>
 
-  <!-- Phone + Premium Type -->
-  <div class="form-grid">
+            <!-- Table Number -->
+            <div class="form-group">
+              <label>Table Number *</label>
+              <input id="tableNo" type="text" placeholder="e.g., T-01" required />
+            </div>
 
-    <!-- Phone -->
-    <div class="form-group">
-      <label>Phone Number *</label>
-      <input id="phone" type="tel" placeholder="e.g., 9876543210" required />
-    </div>
+            <!-- Premium Amount -->
+            <div class="form-group">
+              <label>Premium Amount (₹) *</label>
+              <input id="premium" type="number" placeholder="e.g., 1000" required />
+            </div>
 
-    <!-- Premium Type -->
-    <div class="form-group">
-      <label>Premium Type *</label>
-      <select id="premiumType" required>
-        <option value="" disabled selected>Select Premium Type</option>
-        <option>Monthly</option>
-        <option>Quarterly</option>
-        <option>Half-Yearly</option>
-        <option>Yearly</option>
-      </select>
-    </div>
+            <!-- Premium Type -->
+            <div class="form-group">
+              <label>Premium Type *</label>
+              <select id="premiumType" required>
+                <option value="" disabled selected>Select Premium Type</option>
+                <option>Monthly</option>
+                <option>Quarterly</option>
+                <option>Half-Yearly</option>
+                <option>Yearly</option>
+              </select>
+            </div>
 
-  </div>
+            <!-- Sum Assured -->
+            <div class="form-group">
+              <label>Sum Assured (₹) *</label>
+              <input id="sumAsset" type="text" placeholder="e.g., 5,00,000" required />
+            </div>
 
-  <!-- Premium Amount -->
-  <div class="form-group">
-    <label>Premium Amount (₹) *</label>
-    <input id="amount" type="number" placeholder="e.g., 1000" required />
-  </div>
+            <!-- Policy Name -->
+            <div class="form-group">
+              <label>Policy Name *</label>
+              <input id="policyName" type="text" placeholder="e.g., LIC Jeevan Anand" required />
+            </div>
 
-  <!-- Buttons -->
-  <div class="button-row">
-    <button type="reset" class="btn btn-cancel">Cancel</button>
-    <button type="submit" class="btn btn-primary">Add Client</button>
-  </div>
-
-</form>
-<script>
-  const currentPage = window.location.pathname.split("/").pop();
-  const menuItems = document.querySelectorAll(".menu-item");
-
-  menuItems.forEach(item => {
-    const linkPage = item.getAttribute("href").split("/").pop();
-
-    if (linkPage === currentPage) {
-      item.classList.add("active");
-    }
-  });
-</script>
-
+            <!-- Buttons -->
+            <div class="button-row">
+              <button type="reset" class="btn btn-cancel">Cancel</button>
+              <button type="submit" class="btn btn-primary">Add Client</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
 
     <!-- Page JS -->
     <script src="./add.js"></script>
