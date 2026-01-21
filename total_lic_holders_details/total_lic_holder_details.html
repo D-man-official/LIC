@@ -322,6 +322,44 @@
   </div>
 </div>
 
+
+
+
+
+<!-- ================= IMPORT CONSOLE MODAL ================= -->
+<div id="importConsoleModal" class="import-console-modal">
+  <div class="import-console-box">
+    
+    <div class="import-console-header">
+      <span>Import Data (Console)</span>
+      <button onclick="closeImportConsole()">✕</button>
+    </div>
+
+    <textarea
+      id="importConsoleTextarea"
+      placeholder="// Paste your localStorage import code here
+// Example:
+// {
+//   &quot;clients&quot;: &quot;[...]&quot;
+// }"
+    ></textarea>
+
+    <div class="import-console-actions">
+      <button class="action-btn secondary" onclick="closeImportConsole()">Cancel</button>
+      <button class="action-btn primary" onclick="applyImportConsole()">Import</button>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
 <script>
 function toggleSidebar() {
   const sidebar = document.getElementById("sidebar");
@@ -338,5 +376,8 @@ window.currentFilter = 'all';
 </script>
 
 <script src="./total_lic_holder_details.js"></script>
+
+
+
 </body>
 </html>

@@ -771,3 +771,67 @@
     width: 100%;
   }
 }
+/* ================= IMPORT CONSOLE MODAL ================= */
+.import-console-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+
+.import-console-box {
+  width: 95%;
+  max-width: 600px;
+  background: #020617;
+  color: #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+  padding: 1rem;
+  font-family: monospace;
+}
+
+.import-console-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  color: #e5e7eb;
+  font-weight: 600;
+}
+
+.import-console-header button {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.import-console-header button:hover {
+  color: white;
+}
+
+#importConsoleTextarea {
+  width: 100%;
+  min-height: 260px;
+  background: #0f172a;
+  color: #e5e7eb;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 0.75rem;
+  font-size: 0.85rem;
+  resize: vertical;
+}
+
+#importConsoleTextarea::placeholder {
+  color: #64748b;
+}
+
+.import-console-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}

@@ -394,3 +394,39 @@ document.addEventListener('DOMContentLoaded', function() {
 function addNewClient() {
   window.location.href = "../add_client/add.html";
 }
+
+/* ================= IMPORT CONSOLE LOGIC ================= */
+
+function importData() {
+  const modal = document.getElementById("importConsoleModal");
+  if (modal) modal.style.display = "flex";
+}
+
+function closeImportConsole() {
+  document.getElementById("importConsoleModal").style.display = "none";
+  document.getElementById("importConsoleTextarea").value = "";
+}
+
+function applyImportConsole() {
+  const rawText = document.getElementById("importConsoleTextarea").value.trim();
+
+  if (!rawText) {
+    alert("❌ No data pasted");
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(rawText);
+
+    Object.keys(parsed).forEach(key => {
+      localStorage.setItem(key, parsed[key]);
+    });
+
+    alert("✅ Data imported successfully");
+    location.reload();
+
+  } catch (err) {
+    alert("❌ Invalid JSON format");
+    console.error(err);
+  }
+}
