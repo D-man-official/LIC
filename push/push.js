@@ -6,7 +6,7 @@ const rawClientData = [
   { sl:2, name:"-", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
   { sl:3, name:"Bipul Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
   { sl:4, name:"Sunil Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-"},
-  { sl:5, name:"Sanjay Roy", policyNo:"458016091", doc:"26/05/2014", tableNo:"814/12", premium:"- ", premiumType :"Quarterly" , sumAsset :"200,000"}
+  { sl:5, name:"Sanjay Roy", policyNo:"458016091", doc:"26/05/2014", tableNo:"814/12", premium:"- ", premiumType :"Quarterly" , sumAsset :"200,000"},
   { sl:6, name:"Bijoy Roy", policyNo:"458016302", doc:"28/05/2014", tableNo:"814/15", premium:"-", premiumType:"Quarterly", sumAsset:"10,00,000" },
   { sl:7, name:"Subrata Barman", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
   { sl:8, name:"Dilip Sarkar", policyNo:"-", doc:"-", tableNo:"-", premium:"-", premiumType:"-", sumAsset:"-" },
