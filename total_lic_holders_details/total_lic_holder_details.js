@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Get data from localStorage
   function getAllClientData() {
     const data = JSON.parse(localStorage.getItem("clients")) || [];
-    console.log("Loaded from localStorage:", data); // Debugging
+    console.log("Loaded from localStorage:", data);
     return data;
   }
   
@@ -21,16 +21,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Calculate stats and update counts
   function calculateStats() {
     const totalClients = window.rawClientData.length;
-    console.log("Total clients:", totalClients); // Debugging
+    console.log("Total clients:", totalClients);
     
-    // ✅ সরাসরি আপডেট করো (আরেকবার চেক করে)
     if (totalCount) totalCount.textContent = totalClients;
     if (showingCount) showingCount.textContent = totalClients;
     if (clientTotalEntries) {
       clientTotalEntries.textContent = `${totalClients} ${totalClients === 1 ? 'Entry' : 'Entries'}`;
     }
     
-    console.log("Updated counts - Total:", totalClients); // Debugging
+    console.log("Updated counts - Total:", totalClients);
   }
   
   // Render table with enhanced styling
@@ -57,16 +56,13 @@ document.addEventListener("DOMContentLoaded", () => {
     data.forEach(item => {
       const tr = document.createElement("tr");
       
-      // Determine if this is a complete or incomplete entry
       const hasPolicy = item.policyNo !== "-" && item.policyNo !== "";
       const hasName = item.name !== "-";
       
-      // Create avatar for name
       const nameAvatar = hasName ? 
         `<div class="client-avatar">${item.name.charAt(0)}</div>` :
         `<div class="client-avatar" style="background: var(--danger-red);">?</div>`;
       
-      // Format cell content with styling
       const formatCell = (value, isMonetary = false, isImportant = false) => {
         if (value === "-" || value === "" || value === null || value === undefined) {
           return `<span style="color: var(--text-light); font-style: italic;">-</span>`;
@@ -75,14 +71,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return `<span ${colorClass}>${value}</span>`;
       };
       
-      // Determine row class based on completeness
       const rowClass = hasPolicy ? "complete-entry" : "incomplete-entry";
       
       tr.className = rowClass;
       tr.setAttribute('data-sl', item.sl);
       tr.setAttribute('data-has-policy', hasPolicy);
       
-      // Add double-click event for details
       tr.ondblclick = () => showClientDetails(item.sl);
       
       tr.innerHTML = `
@@ -121,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </td>
       `;
       
-      // Add hover effect
       tr.addEventListener('mouseenter', () => {
         tr.style.backgroundColor = 'var(--primary-blue-light)';
       });
@@ -151,11 +144,10 @@ document.addEventListener("DOMContentLoaded", () => {
       case 'blank':
         filtered = filtered.filter(item => item.name === "-");
         break;
-      default: // 'all'
+      default:
         filtered = [...window.rawClientData];
     }
     
-    // Apply search if there's a search term
     const searchTerm = searchInput.value.toLowerCase();
     if (searchTerm) {
       filtered = filtered.filter(item =>
@@ -182,21 +174,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   
+  // Sort data by SL number (ascending)
+  function sortDataBySL(data) {
+    return [...data].sort((a, b) => Number(a.sl) - Number(b.sl));
+  }
+  
   // Initialize the table
+  window.rawClientData = sortDataBySL(window.rawClientData);
   calculateStats();
   renderTable(window.rawClientData);
   window.filterTableData('all');
   
-  console.log("Table initialized with", window.rawClientData.length, "clients"); // Debugging
+  console.log("Table initialized with", window.rawClientData.length, "clients");
 });
 
-// Additional helper functions
+// ================= HELPER FUNCTIONS =================
+
 function editClient(sl) {
   const client = window.clientData.find(c => c.sl === sl) || 
                  window.rawClientData.find(c => c.sl === sl);
   
   if (client) {
-    // Redirect to edit page
     window.location.href = `../add_client/add.html?edit=${sl}`;
   }
 }
@@ -204,22 +202,14 @@ function editClient(sl) {
 function deleteClient(sl) {
   if (!confirm(`Are you sure you want to delete client SL: ${sl}?`)) return;
 
-  // 🔥 Always normalize SL as number
   const targetSl = Number(sl);
-
   let savedClients = JSON.parse(localStorage.getItem("clients")) || [];
-
-  // ✅ FIX: strict numeric comparison
   savedClients = savedClients.filter(c => Number(c.sl) !== targetSl);
-
-  // Save back
   localStorage.setItem("clients", JSON.stringify(savedClients));
 
-  // 🔄 Refresh in-memory data
   window.rawClientData = savedClients;
   window.clientData = [...savedClients];
 
-  // Re-render table & stats
   if (window.filterTableData) {
     window.filterTableData(window.currentFilter || 'all');
   }
@@ -230,7 +220,6 @@ function deleteClient(sl) {
 
   alert(`✅ Client SL ${targetSl} deleted successfully`);
 }
-
 
 function showClientDetails(sl) {
   const client = window.clientData.find(c => c.sl === sl) || 
@@ -320,18 +309,16 @@ function editCurrentClient() {
   }
 }
 
-// Refresh data function
 function refreshData() {
-  console.log("Refresh clicked"); // Debugging
+  console.log("Refresh clicked");
   window.rawClientData = JSON.parse(localStorage.getItem("clients")) || [];
   calculateStats();
   window.filterTableData(window.currentFilter);
   alert("✅ Data refreshed!");
 }
 
-// Export function
+// ================= SIMPLE EXPORT FUNCTION =================
 function exportData() {
-  // 👉 Table এ বর্তমানে যেটা দেখাচ্ছে সেটাই export হবে
   const dataToExport = window.clientData && window.clientData.length
     ? window.clientData
     : window.rawClientData;
@@ -341,21 +328,24 @@ function exportData() {
     return;
   }
 
-  // 👉 localStorage-compatible structure
+  // Sort data by SL number before exporting
+  const sortedData = [...dataToExport].sort((a, b) => Number(a.sl) - Number(b.sl));
+  
+  // Create export object
   const exportObject = {
-    clients: JSON.stringify(dataToExport)
+    clients: sortedData
   };
 
-  // 👉 Pretty JSON (console friendly)
+  // Convert to JSON string
   const jsonText = JSON.stringify(exportObject, null, 2);
 
-  // 👉 Create TXT file
+  // Create TXT file
   const blob = new Blob([jsonText], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
 
   const link = document.createElement("a");
   link.href = url;
-  link.download = `lic-clients-export-${new Date().toISOString().split("T")[0]}.txt`;
+  link.download = `lic-data-${new Date().toISOString().split("T")[0]}.txt`;
 
   document.body.appendChild(link);
   link.click();
@@ -363,7 +353,7 @@ function exportData() {
 
   URL.revokeObjectURL(url);
 
-  // ✅ UI feedback
+  // Show success message
   const exportBtn = document.querySelector(".export-btn");
   if (exportBtn) {
     const original = exportBtn.innerHTML;
@@ -374,19 +364,14 @@ function exportData() {
   }
 }
 
-
-// Add new client
 function addNewClient() {
   window.location.href = "../add_client/add.html";
 }
 
-// Filter data function (for buttons)
 function filterData(filterType) {
-  // Update active button
   document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
   event.target.classList.add('active');
   
-  // Filter logic will be handled in the main JavaScript
   if (window.filterTableData) {
     window.filterTableData(filterType);
   }
@@ -403,7 +388,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Auto-refresh on page load (just in case)
   setTimeout(() => {
     if (window.rawClientData && window.rawClientData.length === 0) {
       const data = JSON.parse(localStorage.getItem("clients")) || [];
@@ -417,13 +401,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }, 100);
 });
 
-// Add new client function - make sure it works without anchor tag
-function addNewClient() {
-  window.location.href = "../add_client/add.html";
-}
-
-/* ================= IMPORT CONSOLE LOGIC ================= */
-
+// ================= SIMPLE IMPORT FUNCTION =================
 function importData() {
   const modal = document.getElementById("importConsoleModal");
   if (modal) modal.style.display = "flex";
@@ -443,50 +421,112 @@ function applyImportConsole() {
 
   try {
     const parsed = JSON.parse(rawText);
-    let finalClientsArray = [];
+    let newClientsArray = [];
 
-    // 🧠 CASE 1: User pasted localStorage snapshot
-    // { "clients": "[...]" }
+    // Parse different JSON formats
     if (parsed.clients && typeof parsed.clients === "string") {
-      finalClientsArray = JSON.parse(parsed.clients);
-    }
-
-    // 🧠 CASE 2: User pasted wrapped JSON
-    // { "clients": [ {...}, {...} ] }
-    else if (parsed.clients && Array.isArray(parsed.clients)) {
-      finalClientsArray = parsed.clients;
-    }
-
-    // 🧠 CASE 3: User pasted raw array
-    // [ {...}, {...} ]
-    else if (Array.isArray(parsed)) {
-      finalClientsArray = parsed;
-    }
-
-    // 🧠 CASE 4: User pasted single object
-    // { sl:..., name:... }
-    else if (typeof parsed === "object") {
-      finalClientsArray = [parsed];
-    }
-
-    else {
+      newClientsArray = JSON.parse(parsed.clients);
+    } else if (parsed.clients && Array.isArray(parsed.clients)) {
+      newClientsArray = parsed.clients;
+    } else if (Array.isArray(parsed)) {
+      newClientsArray = parsed;
+    } else if (typeof parsed === "object") {
+      newClientsArray = [parsed];
+    } else {
       throw new Error("Unsupported data format");
     }
 
-    // 🧼 Normalize SL as number (important)
-    finalClientsArray = finalClientsArray.map(c => ({
+    // Normalize SL as number
+    newClientsArray = newClientsArray.map(c => ({
       ...c,
       sl: Number(c.sl)
     }));
 
-    // 💾 Save in exact format your app expects
-    localStorage.setItem("clients", JSON.stringify(finalClientsArray));
+    // Get existing data
+    const existingClients = JSON.parse(localStorage.getItem("clients")) || [];
+    const mergedClients = [...existingClients];
 
-    alert(`✅ Imported ${finalClientsArray.length} client(s) successfully`);
+    // Process each new client
+    let addedCount = 0;
+    let replacedCount = 0;
+    let skippedCount = 0;
+
+    newClientsArray.forEach(newClient => {
+      // Check if SL already exists
+      const existingIndex = mergedClients.findIndex(item => Number(item.sl) === Number(newClient.sl));
+      
+      if (existingIndex !== -1) {
+        // Duplicate found - ask user with more details
+        const existing = mergedClients[existingIndex];
+        
+        // Create a detailed comparison message
+        const comparisonDetails = `
+╔═══════════════════════════════════════════╗
+║        DUPLICATE FOUND - SL: ${String(newClient.sl).padEnd(5)}        ║
+╠═══════════════════════════════════════════╣
+║          EXISTING ENTRY                   ║
+╠═══════════════════════════════════════════╣
+• Name: ${existing.name || "Not Set"}
+• Policy No: ${existing.policyNo || "Not Set"}
+• Premium: ${existing.premium || "Not Set"}
+• Sum Assured: ${existing.sumAsset || "Not Set"}
+• Policy Name: ${existing.policyName || "Not Set"}
+
+║           NEW ENTRY                       ║
+╠═══════════════════════════════════════════╣
+• Name: ${newClient.name || "Not Set"}
+• Policy No: ${newClient.policyNo || "Not Set"}
+• Premium: ${newClient.premium || "Not Set"}
+• Sum Assured: ${newClient.sumAsset || "Not Set"}
+• Policy Name: ${newClient.policyName || "Not Set"}
+╚═══════════════════════════════════════════╝
+
+What do you want to do?
+• Click OK to REPLACE existing with new data
+• Click Cancel to KEEP existing data`;
+        
+        const shouldReplace = confirm(comparisonDetails);
+        
+        if (shouldReplace) {
+          mergedClients[existingIndex] = newClient;
+          replacedCount++;
+        } else {
+          skippedCount++;
+        }
+      } else {
+        // New entry, just add it
+        mergedClients.push(newClient);
+        addedCount++;
+      }
+    });
+
+    // Sort by SL number (ascending)
+    mergedClients.sort((a, b) => Number(a.sl) - Number(b.sl));
+
+    // Save to localStorage
+    localStorage.setItem("clients", JSON.stringify(mergedClients));
+
+    // Show summary with better formatting
+    const summary = `
+┌─────────────────────────────────┐
+│        IMPORT COMPLETE          │
+├─────────────────────────────────┤
+│ Total clients now: ${String(mergedClients.length).padEnd(10)} │
+│ New entries added: ${String(addedCount).padEnd(10)} │
+│ Entries replaced: ${String(replacedCount).padEnd(10)} │
+│ Duplicates skipped: ${String(skippedCount).padEnd(9)} │
+└─────────────────────────────────┘
+
+✅ Import successful!`;
+    
+    alert(summary);
+
+    // Close modal and refresh page
+    closeImportConsole();
     location.reload();
 
   } catch (err) {
-    alert("❌ Invalid or unsupported data format");
+    alert("❌ Invalid data format. Please paste valid JSON data.\n\nError: " + err.message);
     console.error("Import error:", err);
   }
 }

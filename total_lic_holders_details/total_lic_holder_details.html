@@ -323,39 +323,41 @@
 </div>
 
 
-
-
-
 <!-- ================= IMPORT CONSOLE MODAL ================= -->
 <div id="importConsoleModal" class="import-console-modal">
   <div class="import-console-box">
-    
     <div class="import-console-header">
-      <span>Import Data (Console)</span>
+      <span>Import Data</span>
       <button onclick="closeImportConsole()">✕</button>
     </div>
 
+    <p style="color: #94a3b8; margin-bottom: 1rem; font-size: 0.9rem;">
+      Paste your exported data here:
+    </p>
+
     <textarea
       id="importConsoleTextarea"
-      placeholder="// Paste your localStorage import code here
-// Example:
-// {
-//   &quot;clients&quot;: &quot;[...]&quot;
-// }"
+      placeholder="Paste your exported LIC data here...
+Example format:
+{
+  &quot;clients&quot;: [
+    { &quot;sl&quot;: 1, &quot;name&quot;: &quot;John&quot;, ... },
+    { &quot;sl&quot;: 2, &quot;name&quot;: &quot;Jane&quot;, ... }
+  ]
+}"
+      style="width: 100%; min-height: 200px; background: #0f172a; color: #e5e7eb; border: 1px solid #334155; border-radius: 8px; padding: 0.75rem; font-family: 'Courier New', monospace;"
     ></textarea>
 
     <div class="import-console-actions">
-      <button class="action-btn secondary" onclick="closeImportConsole()">Cancel</button>
-      <button class="action-btn primary" onclick="applyImportConsole()">Import</button>
+      <button class="action-btn secondary" onclick="closeImportConsole()">
+        <i class="fa-solid fa-times"></i> Cancel
+      </button>
+      <button class="action-btn primary" onclick="applyImportConsole()">
+        <i class="fa-solid fa-file-import"></i> Import Data
+      </button>
     </div>
-
   </div>
 </div>
-
-
-
-
-
 
 
 
