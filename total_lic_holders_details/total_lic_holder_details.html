@@ -206,16 +206,25 @@
 
   <!-- Search & Filter Section -->
   <div class="search-section">
-    <div class="search-header">
-      <div class="search-title">
-        <h3>Search & Filter Clients</h3>
-        <p>Find clients by name, policy number, or any detail</p>
-      </div>
-      <div class="export-btn" onclick="exportData()">
-        <i class="fa-solid fa-download"></i>
-        Export Data
-      </div>
+<div class="search-header">
+  <div class="search-title">
+    <h3>Search & Filter Clients</h3>
+    <p>Find clients by name, policy number, or any detail</p>
+  </div>
+
+  <!-- NEW WRAPPER -->
+  <div class="data-actions">
+    <div class="import-btn" onclick="importData()">
+      <i class="fa-solid fa-upload"></i>
+      Import Data
     </div>
+
+       <div class="export-btn" onclick="exportData()">
+      <i class="fa-solid fa-download"></i>
+      Export Data
+    </div>
+  </div>
+</div>
     
     <div class="search-container">
       <div class="client-search-box">

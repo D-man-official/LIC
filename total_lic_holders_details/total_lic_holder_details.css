@@ -220,6 +220,32 @@
   box-shadow: 0 4px 12px rgba(6, 214, 160, 0.3);
 }
 
+
+.import-btn{
+  background: linear-gradient(135deg, var(--primary-blue) 0%, #dd3f06 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.import-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(6, 214, 160, 0.3);
+}
+
+
 /* Table Styles */
 .client-table-wrapper {
   background: white;
@@ -718,4 +744,30 @@
 .quick-actions a:active {
   text-decoration: none !important;
   outline: none;
+}
+
+/* Import / Export alignment fix */
+.data-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-left: auto; /* 🔥 push to right */
+  flex-wrap: wrap;
+}
+
+.data-actions .import-btn,
+.data-actions .export-btn {
+  width: auto;              /* ❌ 100% বাদ */
+  min-width: 140px;
+  white-space: nowrap;
+}
+@media (max-width: 639px) {
+  .data-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .data-actions .import-btn,
+  .data-actions .export-btn {
+    width: 100%;
+  }
 }
