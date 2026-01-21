@@ -760,7 +760,7 @@ select:hover {
 .stat-card .value#totalCollection {
   font-size: 1.8rem;
   font-weight: 800;
-  color: var(--success);
+  /* color: var(--success); */
   word-break: break-word;
 }
 
