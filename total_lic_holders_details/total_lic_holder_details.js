@@ -433,7 +433,6 @@ function closeImportConsole() {
   document.getElementById("importConsoleModal").style.display = "none";
   document.getElementById("importConsoleTextarea").value = "";
 }
-
 function applyImportConsole() {
   const rawText = document.getElementById("importConsoleTextarea").value.trim();
 
@@ -444,16 +443,50 @@ function applyImportConsole() {
 
   try {
     const parsed = JSON.parse(rawText);
+    let finalClientsArray = [];
 
-    Object.keys(parsed).forEach(key => {
-      localStorage.setItem(key, parsed[key]);
-    });
+    // 🧠 CASE 1: User pasted localStorage snapshot
+    // { "clients": "[...]" }
+    if (parsed.clients && typeof parsed.clients === "string") {
+      finalClientsArray = JSON.parse(parsed.clients);
+    }
 
-    alert("✅ Data imported successfully");
+    // 🧠 CASE 2: User pasted wrapped JSON
+    // { "clients": [ {...}, {...} ] }
+    else if (parsed.clients && Array.isArray(parsed.clients)) {
+      finalClientsArray = parsed.clients;
+    }
+
+    // 🧠 CASE 3: User pasted raw array
+    // [ {...}, {...} ]
+    else if (Array.isArray(parsed)) {
+      finalClientsArray = parsed;
+    }
+
+    // 🧠 CASE 4: User pasted single object
+    // { sl:..., name:... }
+    else if (typeof parsed === "object") {
+      finalClientsArray = [parsed];
+    }
+
+    else {
+      throw new Error("Unsupported data format");
+    }
+
+    // 🧼 Normalize SL as number (important)
+    finalClientsArray = finalClientsArray.map(c => ({
+      ...c,
+      sl: Number(c.sl)
+    }));
+
+    // 💾 Save in exact format your app expects
+    localStorage.setItem("clients", JSON.stringify(finalClientsArray));
+
+    alert(`✅ Imported ${finalClientsArray.length} client(s) successfully`);
     location.reload();
 
   } catch (err) {
-    alert("❌ Invalid JSON format");
-    console.error(err);
+    alert("❌ Invalid or unsupported data format");
+    console.error("Import error:", err);
   }
 }
