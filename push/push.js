@@ -302,21 +302,7 @@ if (alreadyExists) {
 }
 
 
-// ===== SAVE CLIENT FOR VIEW PAGE =====
-let clients = JSON.parse(localStorage.getItem("clients")) || [];
 
-const exists = clients.some(c => c.sl === client.sl);
-
-if (!exists) {
-  clients.push({
-    sl: client.sl,
-    name: client.name
-  });
-
-  clients.sort((a, b) => a.sl - b.sl);
-
-  localStorage.setItem("clients", JSON.stringify(clients));
-}
 
 monthlyData.clients.push({
   sl: client.sl,
