@@ -947,3 +947,21 @@
     flex-direction: column;
   }
 }
+.client-table-wrapper {
+  background: white;
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  overflow-y: auto; /* Changed from hidden to auto */
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-height: 60vh; /* Added: Limits height to 60% of viewport, adjust as needed */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+@media (max-width: 639px) {
+  /* ... existing styles ... */
+  .client-table-wrapper {
+    max-height: 70vh; /* Taller on mobile if needed */
+  }
+}

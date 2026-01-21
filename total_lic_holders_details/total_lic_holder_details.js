@@ -310,11 +310,8 @@ function editCurrentClient() {
 }
 
 function refreshData() {
-  console.log("Refresh clicked");
-  window.rawClientData = JSON.parse(localStorage.getItem("clients")) || [];
-  calculateStats();
-  window.filterTableData(window.currentFilter);
-  alert("✅ Data refreshed!");
+    location.reload();
+  
 }
 
 // ================= SIMPLE EXPORT FUNCTION =================
