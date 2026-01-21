@@ -1,220 +1,249 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <title>Monthly Report - LIC Collection System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/jpeg" href="../logo.png">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/jpeg" href="../logo.png" />
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-    
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
     <!-- CSS Files -->
     <link rel="stylesheet" href="../home/home.css" />
-    <link rel="stylesheet" href="./report.css">
-    
+    <link rel="stylesheet" href="./report.css" />
+
     <!-- jsPDF + AutoTable -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById("sidebar");
-            const overlay = document.getElementById("overlay");
-            
-            sidebar.classList.toggle("active");
-            overlay.classList.toggle("active");
-        }
-        
-        // Close sidebar when clicking on menu item
-        function closeSidebar() {
-            const sidebar = document.getElementById("sidebar");
-            const overlay = document.getElementById("overlay");
-            
-            sidebar.classList.remove("active");
-            overlay.classList.remove("active");
-        }
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+
+        sidebar.classList.toggle("active");
+        overlay.classList.toggle("active");
+      }
+
+      // Close sidebar when clicking on menu item
+      function closeSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+
+        sidebar.classList.remove("active");
+        overlay.classList.remove("active");
+      }
     </script>
-    
+
     <!-- ================= HEADER ================= -->
     <header class="header">
-        <div class="app-title">LIC Collection</div>
-        <button class="menu-btn" onclick="toggleSidebar()">
-            <i class="fa-solid fa-bars"></i>
-        </button>
+      <div class="app-title">LIC Collection</div>
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+      </button>
     </header>
-    
+
     <!-- ================= SIDEBAR ================= -->
     <aside class="sidebar" id="sidebar">
-        <div class="logo-container">
-            <div class="logo-icon">
-                <i class="fa-solid fa-shield"></i>
-            </div>
-            <div>
-                <div class="logo-text">LIC Collection</div>
-                <div class="logo-subtext">Book Manager</div>
-            </div>
+      <div class="logo-container">
+        <div class="logo-icon">
+          <i class="fa-solid fa-shield"></i>
         </div>
-        
-        <nav class="menu-list">
-            <a href="../home/home.html" class="menu-item" onclick="closeSidebar()">
-                <span class="menu-icon">
-                    <i class="fa-solid fa-diagram-next"></i>
-                </span>
-                Dashboard
-            </a>
-            <a href="../daily_collection/daily.html" class="menu-item" onclick="closeSidebar()">
-                <span class="menu-icon"><i class="fa-regular fa-calendar"></i></span>
-                Daily Collection
-            </a>
-            <a href="../view_client/view.html" class="menu-item" onclick="closeSidebar()">
-                <span class="menu-icon"><i class="fa-solid fa-users"></i></span>
-                View Clients
-            </a>
-            <a href="../push/push.html" class="menu-item" onclick="closeSidebar()">
-                <span class="menu-icon">
-                    <i class="fa-solid fa-chalkboard-user" style="color: #fbffff;"></i>
-                </span>
-                Push Client
-            </a>
-            <a href="./report.html" class="menu-item active" onclick="closeSidebar()">
-                <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
-                Reports
-            </a>
-        </nav>
-        
-        <div class="user-section">
-            <div class="user-avatar">
-                <img src="../cheif-officier.jpg" alt="User">
-            </div>
-            <div class="user-name">DHIMAN SUTRADHAR</div>
-            <div class="user-role">Chief Officer</div>
-            
-            <a href="#" class="logout" onclick="closeSidebar()">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                Logout
-            </a>
+        <div>
+          <div class="logo-text">LIC Collection</div>
+          <div class="logo-subtext">Book Manager</div>
         </div>
+      </div>
+
+      <nav class="menu-list">
+        <a href="../home/home.html" class="menu-item" onclick="closeSidebar()">
+          <span class="menu-icon">
+            <i class="fa-solid fa-diagram-next"></i>
+          </span>
+          Dashboard
+        </a>
+        <a
+          href="../daily_collection/daily.html"
+          class="menu-item"
+          onclick="closeSidebar()"
+        >
+          <span class="menu-icon"><i class="fa-regular fa-calendar"></i></span>
+          Daily Collection
+        </a>
+        <a
+          href="../view_client/view.html"
+          class="menu-item"
+          onclick="closeSidebar()"
+        >
+          <span class="menu-icon"><i class="fa-solid fa-users"></i></span>
+          View Clients
+        </a>
+        <a href="../push/push.html" class="menu-item" onclick="closeSidebar()">
+          <span class="menu-icon">
+            <i class="fa-solid fa-chalkboard-user" style="color: #fbffff"></i>
+          </span>
+          Push Client
+        </a>
+        <a
+          href="./report.html"
+          class="menu-item active"
+          onclick="closeSidebar()"
+        >
+          <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
+          Reports
+        </a>
+      </nav>
+
+      <div class="user-section">
+        <div class="user-avatar">
+          <img src="../cheif-officier.jpg" alt="User" />
+        </div>
+        <div class="user-name">DHIMAN SUTRADHAR</div>
+        <div class="user-role">Chief Officer</div>
+
+        <a href="#" class="logout" onclick="closeSidebar()">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          Logout
+        </a>
+      </div>
     </aside>
-    
+
     <!-- ================= OVERLAY ================= -->
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-    
+
     <!-- ================= MAIN CONTENT ================= -->
     <main class="main-content">
-        <div class="container">
-            <h1>
-                <i class="fas fa-chart-line"></i>
-                Monthly Collection Report
-            </h1>
-            <p class="page-description">
-                Generate detailed monthly reports for LIC collection. Select a month and year to download PDF report with daily collection tracking.
+      <div class="container">
+        <h1>
+          <i class="fas fa-chart-line"></i>
+          Monthly Collection Report
+        </h1>
+        <p class="page-description">
+          Generate detailed monthly reports for LIC collection. Select a month
+          and year to download PDF report with daily collection tracking.
+        </p>
+
+        <!-- Report Card -->
+        <div class="report-card">
+          <div class="report-header">
+            <h2>Generate Monthly Report</h2>
+            <p>
+              Select month and year to generate detailed collection report in
+              PDF format
             </p>
-            
-            <!-- Report Card -->
-            <div class="report-card">
-                <div class="report-header">
-                    <h2>Generate Monthly Report</h2>
-                    <p>Select month and year to generate detailed collection report in PDF format</p>
-                </div>
-                
-                <!-- Form Controls -->
-                <div class="form-row">
-                    <div class="form-control">
-                        <label for="monthSelect">
-                            <i class="fas fa-calendar-alt"></i>
-                            Select Month
-                        </label>
-                        <div class="select-wrapper">
-                            <select id="monthSelect"></select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-control">
-                        <label for="yearSelect">
-                            <i class="fas fa-calendar"></i>
-                            Select Year
-                        </label>
-                        <div class="select-wrapper">
-                            <select id="yearSelect"></select>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Selected Info Display -->
-                <div class="selected-info" id="selectedInfo">
-                    <h3>
-                        <i class="fas fa-calendar-check"></i>
-                        Selected Period
-                    </h3>
-                    <p>
-                        <span class="month-year" id="selectedMonthYear"></span>
-                    </p>
-                </div>
-                
-                <!-- Stats Summary -->
-                <div class="stats-summary" id="statsSummary">
-                    <div class="stat-card">
-                        <i class="fas fa-users"></i>
-                        <div class="value" id="totalClients">0</div>
-                        <div class="label">Total Clients</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-file-invoice-dollar"></i>
-                        <div class="value" id="totalCollection">RS 0</div>
-                        <div class="label">Total Collection</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-percentage"></i>
-                        <div class="value" id="collectionRate">0%</div>
-                        <div class="label">Collection Rate</div>
-                    </div>
-                </div>
-                
-                <!-- No Data Message -->
-                <div class="no-data-message" id="noDataMessage">
-                    <i class="fas fa-file-excel"></i>
-                    <h3>No Data Available</h3>
-                    <p>No collection data found for the selected month. Please check if data exists or select a different month.</p>
-                </div>
-                
-                <!-- Report Preview -->
-                <div class="report-preview" id="reportPreview">
-                    <div class="preview-header">
-                        <h3>
-                            <i class="fas fa-eye"></i>
-                            Report Preview
-                        </h3>
-                        <button class="close-preview" id="closePreview">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div id="previewContent">
-                        <!-- Preview content will be loaded here -->
-                    </div>
-                </div>
-                
-                <!-- Action Buttons -->
-                <div class="action-buttons">
-                    <button class="btn btn-secondary" id="previewBtn">
-                        <i class="fas fa-search"></i>
-                        Preview Report
-                    </button>
-                    <button class="btn btn-primary" id="downloadBtn">
-                     <i class="fa-solid fa-download"></i>
-                        Download PDF Report
-                    </button>
-                </div>
+          </div>
+
+          <!-- Form Controls -->
+          <div class="form-row">
+            <div class="form-control">
+              <label for="monthSelect">
+                <i class="fas fa-calendar-alt"></i>
+                Select Month
+              </label>
+              <div class="select-wrapper">
+                <select id="monthSelect"></select>
+              </div>
             </div>
-            
-            <!-- Success Message Container -->
-            <div id="successMessageContainer"></div>
+
+            <div class="form-control">
+              <label for="yearSelect">
+                <i class="fas fa-calendar"></i>
+                Select Year
+              </label>
+              <div class="select-wrapper">
+                <select id="yearSelect"></select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selected Info Display -->
+          <div class="selected-info" id="selectedInfo">
+            <h3>
+              <i class="fas fa-calendar-check"></i>
+              Selected Period
+            </h3>
+            <p>
+              <span class="month-year" id="selectedMonthYear"></span>
+            </p>
+          </div>
+
+          <!-- Stats Summary -->
+          <div class="stats-summary" id="statsSummary">
+            <div class="stat-card">
+              <i class="fas fa-users"></i>
+              <div class="value" id="totalClients">0</div>
+              <div class="label">Total Clients</div>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-file-invoice-dollar"></i>
+              <div class="value" id="totalCollection">RS 0</div>
+              <div class="label">Total Collection</div>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-percentage"></i>
+              <div class="value" id="collectionRate">0%</div>
+              <div class="label">Collection Rate</div>
+            </div>
+          </div>
+
+          <!-- No Data Message -->
+          <div class="no-data-message" id="noDataMessage">
+            <i class="fas fa-file-excel"></i>
+            <h3>No Data Available</h3>
+            <p>
+              No collection data found for the selected month. Please check if
+              data exists or select a different month.
+            </p>
+          </div>
+
+          <!-- Report Preview -->
+          <div class="report-preview" id="reportPreview">
+            <div class="preview-header">
+              <h3>
+                <i class="fas fa-eye"></i>
+                Report Preview
+              </h3>
+              <button class="close-preview" id="closePreview">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div id="previewContent">
+              <!-- Preview content will be loaded here -->
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button class="btn btn-secondary" id="previewBtn">
+              <i class="fas fa-search"></i>
+              Preview Report
+            </button>
+            <button class="btn btn-primary" id="downloadBtn">
+              <i class="fa-solid fa-download"></i>
+              Download PDF Report
+            </button>
+            <button class="btn btn-secondary" id="driveBtn">
+              <i class="fa-brands fa-google-drive"></i>
+              Export to Drive
+            </button>
+          </div>
         </div>
+
+        <!-- Success Message Container -->
+        <div id="successMessageContainer"></div>
+      </div>
     </main>
-    
+
     <script src="./report.js"></script>
-</body>
+  </body>
 </html>
