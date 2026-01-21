@@ -202,20 +202,35 @@ function editClient(sl) {
 }
 
 function deleteClient(sl) {
-  if (confirm(`Are you sure you want to delete client SL: ${sl}?`)) {
-    // Remove from localStorage
-    let savedClients = JSON.parse(localStorage.getItem("clients")) || [];
-    savedClients = savedClients.filter(c => c.sl !== sl);
-    localStorage.setItem("clients", JSON.stringify(savedClients));
-    
-    // Refresh the table
-    window.rawClientData = JSON.parse(localStorage.getItem("clients")) || [];
-    window.filterTableData(window.currentFilter);
-    calculateStats();
-    
-    alert(`Client SL: ${sl} deleted successfully!`);
+  if (!confirm(`Are you sure you want to delete client SL: ${sl}?`)) return;
+
+  // 🔥 Always normalize SL as number
+  const targetSl = Number(sl);
+
+  let savedClients = JSON.parse(localStorage.getItem("clients")) || [];
+
+  // ✅ FIX: strict numeric comparison
+  savedClients = savedClients.filter(c => Number(c.sl) !== targetSl);
+
+  // Save back
+  localStorage.setItem("clients", JSON.stringify(savedClients));
+
+  // 🔄 Refresh in-memory data
+  window.rawClientData = savedClients;
+  window.clientData = [...savedClients];
+
+  // Re-render table & stats
+  if (window.filterTableData) {
+    window.filterTableData(window.currentFilter || 'all');
   }
+
+  if (typeof calculateStats === "function") {
+    calculateStats();
+  }
+
+  alert(`✅ Client SL ${targetSl} deleted successfully`);
 }
+
 
 function showClientDetails(sl) {
   const client = window.clientData.find(c => c.sl === sl) || 
@@ -316,37 +331,49 @@ function refreshData() {
 
 // Export function
 function exportData() {
-  const dataToExport = window.clientData || window.rawClientData;
-  
-  if (dataToExport.length === 0) {
-    alert("No data to export!");
+  // 👉 Table এ বর্তমানে যেটা দেখাচ্ছে সেটাই export হবে
+  const dataToExport = window.clientData && window.clientData.length
+    ? window.clientData
+    : window.rawClientData;
+
+  if (!dataToExport || dataToExport.length === 0) {
+    alert("❌ No data to export");
     return;
   }
-  
-  const csvContent = "data:text/csv;charset=utf-8," 
-    + "SL,Name,Policy No.,DOC,Table No.,Premium,Premium Type,Sum Asset,Policy Name\n"
-    + dataToExport.map(item => 
-        `${item.sl},"${item.name}",${item.policyNo},"${item.doc}",${item.tableNo},${item.premium},${item.premiumType},${item.sumAsset},"${item.policyName}"`
-      ).join("\n");
-  
-  const encodedUri = encodeURI(csvContent);
+
+  // 👉 localStorage-compatible structure
+  const exportObject = {
+    clients: JSON.stringify(dataToExport)
+  };
+
+  // 👉 Pretty JSON (console friendly)
+  const jsonText = JSON.stringify(exportObject, null, 2);
+
+  // 👉 Create TXT file
+  const blob = new Blob([jsonText], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+
   const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `lic-clients-${new Date().toISOString().split('T')[0]}.csv`);
+  link.href = url;
+  link.download = `lic-clients-export-${new Date().toISOString().split("T")[0]}.txt`;
+
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  
-  // Show success message
-  const exportBtn = document.querySelector('.export-btn');
+
+  URL.revokeObjectURL(url);
+
+  // ✅ UI feedback
+  const exportBtn = document.querySelector(".export-btn");
   if (exportBtn) {
-    const originalHTML = exportBtn.innerHTML;
-    exportBtn.innerHTML = '<i class="fa-solid fa-check"></i> Exported!';
+    const original = exportBtn.innerHTML;
+    exportBtn.innerHTML = '<i class="fa-solid fa-check"></i> Exported';
     setTimeout(() => {
-      exportBtn.innerHTML = originalHTML;
+      exportBtn.innerHTML = original;
     }, 2000);
   }
 }
+
 
 // Add new client
 function addNewClient() {
