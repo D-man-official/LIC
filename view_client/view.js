@@ -270,11 +270,8 @@ function addStickyTotalStyles() {
   const style = document.createElement('style');
   style.id = 'sticky-total-styles';
   style.textContent = `
-    /* Sticky total column for individual clients */
+    /* Total column for individual clients */
     .sticky-total {
-      position: sticky !important;
-      right: 0 !important;
-      z-index: 20 !important;
       background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
       font-weight: 800 !important;
       color: #065f46 !important;
@@ -282,14 +279,10 @@ function addStickyTotalStyles() {
       padding: 1rem 0.75rem !important;
       border-left: 2px solid #10b981 !important;
       min-width: 120px !important;
-      box-shadow: -4px 0 8px -2px rgba(0,0,0,0.1) !important;
     }
     
-    /* Sticky grand total column */
+    /* Grand total column */
     .grand-total {
-      position: sticky !important;
-      right: 0 !important;
-      z-index: 25 !important;
       background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
       color: white !important;
       font-weight: 900 !important;
@@ -297,7 +290,6 @@ function addStickyTotalStyles() {
       padding: 1rem 0.75rem !important;
       border-left: 2px solid #047857 !important;
       min-width: 120px !important;
-      box-shadow: -4px 0 12px -2px rgba(5, 150, 105, 0.3) !important;
     }
     
     /* Ensure hover states work */
@@ -321,7 +313,7 @@ function addStickyTotalStyles() {
         font-size: 0.85rem !important;
       }
     }
-  `;
+`;
   document.head.appendChild(style);
 }
 

@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>View Clients - LIC Collection</title>
 
     <!-- Fonts & Icons -->
@@ -85,7 +87,7 @@
     <div class="main-content">
       <div class="container">
         <h1>Client Collection Overview</h1>
-        <p style="color: var(--text-light); margin-bottom: 1.5rem; font-weight: 500;">
+        <p class="subtitle">
           Track monthly collection status for all clients
         </p>
 
@@ -93,13 +95,16 @@
         <div class="month-navigation">
           <div class="month-nav-buttons">
             <button class="month-btn" id="prevMonth">
-              <i class="fa-solid fa-chevron-left"></i> Previous
+              <i class="fa-solid fa-chevron-left"></i>
+              <span class="btn-text">Prev</span>
             </button>
             <button class="month-btn active" id="currentMonthBtn">
-              Current Month
+              <i class="fa-solid fa-calendar-day"></i>
+              <span class="btn-text">Current</span>
             </button>
             <button class="month-btn" id="nextMonth">
-              Next <i class="fa-solid fa-chevron-right"></i>
+              <span class="btn-text">Next</span>
+              <i class="fa-solid fa-chevron-right"></i>
             </button>
           </div>
           <div class="current-month" id="currentMonthDisplay">
@@ -113,27 +118,40 @@
             placeholder="Search by client name or SL number..." />
           <div class="right-info">
             <div id="todayDate" class="today-date"></div>
-            <div class="client-count" id="clientCount">Total Clients: 0</div>
+            <div class="client-count" id="clientCount">Total: 0</div>
           </div>
         </div>
 
         <!-- 📊 TABLE -->
-        <!-- 📊 TABLE -->
-<div class="table-container">
-  <table id="collectionTable">
-    <thead>
-      <tr id="tableHeader">
-        <th>SL</th>
-        <th>Client Name</th>
-        <!-- Dates will be injected by JS -->
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody id="clientTable">
-      <!-- Data will be injected by JS -->
-    </tbody>
-  </table>
-</div>
+        <div class="table-container">
+          <table id="collectionTable">
+            <thead>
+              <tr id="tableHeader">
+                <th>SL</th>
+                <th>Client Name</th>
+                <!-- Dates will be injected by JS -->
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="clientTable">
+              <!-- Data will be injected by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile instruction -->
+        <div style="text-align: center; margin: 1rem 0; color: var(--text-light); font-size: 0.85rem; display: none;" id="mobileHint">
+          <i class="fa-solid fa-arrows-left-right"></i> Scroll horizontally to view all dates
+        </div>
+
+        <!-- PDF Button -->
+        <!-- <div class="pdf-button-container">
+          <button class="pdf-button" onclick="generatePDFReport()">
+            <i class="fa-solid fa-file-pdf"></i>
+            Download PDF Report
+          </button>
+        </div> -->
+
         <!-- Summary Cards -->
         <div class="summary-cards" style="display: none;" id="summaryCards">
           <div class="summary-card">
@@ -161,57 +179,6 @@
       </div>
     </div>
 
-    <style>
-      .summary-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 1.5rem;
-        margin-top: 2rem;
-      }
-      
-      .summary-card {
-        background: white;
-        border-radius: 20px;
-        padding: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        box-shadow: var(--card-shadow);
-        border: 1px solid var(--border);
-        transition: all 0.3s ease;
-      }
-      
-      .summary-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--card-shadow-hover);
-      }
-      
-      .summary-card i {
-        font-size: 2rem;
-        width: 64px;
-        height: 64px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-        color: var(--primary);
-        border-radius: 16px;
-      }
-      
-      .summary-card span {
-        font-size: 0.9rem;
-        color: var(--text-light);
-        font-weight: 500;
-      }
-      
-      .summary-card h3 {
-        font-size: 2rem;
-        font-weight: 800;
-        color: var(--text);
-        margin-top: 0.25rem;
-      }
-    </style>
-
     <script>
       const currentPage = window.location.pathname.split("/").pop();
       const menuItems = document.querySelectorAll(".menu-item");
@@ -222,6 +189,11 @@
           item.classList.add("active");
         }
       });
+
+      // Show mobile hint on small screens
+      if (window.innerWidth < 768) {
+        document.getElementById('mobileHint').style.display = 'block';
+      }
     </script>
 
     <script src="./view.js"></script>
