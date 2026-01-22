@@ -21,6 +21,52 @@
   --radius-lg: 16px;
 }
 
+/* Fix for zoom issue - reset base font and box sizing */
+html {
+  font-size: 16px; /* Explicit base font size */
+  -webkit-text-size-adjust: 100%; /* Prevent iOS text size adjust */
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-size: 1rem; /* Use rem units consistently */
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure proper viewport behavior */
+@viewport {
+  width: device-width;
+  zoom: 1.0;
+  min-zoom: 0.25;
+  max-zoom: 5;
+  user-zoom: fixed;
+}
+
+/* Reset any unwanted scaling */
+* {
+  max-height: 1000000px; /* Prevent font boosting on mobile */
+}
+
+/* Fix for Chrome specific zoom issues */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  select,
+  textarea,
+  input {
+    font-size: 16px !important; /* Prevent auto-zoom on focus in iOS */
+  }
+}
+
 /* Main Layout */
 .main-content {
   padding: 1rem;
@@ -884,7 +930,6 @@
   }
 }
 
-/* Add these styles if not already present */
 .import-console-modal {
   position: fixed;
   inset: 0;
@@ -964,4 +1009,265 @@
   .client-table-wrapper {
     max-height: 70vh; /* Taller on mobile if needed */
   }
+}
+
+/* ================= CONFLICT RESOLUTION STYLES ================= */
+.conflict-item {
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.conflict-item:hover {
+  background: #2d3748;
+}
+
+.conflict-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #334155;
+}
+
+.conflict-sl {
+  background: #3b82f6;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.conflict-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.conflict-btn {
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #475569;
+  background: #1e293b;
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.conflict-btn:hover {
+  transform: translateY(-1px);
+}
+
+.conflict-btn.skip {
+  border-color: #22c55e;
+  color: #22c55e;
+}
+
+.conflict-btn.skip:hover {
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.conflict-btn.replace {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.conflict-btn.replace:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.conflict-btn.selected {
+  color: white;
+}
+
+.conflict-btn.skip.selected {
+  background: #22c55e;
+  border-color: #22c55e;
+}
+
+.conflict-btn.replace.selected {
+  background: #ef4444;
+  border-color: #ef4444;
+}
+
+.conflict-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.existing-data {
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+
+.new-data {
+  background: rgba(34, 197, 94, 0.05);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+
+.data-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.data-value {
+  font-size: 0.9rem;
+  color: #e5e7eb;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.data-value.missing {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Scrollbar for conflict list */
+#conflictList::-webkit-scrollbar {
+  width: 6px;
+}
+
+#conflictList::-webkit-scrollbar-track {
+  background: #1e293b;
+  border-radius: 10px;
+}
+
+#conflictList::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 10px;
+}
+
+#conflictList::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Add to total_lic_holder_details.css */
+
+/* Fix table column widths to prevent truncation */
+#clientTableMain {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+#clientTableMain th:nth-child(1) { width: 5%; }  /* SL */
+#clientTableMain th:nth-child(2) { width: 15%; } /* NAME */
+#clientTableMain th:nth-child(3) { width: 12%; } /* POLICY NO. */
+#clientTableMain th:nth-child(4) { width: 8%; }  /* DOC */
+#clientTableMain th:nth-child(5) { width: 8%; }  /* TABLE NO. */
+#clientTableMain th:nth-child(6) { width: 10%; } /* PREMIUM */
+#clientTableMain th:nth-child(7) { width: 12%; } /* PREMIUM TYPE */
+#clientTableMain th:nth-child(8) { width: 12%; } /* SUM ASSET */
+#clientTableMain th:nth-child(9) { width: 15%; } /* POLICY NAME - Increased width */
+#clientTableMain th:nth-child(10) { width: 3%; } /* ACTIONS */
+
+/* Fix column content wrapping */
+#clientTableMain td {
+  white-space: normal !important; /* Allow text to wrap */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  max-width: 0; /* Important for text wrapping in fixed layout */
+}
+
+/* Special handling for specific columns */
+#clientTableMain td:nth-child(2), /* NAME */
+#clientTableMain td:nth-child(9) { /* POLICY NAME */
+  white-space: normal;
+  min-width: 150px;
+  max-width: 200px;
+}
+
+/* Fix for policy name column specifically */
+#clientTableMain td:nth-child(9) {
+  min-width: 180px;
+  max-width: 250px;
+  word-break: break-word;
+}
+
+/* Fix warning text styling */
+.warning-text {
+  font-size: 0.75rem !important;
+  color: var(--danger-red) !important;
+  font-weight: 500 !important;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Fix action buttons visibility */
+.table-row-actions {
+  opacity: 0.7 !important;
+  transition: opacity 0.2s ease;
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  min-width: 100px;
+}
+
+#clientTableMain tbody tr:hover .table-row-actions {
+  opacity: 1 !important;
+}
+
+/* Fix mobile responsiveness for table */
+@media (max-width: 768px) {
+  .client-table-wrapper {
+    border-radius: 8px;
+    margin: 1rem 0;
+  }
+  
+  #clientTableMain th,
+  #clientTableMain td {
+    padding: 0.75rem 0.5rem !important;
+    font-size: 0.85rem;
+  }
+  
+  #clientTableMain td:nth-child(2),
+  #clientTableMain td:nth-child(9) {
+    min-width: 120px;
+    max-width: 150px;
+  }
+  
+  .action-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Fix empty data display */
+.empty-data {
+  color: var(--text-light);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* Fix avatar alignment */
+.client-avatar-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+/* Quick fix for policy name column */
+#clientTableMain td:nth-child(9) {
+  min-width: 200px !important;
+  max-width: 250px !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+}
+
+/* Fix header text */
+#clientTableMain th:nth-child(9) {
+  white-space: nowrap;
+  min-width: 180px;
 }

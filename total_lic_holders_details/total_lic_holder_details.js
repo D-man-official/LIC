@@ -398,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }, 100);
 });
 
-// ================= SIMPLE IMPORT FUNCTION =================
+// ================= ENHANCED IMPORT FUNCTION =================
 function importData() {
   const modal = document.getElementById("importConsoleModal");
   if (modal) modal.style.display = "flex";
@@ -408,6 +408,15 @@ function closeImportConsole() {
   document.getElementById("importConsoleModal").style.display = "none";
   document.getElementById("importConsoleTextarea").value = "";
 }
+
+// Global variables for conflict resolution
+window.importState = {
+  conflicts: [],
+  nonDuplicates: [],
+  decisions: {}, // sl -> 'replace' or 'skip'
+  totalImportCount: 0
+};
+
 function applyImportConsole() {
   const rawText = document.getElementById("importConsoleTextarea").value.trim();
 
@@ -441,89 +450,272 @@ function applyImportConsole() {
 
     // Get existing data
     const existingClients = JSON.parse(localStorage.getItem("clients")) || [];
-    const mergedClients = [...existingClients];
+    
+    // Reset import state
+    window.importState = {
+      conflicts: [],
+      nonDuplicates: [],
+      decisions: {},
+      totalImportCount: newClientsArray.length
+    };
 
-    // Process each new client
-    let addedCount = 0;
-    let replacedCount = 0;
-    let skippedCount = 0;
-
+    // Separate conflicts and non-duplicates
     newClientsArray.forEach(newClient => {
-      // Check if SL already exists
-      const existingIndex = mergedClients.findIndex(item => Number(item.sl) === Number(newClient.sl));
+      const existingIndex = existingClients.findIndex(item => 
+        Number(item.sl) === Number(newClient.sl)
+      );
       
       if (existingIndex !== -1) {
-        // Duplicate found - ask user with more details
-        const existing = mergedClients[existingIndex];
-        
-        // Create a detailed comparison message
-        const comparisonDetails = `
-╔═══════════════════════════════════════════╗
-║        DUPLICATE FOUND - SL: ${String(newClient.sl).padEnd(5)}        ║
-╠═══════════════════════════════════════════╣
-║          EXISTING ENTRY                   ║
-╠═══════════════════════════════════════════╣
-• Name: ${existing.name || "Not Set"}
-• Policy No: ${existing.policyNo || "Not Set"}
-• Premium: ${existing.premium || "Not Set"}
-• Sum Assured: ${existing.sumAsset || "Not Set"}
-• Policy Name: ${existing.policyName || "Not Set"}
-
-║           NEW ENTRY                       ║
-╠═══════════════════════════════════════════╣
-• Name: ${newClient.name || "Not Set"}
-• Policy No: ${newClient.policyNo || "Not Set"}
-• Premium: ${newClient.premium || "Not Set"}
-• Sum Assured: ${newClient.sumAsset || "Not Set"}
-• Policy Name: ${newClient.policyName || "Not Set"}
-╚═══════════════════════════════════════════╝
-
-What do you want to do?
-• Click OK to REPLACE existing with new data
-• Click Cancel to KEEP existing data`;
-        
-        const shouldReplace = confirm(comparisonDetails);
-        
-        if (shouldReplace) {
-          mergedClients[existingIndex] = newClient;
-          replacedCount++;
-        } else {
-          skippedCount++;
-        }
+        // Conflict found
+        window.importState.conflicts.push({
+          sl: newClient.sl,
+          existing: existingClients[existingIndex],
+          new: newClient,
+          index: existingIndex
+        });
+        // Default decision is 'skip'
+        window.importState.decisions[newClient.sl] = 'skip';
       } else {
-        // New entry, just add it
-        mergedClients.push(newClient);
-        addedCount++;
+        // New entry
+        window.importState.nonDuplicates.push(newClient);
       }
     });
 
-    // Sort by SL number (ascending)
-    mergedClients.sort((a, b) => Number(a.sl) - Number(b.sl));
-
-    // Save to localStorage
-    localStorage.setItem("clients", JSON.stringify(mergedClients));
-
-    // Show summary with better formatting
-    const summary = `
-┌─────────────────────────────────┐
-│        IMPORT COMPLETE          │
-├─────────────────────────────────┤
-│ Total clients now: ${String(mergedClients.length).padEnd(10)} │
-│ New entries added: ${String(addedCount).padEnd(10)} │
-│ Entries replaced: ${String(replacedCount).padEnd(10)} │
-│ Duplicates skipped: ${String(skippedCount).padEnd(9)} │
-└─────────────────────────────────┘
-
-✅ Import successful!`;
-    
-    alert(summary);
-
-    // Close modal and refresh page
-    closeImportConsole();
-    location.reload();
+    // If there are conflicts, show conflict resolution modal
+    if (window.importState.conflicts.length > 0) {
+      showConflictResolutionModal();
+    } else {
+      // No conflicts, proceed directly
+      finishImport();
+    }
 
   } catch (err) {
     alert("❌ Invalid data format. Please paste valid JSON data.\n\nError: " + err.message);
     console.error("Import error:", err);
   }
+}
+
+function showConflictResolutionModal() {
+  const modal = document.getElementById("conflictResolutionModal");
+  const conflictList = document.getElementById("conflictList");
+  const totalImport = document.getElementById("totalImportCount");
+  const newEntries = document.getElementById("newEntriesCount");
+  const duplicates = document.getElementById("duplicatesCount");
+  const replaceCount = document.getElementById("replaceCount");
+  
+  // Update summary
+  totalImport.textContent = window.importState.totalImportCount;
+  newEntries.textContent = window.importState.nonDuplicates.length;
+  duplicates.textContent = window.importState.conflicts.length;
+  
+  // Count current replace decisions
+  const currentReplaceCount = Object.values(window.importState.decisions)
+    .filter(decision => decision === 'replace').length;
+  replaceCount.textContent = currentReplaceCount;
+  
+  // Build conflict list
+  conflictList.innerHTML = '';
+  
+  window.importState.conflicts.forEach(conflict => {
+    const decision = window.importState.decisions[conflict.sl] || 'skip';
+    
+    const conflictItem = document.createElement('div');
+    conflictItem.className = 'conflict-item';
+    conflictItem.innerHTML = `
+      <div class="conflict-item-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div class="conflict-sl">SL: ${conflict.sl}</div>
+          <div style="font-weight: 600; color: #e5e7eb;">
+            ${conflict.existing.name || conflict.new.name || 'Unnamed Client'}
+          </div>
+        </div>
+        <div class="conflict-buttons">
+          <button class="conflict-btn skip ${decision === 'skip' ? 'selected' : ''}" 
+                  onclick="setConflictDecision(${conflict.sl}, 'skip')">
+            <i class="fa-solid fa-ban"></i> Keep Existing
+          </button>
+          <button class="conflict-btn replace ${decision === 'replace' ? 'selected' : ''}" 
+                  onclick="setConflictDecision(${conflict.sl}, 'replace')">
+            <i class="fa-solid fa-check"></i> Replace with New
+          </button>
+        </div>
+      </div>
+      
+      <div class="conflict-comparison">
+        <div class="existing-data">
+          <div class="data-label">
+            <i class="fa-solid fa-database" style="color: #ef4444;"></i>
+            <span>EXISTING ENTRY</span>
+          </div>
+          <div class="data-value ${!conflict.existing.name || conflict.existing.name === '-' ? 'missing' : ''}">
+            <strong>Name:</strong> ${conflict.existing.name || 'Not Set'}
+          </div>
+          <div class="data-value ${!conflict.existing.policyNo || conflict.existing.policyNo === '-' ? 'missing' : ''}">
+            <strong>Policy:</strong> ${conflict.existing.policyNo || 'Not Set'}
+          </div>
+          <div class="data-value ${!conflict.existing.premium || conflict.existing.premium === '-' ? 'missing' : ''}">
+            <strong>Premium:</strong> ${conflict.existing.premium || 'Not Set'}
+          </div>
+          <div class="data-value ${!conflict.existing.sumAsset || conflict.existing.sumAsset === '-' ? 'missing' : ''}">
+            <strong>Sum Assured:</strong> ${conflict.existing.sumAsset || 'Not Set'}
+          </div>
+        </div>
+        
+        <div class="new-data">
+          <div class="data-label">
+            <i class="fa-solid fa-file-import" style="color: #22c55e;"></i>
+            <span>NEW ENTRY</span>
+          </div>
+          <div class="data-value ${!conflict.new.name || conflict.new.name === '-' ? 'missing' : ''}">
+            <strong>Name:</strong> ${conflict.new.name || 'Not Set'}
+          </div>
+          <div class="data-value ${!conflict.new.policyNo || conflict.new.policyNo === '-' ? 'missing' : ''}">
+            <strong>Policy:</strong> ${conflict.new.policyNo || 'Not Set'}
+          </div>
+          <div class="data-value ${!conflict.new.premium || conflict.new.premium === '-' ? 'missing' : ''}">
+            <strong>Premium:</strong> ${conflict.new.premium || 'Not Set'}
+          </div>
+          <div class="data-value ${!conflict.new.sumAsset || conflict.new.sumAsset === '-' ? 'missing' : ''}">
+            <strong>Sum Assured:</strong> ${conflict.new.sumAsset || 'Not Set'}
+          </div>
+        </div>
+      </div>
+    `;
+    
+    conflictList.appendChild(conflictItem);
+  });
+  
+  // Close import console and show conflict modal
+  document.getElementById("importConsoleModal").style.display = "none";
+  modal.style.display = "flex";
+}
+
+function setConflictDecision(sl, decision) {
+  window.importState.decisions[sl] = decision;
+  
+  // Update UI
+  const replaceCount = document.getElementById("replaceCount");
+  const currentReplaceCount = Object.values(window.importState.decisions)
+    .filter(d => d === 'replace').length;
+  replaceCount.textContent = currentReplaceCount;
+  
+  // Re-render the conflict item
+  showConflictResolutionModal();
+}
+
+function skipAllDuplicates() {
+  window.importState.conflicts.forEach(conflict => {
+    window.importState.decisions[conflict.sl] = 'skip';
+  });
+  showConflictResolutionModal();
+}
+
+function replaceAllDuplicates() {
+  window.importState.conflicts.forEach(conflict => {
+    window.importState.decisions[conflict.sl] = 'replace';
+  });
+  showConflictResolutionModal();
+}
+
+function cancelConflictResolution() {
+  document.getElementById("conflictResolutionModal").style.display = "none";
+  document.getElementById("importConsoleTextarea").value = "";
+}
+
+function applyConflictResolution() {
+  // Get existing clients
+  const existingClients = JSON.parse(localStorage.getItem("clients")) || [];
+  const mergedClients = [...existingClients];
+  
+  // Apply decisions for conflicts
+  let replacedCount = 0;
+  let skippedCount = 0;
+  
+  window.importState.conflicts.forEach(conflict => {
+    const decision = window.importState.decisions[conflict.sl];
+    
+    if (decision === 'replace') {
+      // Replace existing entry
+      const existingIndex = mergedClients.findIndex(item => 
+        Number(item.sl) === Number(conflict.sl)
+      );
+      
+      if (existingIndex !== -1) {
+        mergedClients[existingIndex] = conflict.new;
+        replacedCount++;
+      }
+    } else {
+      // Skip - keep existing
+      skippedCount++;
+    }
+  });
+  
+  // Add non-duplicates
+  window.importState.nonDuplicates.forEach(client => {
+    mergedClients.push(client);
+  });
+  
+  // Sort by SL
+  mergedClients.sort((a, b) => Number(a.sl) - Number(b.sl));
+  
+  // Save to localStorage
+  localStorage.setItem("clients", JSON.stringify(mergedClients));
+  
+  // Show success message with emojis and formatting
+  const successMessage = `
+✅ IMPORT SUCCESSFUL!
+
+┌─────────────────────────────┐
+│ 📊 Import Summary           │
+├─────────────────────────────┤
+│ Total in import: ${window.importState.totalImportCount.toString().padStart(3)} │
+│ New entries added: ${window.importState.nonDuplicates.length.toString().padStart(3)} │
+│ Duplicates replaced: ${replacedCount.toString().padStart(3)} │
+│ Duplicates skipped: ${skippedCount.toString().padStart(3)} │
+│ Total clients now: ${mergedClients.length.toString().padStart(3)} │
+└─────────────────────────────┘
+
+🎉 Database updated successfully!
+`;
+  
+  alert(successMessage);
+  
+  // Close modal and refresh page
+  document.getElementById("conflictResolutionModal").style.display = "none";
+  location.reload();
+}
+
+function finishImport() {
+  // For imports without conflicts
+  const existingClients = JSON.parse(localStorage.getItem("clients")) || [];
+  const mergedClients = [...existingClients, ...window.importState.nonDuplicates];
+  
+  // Sort by SL
+  mergedClients.sort((a, b) => Number(a.sl) - Number(b.sl));
+  
+  // Save to localStorage
+  localStorage.setItem("clients", JSON.stringify(mergedClients));
+  
+  // Show success message
+  const successMessage = `
+✅ IMPORT SUCCESSFUL!
+
+┌─────────────────────────────┐
+│ 📊 Import Summary           │
+├─────────────────────────────┤
+│ Total imported: ${window.importState.totalImportCount.toString().padStart(3)} │
+│ New entries added: ${window.importState.nonDuplicates.length.toString().padStart(3)} │
+│ Duplicates found: 0        │
+│ Total clients now: ${mergedClients.length.toString().padStart(3)} │
+└─────────────────────────────┘
+
+🎉 All entries added successfully!
+`;
+  
+  alert(successMessage);
+  
+  // Close modal and refresh page
+  document.getElementById("importConsoleModal").style.display = "none";
+  document.getElementById("importConsoleTextarea").value = "";
+  location.reload();
 }
