@@ -564,3 +564,68 @@ h1 {
     align-items: flex-start;
   }
 }
+/* Upgrade strip card */
+.upgrade-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border: 1px solid #fed7aa;
+  border-radius: 18px;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.12);
+}
+
+.upgrade-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.upgrade-left i {
+  font-size: 2rem;
+  color: #ea580c;
+}
+
+.upgrade-left h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #9a3412;
+}
+
+.upgrade-left p {
+  margin: 0.2rem 0 0;
+  font-size: 0.9rem;
+  color: #7c2d12;
+}
+
+/* Action button */
+.upgrade-action {
+  padding: 0.6rem 1.4rem;
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+  color: white;
+  font-weight: 700;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+  transition: all 0.25s ease;
+}
+
+.upgrade-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(234, 88, 12, 0.45);
+}
+@media (max-width: 640px) {
+  .upgrade-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .upgrade-action {
+    align-self: stretch;
+    text-align: center;
+  }
+}
