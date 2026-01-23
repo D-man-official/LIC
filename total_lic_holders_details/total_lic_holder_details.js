@@ -102,13 +102,13 @@ document.addEventListener("DOMContentLoaded", () => {
         <td>${formatCell(item.policyName)}</td>
         <td>
           <div class="table-row-actions">
-            <div class="action-icon action-view" title="View Details" onclick="showClientDetails(${item.sl})">
+            <div class="action-icon action-view"  onclick="showClientDetails(${item.sl})">
               <i class="fa-solid fa-eye"></i>
             </div>
-            <div class="action-icon action-edit" title="Edit Client" onclick="editClient(${item.sl})">
+            <div class="action-icon action-edit"  onclick="editClient(${item.sl})">
               <i class="fa-solid fa-pen"></i>
             </div>
-            <div class="action-icon action-delete" title="Delete Client" onclick="deleteClient(${item.sl})" style="background: rgba(239, 71, 111, 0.1); color: var(--danger-red);">
+            <div class="action-icon action-delete"  onclick="deleteClient(${item.sl})" style="background: rgba(239, 71, 111, 0.1); color: var(--danger-red);">
               <i class="fa-solid fa-trash"></i>
             </div>
           </div>
@@ -719,3 +719,96 @@ function finishImport() {
   document.getElementById("importConsoleTextarea").value = "";
   location.reload();
 }
+
+// এই ফাংশনটি JS ফাইলের শেষে যোগ করুন
+function enhanceMobileExperience() {
+  // টাচ ইভেন্টের জন্য অপটিমাইজেশন
+  const actionIcons = document.querySelectorAll('.action-icon');
+  actionIcons.forEach(icon => {
+    icon.style.cursor = 'pointer';
+    icon.style.userSelect = 'none';
+    icon.style.webkitTapHighlightColor = 'transparent';
+  });
+  
+  // টেবিল রো টাচ ইভেন্ট
+  const tableRows = document.querySelectorAll('#clientTableMain tbody tr');
+  tableRows.forEach(row => {
+    row.style.cursor = 'pointer';
+    row.addEventListener('touchstart', function() {
+      this.style.backgroundColor = 'var(--primary-blue-light)';
+    });
+    
+    row.addEventListener('touchend', function() {
+      setTimeout(() => {
+        this.style.backgroundColor = '';
+      }, 300);
+    });
+  });
+}
+
+// DOM লোড হওয়ার পর কল করুন
+document.addEventListener('DOMContentLoaded', () => {
+  // ... আপনার বাকি কোড ...
+  
+  // মোবাইল এক্সপেরিয়েন্স এনহ্যান্স করুন
+  setTimeout(enhanceMobileExperience, 500);
+  
+  // SL কলামের জন্য স্পেশাল ফরম্যাটিং
+  formatSLColumn();
+});
+
+// SL কলাম ফরম্যাট করার ফাংশন
+function formatSLColumn() {
+  const slCells = document.querySelectorAll('#clientTableMain td:nth-child(1)');
+  slCells.forEach(cell => {
+    const slValue = cell.textContent.trim();
+    if (slValue && !isNaN(slValue)) {
+      // 3 digit এর জন্য স্পেস যোগ
+      const formattedSL = String(slValue).padStart(3, ' ');
+      cell.innerHTML = `<span style="display: inline-block; width: 30px; text-align: right;">${formattedSL}</span>`;
+    }
+  });
+}
+
+// টেবিল রি-রেন্ডার করার সময় কল করুন
+window.addEventListener('resize', function() {
+  formatSLColumn();
+});
+// renderTable ফাংশনে SL কলামের জন্য এই কোডটি আপডেট করুন
+tr.innerHTML = `
+  <td style="font-weight: 800; color: #1d4ed8; background: rgba(59, 130, 246, 0.08); text-align: center; font-size: 1.1rem; border-right: 2px solid #dbeafe;">
+    <strong>${item.sl}</strong>
+  </td>
+  <td>
+    <div style="display: flex; align-items: center;">
+      ${nameAvatar}
+      <div>
+        <div style="font-weight: 600; color: var(--text-primary);">${formatCell(item.name)}</div>
+        ${!hasName ? '<div class="warning-text">Name Required</div>' : ''}
+      </div>
+    </div>
+  </td>
+  <td>
+    ${formatCell(item.policyNo)}
+    ${!hasPolicy ? '<div class="warning-text">Policy Required</div>' : ''}
+  </td>
+  <td style="text-align: center; min-width: 90px;">${formatCell(item.doc)}</td>
+  <td>${formatCell(item.tableNo)}</td>
+  <td style="font-weight: 600;">${formatCell(item.premium, true, true)}</td>
+  <td>${formatCell(item.premiumType)}</td>
+  <td style="font-weight: 700; color: var(--secondary-purple);">${formatCell(item.sumAsset, true)}</td>
+  <td>${formatCell(item.policyName)}</td>
+  <td>
+    <div class="table-row-actions">
+      <div class="action-icon action-view" title="View Details" onclick="showClientDetails(${item.sl})">
+        <i class="fa-solid fa-eye"></i>
+      </div>
+      <div class="action-icon action-edit" title="Edit Client" onclick="editClient(${item.sl})">
+        <i class="fa-solid fa-pen"></i>
+      </div>
+      <div class="action-icon action-delete" title="Delete Client" onclick="deleteClient(${item.sl})" style="background: rgba(239, 71, 111, 0.15); color: var(--danger-red); border: 1px solid rgba(239, 71, 111, 0.3);">
+        <i class="fa-solid fa-trash"></i>
+      </div>
+    </div>
+  </td>
+`;

@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Total Clients - LIC Collection</title>
 
 <!-- Google Font -->
@@ -11,6 +13,7 @@
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <link rel="icon" type="image/jpeg" href="../logo.png">
+
 <!-- Sidebar CSS -->
 <link rel="stylesheet" href="./sidebar.css">
 
@@ -19,59 +22,69 @@
 <link rel="stylesheet" href="total_lic_holder_details.css">
 
 <style>
-  .client-avatar {
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: bold;
-    margin-right: 10px;
+  /* Fix for mobile zoom issues */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   
-  .table-row-actions {
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    display: flex;
-    gap: 8px;
+  body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
   
-  #clientTableMain tbody tr:hover .table-row-actions {
-    opacity: 1;
+  /* Improved responsive design */
+  @media (max-width: 768px) {
+    .main-content {
+      padding: 0.5rem !important;
+    }
+    
+    .client-header {
+      margin: 0.5rem !important;
+      padding: 1rem !important;
+    }
+    
+    .search-section {
+      margin: 0.5rem !important;
+      padding: 1rem !important;
+    }
+    
+    .client-table-wrapper {
+      margin: 0.5rem !important;
+      border-radius: 10px !important;
+    }
+    
+    .client-result-count {
+      margin: 0.5rem !important;
+      padding: 1rem !important;
+    }
   }
   
-  .action-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .action-view {
-    background: rgba(67, 97, 238, 0.1);
-    color: var(--primary-blue);
-  }
-  
-  .action-view:hover {
-    background: var(--primary-blue);
-    color: white;
-  }
-  
-  .action-edit {
-    background: rgba(6, 214, 160, 0.1);
-    color: var(--success-green);
-  }
-  
-  .action-edit:hover {
-    background: var(--success-green);
-    color: white;
+  @media (max-width: 480px) {
+    /* Adjust for very small screens */
+    .filter-buttons {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 0.5rem !important;
+    }
+    
+    .filter-btn {
+      min-width: 100% !important;
+      font-size: 0.8rem !important;
+      padding: 0.6rem 0.4rem !important;
+    }
+    
+    .data-actions {
+      grid-template-columns: 1fr !important;
+      gap: 0.5rem !important;
+    }
+    
+    .action-icon {
+      width: 34px !important;
+      height: 34px !important;
+    }
   }
 </style>
 </head>
@@ -156,25 +169,25 @@
 
   <!-- Search & Filter Section -->
   <div class="search-section">
-<div class="search-header">
-  <div class="search-title">
-    <h3>Search & Filter Clients</h3>
-    <p>Find clients by name, policy number, or any detail</p>
-  </div>
+    <div class="search-header">
+      <div class="search-title">
+        <h3>Search & Filter Clients</h3>
+        <p>Find clients by name, policy number, or any detail</p>
+      </div>
 
-  <!-- NEW WRAPPER -->
-  <div class="data-actions">
-    <div class="import-btn" onclick="importData()">
-      <i class="fa-solid fa-download"></i>
-      Import Data
-    </div>
+      <!-- NEW WRAPPER -->
+      <div class="data-actions">
+        <div class="import-btn" onclick="importData()">
+          <i class="fa-solid fa-download"></i>
+          Import Data
+        </div>
 
-       <div class="export-btn" onclick="exportData()">
-      <i class="fa-solid fa-upload"></i>
-      Export Data
+        <div class="export-btn" onclick="exportData()">
+          <i class="fa-solid fa-upload"></i>
+          Export Data
+        </div>
+      </div>
     </div>
-  </div>
-</div>
     
     <div class="search-container">
       <div class="client-search-box">
@@ -240,10 +253,10 @@
         Refresh
       </button>
       <a href="../add_client/add.html">
-      <button class="action-btn primary" onclick="addNewClient()" style="text-decoration: none;">
-        <i class="fa-solid fa-user-plus"></i>
-        Add New Client
-      </button>
+        <button class="action-btn primary" onclick="addNewClient()" style="text-decoration: none;">
+          <i class="fa-solid fa-user-plus"></i>
+          Add New Client
+        </button>
       </a>
     </div>
   </div>
@@ -271,7 +284,6 @@
     </div>
   </div>
 </div>
-
 
 <!-- ================= IMPORT CONSOLE MODAL ================= -->
 <div id="importConsoleModal" class="import-console-modal">
@@ -407,8 +419,6 @@ window.currentFilter = 'all';
 </script>
 
 <script src="./total_lic_holder_details.js"></script>
-
-
 
 </body>
 </html>
