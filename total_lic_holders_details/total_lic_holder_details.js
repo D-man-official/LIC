@@ -233,63 +233,42 @@ function showClientDetails(sl) {
   if (!modal || !content) return;
   
   content.innerHTML = `
-    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
-      <div class="client-avatar" style="width: 60px; height: 60px; font-size: 1.5rem;">
-        ${client.name !== '-' ? client.name.charAt(0) : '?'}
-      </div>
-      <div>
-        <h3 style="margin: 0; color: var(--text-primary);">${client.name !== '-' ? client.name : 'No Name'}</h3>
-        <p style="margin: 0.25rem 0 0 0; color: var(--text-light);">Serial Number: ${client.sl}</p>
-      </div>
+  <!-- HEADER -->
+  <div class="detail-header">
+    <div class="detail-avatar">
+      ${client.name !== '-' ? client.name.charAt(0) : '?'}
     </div>
-    
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-      <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px;">
-        <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Policy Number</div>
-        <div style="font-weight: 600; color: var(--text-primary);">${client.policyNo !== '-' ? client.policyNo : 'Not Available'}</div>
-      </div>
-      
-      <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px;">
-        <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Document Date</div>
-        <div style="font-weight: 600; color: var(--text-primary);">${client.doc !== '-' ? client.doc : 'Not Available'}</div>
-      </div>
-      
-      <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px;">
-        <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Table Number</div>
-        <div style="font-weight: 600; color: var(--text-primary);">${client.tableNo !== '-' ? client.tableNo : 'Not Available'}</div>
-      </div>
-      
-      <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px;">
-        <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 0.5rem;">Premium Type</div>
-        <div style="font-weight: 600; color: var(--text-primary);">${client.premiumType !== '-' ? client.premiumType : 'Not Available'}</div>
-      </div>
+    <div>
+      <h2>${client.name !== '-' ? client.name : 'No Name'}</h2>
+      <p>SL: ${client.sl}</p>
+      <span class="status ${client.policyNo === '-' ? 'inactive' : 'active'}">
+        ${client.policyNo === '-' ? 'Policy Missing' : 'Policy Active'}
+      </span>
     </div>
-    
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
-      <div style="text-align: center; padding: 1.5rem; background: rgba(6, 214, 160, 0.1); border-radius: 12px;">
-        <div style="font-size: 0.875rem; color: var(--text-light);">Premium Amount</div>
-        <div style="font-size: 1.75rem; font-weight: 800; color: var(--success-green); margin-top: 0.5rem;">${client.premium !== '-' ? client.premium : 'Not Set'}</div>
-      </div>
-      
-      <div style="text-align: center; padding: 1.5rem; background: rgba(67, 97, 238, 0.1); border-radius: 12px;">
-        <div style="font-size: 0.875rem; color: var(--text-light);">Sum Assured</div>
-        <div style="font-size: 1.75rem; font-weight: 800; color: var(--primary-blue); margin-top: 0.5rem;">${client.sumAsset !== '-' ? client.sumAsset : 'Not Set'}</div>
-      </div>
+  </div>
+
+  <!-- FINANCIAL SUMMARY -->
+  <div class="detail-money">
+    <div>
+      <span>Premium</span>
+      <strong>${client.premium !== '-' ? client.premium : '—'}</strong>
     </div>
-    
-    <div style="margin-top: 1.5rem; padding: 1rem; background: ${client.policyNo === '-' ? 'rgba(239, 71, 111, 0.1)' : 'rgba(6, 214, 160, 0.1)'}; border-radius: 8px;">
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
-        <i class="fa-solid ${client.policyNo === '-' ? 'fa-triangle-exclamation' : 'fa-check-circle'}" 
-           style="color: ${client.policyNo === '-' ? 'var(--danger-red)' : 'var(--success-green)'};"></i>
-        <span style="font-weight: 600; color: ${client.policyNo === '-' ? 'var(--danger-red)' : 'var(--success-green)'}">
-          ${client.policyNo === '-' ? 'Policy Information Required' : 'Policy Active'}
-        </span>
-      </div>
-      <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: var(--text-secondary);">
-        ${client.policyNo === '-' ? 'This client record is incomplete. Please add policy details.' : 'All policy information is complete.'}
-      </p>
+    <div>
+      <span>Sum Assured</span>
+      <strong>${client.sumAsset !== '-' ? client.sumAsset : '—'}</strong>
     </div>
-  `;
+  </div>
+
+  <!-- DETAILS -->
+  <div class="detail-grid">
+    <div><label>Policy No</label><p>${client.policyNo || '—'}</p></div>
+    <div><label>DOC</label><p>${client.doc || '—'}</p></div>
+    <div><label>Table No</label><p>${client.tableNo || '—'}</p></div>
+    <div><label>Premium Type</label><p>${client.premiumType || '—'}</p></div>
+    <div class="full"><label>Policy Name</label><p>${client.policyName || '—'}</p></div>
+  </div>
+`;
+
   
   modal.style.display = 'flex';
   modal.setAttribute('data-current-sl', sl);
