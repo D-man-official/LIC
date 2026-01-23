@@ -143,3 +143,24 @@ window.addEventListener("focus", () => {
   // ... existing code ...
   loadTotalLICHolders();
 });
+
+// ===== Logged in user name + animation =====
+document.addEventListener("DOMContentLoaded", () => {
+  const userNameEl = document.getElementById("userName");
+  const loggedUser = localStorage.getItem("loggedInUser");
+
+  if (loggedUser && userNameEl) {
+    userNameEl.textContent = loggedUser.toUpperCase();
+
+    // animation start state
+    userNameEl.style.opacity = "0";
+    userNameEl.style.transform = "translateY(10px)";
+
+    // animate in
+    setTimeout(() => {
+      userNameEl.style.transition = "all 0.6s ease";
+      userNameEl.style.opacity = "1";
+      userNameEl.style.transform = "translateY(0)";
+    }, 150);
+  }
+});

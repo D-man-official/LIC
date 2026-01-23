@@ -58,39 +58,36 @@ document.addEventListener('DOMContentLoaded', () => {
     togglePassword.addEventListener('click', () => {
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
-        
+
         togglePassword.classList.toggle('fa-eye');
         togglePassword.classList.toggle('fa-eye-slash');
-        
-        // Add animation effect
+
         togglePassword.style.transform = 'translateY(-50%) scale(1.2)';
         setTimeout(() => {
             togglePassword.style.transform = 'translateY(-50%) scale(1)';
         }, 200);
     });
 
-    // Form submission with loading state
+    // Form submission with loading + animation
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const username = usernameInput.value.trim();
         const password = passwordInput.value.trim();
-        
-        // Validate inputs
+
         if (!username || !password) {
             showError('Please fill in all fields');
             return;
         }
-        
-        // Show loading state
+
+        // Loading state (UNCHANGED)
         submitBtn.classList.add('loading');
         btnText.textContent = 'Authenticating...';
         submitBtn.disabled = true;
-        
-        // Simulate API call with delay
+
         await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // Save credentials if "Remember me" is checked
+
+        // Remember me
         if (rememberMe.checked) {
             localStorage.setItem('rememberMe', 'true');
             localStorage.setItem('username', username);
@@ -100,23 +97,29 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('username');
             localStorage.removeItem('password');
         }
-        
-        // Check credentials (demo mode)
+
+        // ===== AUTH LOGIC (FIXED, UI SAME) =====
         if (username === 'Dman' && password === 'dman7047') {
-            // Show success message
+
+            // 🔑 store logged in user name
+            localStorage.setItem('loggedInUser', 'Dhiman Sutradhar');
+
             showSuccess('Login successful! Redirecting...');
-            
-            // Simulate success delay
             await new Promise(resolve => setTimeout(resolve, 800));
-            
-            // Redirect to home page
             window.location.href = "../home/home.html";
+
+        } else if (username === 'Rajat' && password === '8250') {
+
+            localStorage.setItem('loggedInUser', 'Rajat Roy');
+
+            showSuccess('Login successful! Redirecting...');
+            await new Promise(resolve => setTimeout(resolve, 800));
+            window.location.href = "../home/home.html";
+
         } else {
-            // Show error and reset button
-            showError('Invalid credentials. Try: Username: Dman, Password: dman7047');
+            showError('Invalid credentials');
             resetButton();
-            
-            // Add shake animation to form
+
             form.style.animation = 'shake 0.5s ease';
             setTimeout(() => {
                 form.style.animation = '';
@@ -124,20 +127,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Social login handlers
+    // Social login (unchanged)
     document.querySelectorAll('.social-icon').forEach(icon => {
         icon.addEventListener('click', (e) => {
-            const platform = e.currentTarget.classList[1]; // google, facebook, etc.
+            const platform = e.currentTarget.classList[1];
             showMessage(`Signing in with ${platform.charAt(0).toUpperCase() + platform.slice(1)}...`);
-            
-            // Simulate social login
             setTimeout(() => {
                 showError('Social login integration required. Use demo credentials.');
             }, 1000);
         });
     });
 
-    // Forgot password handler
+    // Forgot password
     document.querySelector('.forgot-password').addEventListener('click', (e) => {
         e.preventDefault();
         const email = prompt('Enter your email to reset password:');
@@ -146,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Helper functions
+    // ===== Helpers (UNCHANGED) =====
     function resetButton() {
         submitBtn.classList.remove('loading');
         btnText.textContent = 'Sign In';
@@ -155,17 +156,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showError(message) {
         removeMessages();
-        
         const errorDiv = document.createElement('div');
         errorDiv.className = 'error-message';
         errorDiv.innerHTML = `
             <i class="fas fa-exclamation-triangle"></i>
             <span>${message}</span>
         `;
-        
-        const formWrapper = document.querySelector('.form-wrapper');
-        formWrapper.insertBefore(errorDiv, form);
-        
+        document.querySelector('.form-wrapper').insertBefore(errorDiv, form);
         setTimeout(() => {
             errorDiv.style.opacity = '0';
             setTimeout(() => errorDiv.remove(), 300);
@@ -174,31 +171,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showSuccess(message) {
         removeMessages();
-        
         const successDiv = document.createElement('div');
         successDiv.className = 'success-message';
         successDiv.innerHTML = `
             <i class="fas fa-check-circle"></i>
             <span>${message}</span>
         `;
-        
-        const formWrapper = document.querySelector('.form-wrapper');
-        formWrapper.insertBefore(successDiv, form);
+        document.querySelector('.form-wrapper').insertBefore(successDiv, form);
     }
 
     function showMessage(message) {
         removeMessages();
-        
         const messageDiv = document.createElement('div');
         messageDiv.className = 'success-message';
         messageDiv.innerHTML = `
             <i class="fas fa-info-circle"></i>
             <span>${message}</span>
         `;
-        
-        const formWrapper = document.querySelector('.form-wrapper');
-        formWrapper.insertBefore(messageDiv, form);
-        
+        document.querySelector('.form-wrapper').insertBefore(messageDiv, form);
         setTimeout(() => {
             messageDiv.style.opacity = '0';
             setTimeout(() => messageDiv.remove(), 300);
@@ -208,30 +198,4 @@ document.addEventListener('DOMContentLoaded', () => {
     function removeMessages() {
         document.querySelectorAll('.error-message, .success-message').forEach(msg => msg.remove());
     }
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-        // Ctrl+Enter to submit
-        if (e.ctrlKey && e.key === 'Enter') {
-            form.dispatchEvent(new Event('submit'));
-        }
-        
-        // Escape to clear form
-        if (e.key === 'Escape') {
-            form.reset();
-            removeMessages();
-        }
-    });
-
-    // Input focus effects
-    const inputs = document.querySelectorAll('input');
-    inputs.forEach(input => {
-        input.addEventListener('focus', () => {
-            input.parentElement.style.transform = 'translateY(-2px)';
-        });
-        
-        input.addEventListener('blur', () => {
-            input.parentElement.style.transform = 'translateY(0)';
-        });
-    });
 });
