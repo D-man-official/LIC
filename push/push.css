@@ -45,6 +45,8 @@
   justify-content: center;
   align-items: flex-start;
   min-height: calc(100vh - 8rem);
+  width: 100%;
+  padding: 0 1rem;
 }
 
 .card {
@@ -91,6 +93,15 @@
   border-bottom: 1px solid var(--border);
 }
 
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+}
+
 .icon-box {
   width: 64px;
   height: 64px;
@@ -102,6 +113,7 @@
   color: white;
   font-size: 1.8rem;
   box-shadow: 0 4px 12px rgba(12, 58, 90, 0.3);
+  flex-shrink: 0;
 }
 
 .card-title {
@@ -121,6 +133,7 @@
 .form-group {
   margin-bottom: 1.8rem;
   position: relative;
+  width: 100%;
 }
 
 label {
@@ -223,6 +236,8 @@ input:focus {
   display: flex;
   gap: 1rem;
   margin-top: 2.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .btn {
@@ -237,7 +252,8 @@ input:focus {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  flex: 1;
+  min-width: 140px;
+  flex: 1 1 auto;
 }
 
 .btn-primary {
@@ -268,6 +284,7 @@ input:focus {
   margin-top: 3rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border);
+  width: 100%;
 }
 
 .section-title {
@@ -278,6 +295,7 @@ input:focus {
   font-weight: 700;
   color: var(--text);
   margin-bottom: 1.5rem;
+  justify-content: center;
 }
 
 .section-title i {
@@ -403,41 +421,28 @@ input:focus {
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
+  .wrapper {
+    padding: 0 0.5rem;
+  }
+
   .card {
     padding: 1.5rem;
     margin-top: 1rem;
+    border-radius: 16px;
   }
   
   .card-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 1rem;
     text-align: center;
+    margin-bottom: 1.5rem;
   }
   
   .icon-box {
     width: 56px;
     height: 56px;
     font-size: 1.5rem;
-  }
-  
-  .stats-summary {
-    grid-template-columns: 1fr;
-  }
-  
-  .button-row {
-    flex-direction: column;
-  }
-  
-  .btn {
-    padding: 0.875rem 1.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .main-content {
-    padding: 1.5rem;
-    padding-top: 5rem;
   }
   
   .card-title {
@@ -448,8 +453,51 @@ input:focus {
     font-size: 0.9rem;
   }
   
+  .stats-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .button-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .btn {
+    padding: 0.875rem 1.5rem;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 1.5rem 0.75rem;
+    padding-top: 5rem;
+  }
+  
+  .wrapper {
+    padding: 0;
+  }
+  
+  .card {
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+  
   input {
     padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+  }
+  
+  label {
+    font-size: 0.9rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .button-row {
+    margin-top: 2rem;
   }
 }
 
