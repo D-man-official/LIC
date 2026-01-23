@@ -1867,3 +1867,31 @@ body {
   text-transform: uppercase;
   color: #475569; /* darker, clean */
 }
+/* Import modal smooth open animation */
+#importConsoleModal {
+  animation: fadeInBg 0.25s ease forwards;
+}
+
+#importConsoleModal .import-console-box {
+  animation: slideUpBox 0.35s ease forwards;
+}
+
+@keyframes fadeInBg {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpBox {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
