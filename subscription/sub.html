@@ -3,122 +3,109 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LIC Collection Management – Plans</title>
+  <title>LIC Collection Management – Upgrade Your Plan</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    *{box-sizing:border-box;font-family:'Hind Siliguri',sans-serif}
-    body{margin:0;background:#0A2540;color:#fff;padding:24px}
-    .container{max-width:1200px;margin:auto}
-    header{text-align:center;margin-bottom:48px}
-    h1{font-size:2.6rem;margin-bottom:12px}
-
-    /* Close button */
-    .close-btn{
-      position:fixed;
-      top:18px;
-      right:20px;
-      font-size:32px;
-      color:#bcd3ff;
-      text-decoration:none;
-      z-index:1000;
-      line-height:1;
-    }
-    .close-btn:hover{color:#fff}
-
-    .plans{display:flex;flex-wrap:wrap;gap:28px;justify-content:center;margin-top:40px}
-    .card{width:320px;background:rgba(255,255,255,.08);border-radius:18px;padding:28px;position:relative}
-    .card.popular{border:2px solid #4da3ff;transform:scale(1.04)}
-    .badge{position:absolute;top:18px;right:-32px;transform:rotate(45deg);background:#4da3ff;color:#000;padding:6px 40px;font-weight:600;font-size:.8rem}
-    .title{font-size:1.6rem;margin-bottom:8px}
-    .price{font-size:2.4rem;color:#4da3ff;margin-bottom:18px}
-    .price span{font-size:1rem;color:#bcd3ff}
-    ul{list-style:none;padding:0;margin:0 0 24px}
-    li{margin:10px 0;display:flex;gap:10px}
-    li i{color:#4da3ff}
-    .btn{display:block;text-align:center;padding:14px;border-radius:10px;text-decoration:none;color:#fff;font-weight:600;background:rgba(255,255,255,.12)}
-    .btn:hover{background:#4da3ff;color:#000}
-    .btn.current{opacity:.45;pointer-events:none;cursor:not-allowed;background:rgba(255,255,255,.08);color:#ccc}
-
-    footer{text-align:center;margin-top:60px;color:#bcd3ff;font-size:.9rem}
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./sub.css">
 </head>
 <body>
-<!-- Close Button -->
-<a class="close-btn" href="javascript:history.back()" title="Close">&times;</a>
-<div class="container">
+  <!-- Animated background elements -->
+  <div class="bg-element bg-element-1"></div>
+  <div class="bg-element bg-element-2"></div>
+  
+  <!-- Close Button -->
+  <a class="close-btn" href="javascript:history.back()" title="Close">
+    <i class="fas fa-times"></i>
+  </a>
+  
+  <div class="container">
+    <header>
+      <h1>Upgrade Your Plan</h1>
+      <!-- <p class="subtitle">Choose the perfect plan to manage your LIC collections efficiently. Upgrade anytime to unlock advanced features and better insights.</p> -->
+      
+      <div class="feature-highlights">
+        <div class="feature">
+          <i class="fas fa-shield-alt"></i>
+          <span>Secure & Reliable</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-sync-alt"></i>
+          <span>Easy Upgrades</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-headset"></i>
+          <span>Priority Support</span>
+        </div>
+      </div>
+    </header>
 
-<header>
-  <h1>Upgrade Your Plan</h1>
-</header>
+    <section class="plans">
+      <!-- FREE PLAN -->
+      <div class="card">
+        <div class="title"><i class="fas fa-user"></i> Free</div>
+        <div class="price">₹0 <span>/ first month</span></div>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> 1 month free access</li>
+          <li><i class="fa-solid fa-check"></i> Daily collection entry</li>
+          <li><i class="fa-solid fa-check"></i> Monthly total tracking</li>
+          <li><i class="fa-solid fa-check"></i> LIC holder list</li>
+          <li><i class="fa-solid fa-xmark"></i> PDF reports</li>
+          <li><i class="fa-solid fa-xmark"></i> Data backup</li>
+        </ul>
+        <a class="btn current" href="javascript:void(0)">Your Current Plan</a>
+      </div>
 
-<section class="plans">
+      <!-- BASIC PLAN -->
+      <div class="card popular">
+        <div class="badge">Most Used</div>
+        <div class="title"><i class="fas fa-star"></i> Basic</div>
+        <div class="price">₹299 <span>/ month</span><span class="period">Billed annually: ₹2,990</span></div>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Unlimited months</li>
+          <li><i class="fa-solid fa-check"></i> Daily & monthly tracking</li>
+          <li><i class="fa-solid fa-check"></i> Paid / unpaid status</li>
+          <li><i class="fa-solid fa-check"></i> Client & policy count</li>
+          <li><i class="fa-solid fa-check"></i> Monthly PDF report</li>
+          <li><i class="fa-solid fa-xmark"></i> Cloud backup</li>
+        </ul>
+        <a class="btn" href="#"><i class="fas fa-rocket"></i> Choose Plan</a>
+      </div>
 
-  <!-- FREE PLAN -->
-  <div class="card">
-    <div class="title">Free</div>
-    <div class="price">₹0 <span>/ first month</span></div>
-    <ul>
-      <li><i class="fa-solid fa-check"></i> 1 month free access</li>
-      <li><i class="fa-solid fa-check"></i> Daily collection entry</li>
-      <li><i class="fa-solid fa-check"></i> Monthly total tracking</li>
-      <li><i class="fa-solid fa-check"></i> LIC holder list</li>
-      <li><i class="fa-solid fa-xmark"></i> PDF reports</li>
-      <li><i class="fa-solid fa-xmark"></i> Data backup</li>
-    </ul>
-    <a class="btn current" href="javascript:void(0)">Your Current Plan</a>
+      <!-- STANDARD PLAN -->
+      <div class="card">
+        <div class="title"><i class="fas fa-chart-line"></i> Standard</div>
+        <div class="price">₹499 <span>/ month</span><span class="period">Billed annually: ₹4,990</span></div>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Everything in Basic</li>
+          <li><i class="fa-solid fa-check"></i> Auto monthly summary</li>
+          <li><i class="fa-solid fa-check"></i> PDF + Excel export</li>
+          <li><i class="fa-solid fa-check"></i> Local data backup</li>
+          <li><i class="fa-solid fa-check"></i> Priority support</li>
+        </ul>
+        <a class="btn" href="#"><i class="fas fa-rocket"></i> Choose Plan</a>
+      </div>
+
+      <!-- PRO PLAN -->
+      <div class="card">
+        <div class="title"><i class="fas fa-crown"></i> Pro</div>
+        <div class="price">₹799 <span>/ month</span><span class="period">Billed annually: ₹7,990</span></div>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Everything in Standard</li>
+          <li><i class="fa-solid fa-check"></i> Cloud sync (multi-device)</li>
+          <li><i class="fa-solid fa-check"></i> Auto backup & restore</li>
+          <li><i class="fa-solid fa-check"></i> Yearly reports</li>
+          <li><i class="fa-solid fa-check"></i> Premium support</li>
+        </ul>
+        <a class="btn" href="#"><i class="fas fa-rocket"></i> Choose Plan</a>
+      </div>
+    </section>
+
+    <footer>
+      © 2026 LIC Collection Management System · All Rights Reserved · <a href="https://lic-india-netlify.app">Licians</a><br>
+      <small style="opacity: 0.7; margin-top: 10px; display: block;">Need help choosing? <a href="mailto:support@licians.com">Contact our sales team</a></small>
+    </footer>
   </div>
 
-  <!-- BASIC PLAN -->
-  <div class="card popular">
-    <div class="badge">Most Used</div>
-    <div class="title">Basic</div>
-    <div class="price">₹299 <span>/ month</span></div>
-    <ul>
-      <li><i class="fa-solid fa-check"></i> Unlimited months</li>
-      <li><i class="fa-solid fa-check"></i> Daily & monthly tracking</li>
-      <li><i class="fa-solid fa-check"></i> Paid / unpaid status</li>
-      <li><i class="fa-solid fa-check"></i> Client & policy count</li>
-      <li><i class="fa-solid fa-check"></i> Monthly PDF report</li>
-      <li><i class="fa-solid fa-xmark"></i> Cloud backup</li>
-    </ul>
-    <a class="btn" href="#">Choose Plan</a>
-  </div>
-
-  <!-- STANDARD PLAN -->
-  <div class="card">
-    <div class="title">Standard</div>
-    <div class="price">₹499 <span>/ month</span></div>
-    <ul>
-      <li><i class="fa-solid fa-check"></i> Everything in Basic</li>
-      <li><i class="fa-solid fa-check"></i> Auto monthly summary</li>
-      <li><i class="fa-solid fa-check"></i> PDF + Excel export</li>
-      <li><i class="fa-solid fa-check"></i> Local data backup</li>
-      <li><i class="fa-solid fa-check"></i> Priority support</li>
-    </ul>
-    <a class="btn" href="#">Choose Plan</a>
-  </div>
-
-  <!-- PRO PLAN -->
-  <div class="card">
-    <div class="title">Pro</div>
-    <div class="price">₹799 <span>/ month</span></div>
-    <ul>
-      <li><i class="fa-solid fa-check"></i> Everything in Standard</li>
-      <li><i class="fa-solid fa-check"></i> Cloud sync (multi-device)</li>
-      <li><i class="fa-solid fa-check"></i> Auto backup & restore</li>
-      <li><i class="fa-solid fa-check"></i> Yearly reports</li>
-      <li><i class="fa-solid fa-check"></i> Premium support</li>
-    </ul>
-    <a class="btn" href="#">Choose Plan</a>
-  </div>
-
-</section>
-
-<footer>
-  © 2026 LIC Collection Management System · All Right Reserved · <a href="https://lic-india-netlify.app">Licians</a>
-</footer>
-
-</div>
+  <script src="./sub.js"></script>
 </body>
 </html>
