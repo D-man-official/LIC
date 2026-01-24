@@ -116,7 +116,16 @@ document.addEventListener('DOMContentLoaded', () => {
             await new Promise(resolve => setTimeout(resolve, 800));
             window.location.href = "../home/home.html";
 
-        } else {
+        } 
+         else if (username === 'Yudhisthir' && password === '9851') {
+
+            localStorage.setItem('loggedInUser', 'Yudhisthir Sutradhar');
+
+            showSuccess('Login successful! Redirecting...');
+            await new Promise(resolve => setTimeout(resolve, 800));
+            window.location.href = "../home/home.html";
+
+        }else {
             showError('Invalid credentials');
             resetButton();
 
