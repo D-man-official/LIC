@@ -1,3 +1,28 @@
+
+
+// Ensure DOM is fully loaded before attaching the shortcut listener
+document.addEventListener('DOMContentLoaded', function() {
+  // Keyboard shortcut: Ctrl + Shift + F to focus search bar
+  document.addEventListener('keydown', function(event) {
+    // Log the key event for debugging (remove this line after testing)
+    console.log('Key pressed:', event.key, 'Ctrl:', event.ctrlKey, 'Shift:', event.shiftKey);
+    
+    // Check for Ctrl + Shift + F (works on Windows/Linux; on Mac, Ctrl is Command)
+    if (event.ctrlKey && event.shiftKey && (event.key === 'F' || event.key === 'f')) {
+      event.preventDefault(); // Prevent browser's default "Find in Page"
+      const searchInput = document.getElementById('clientSearchInput');
+      if (searchInput) {
+        searchInput.focus(); // Move cursor to search bar
+        searchInput.select(); // Select existing text for easy overwrite
+        console.log('Shortcut triggered: Focused on search input'); // Debug log (remove after)
+      } else {
+        console.error('Search input not found! Check ID: clientSearchInput'); // Error log
+      }
+    }
+  });
+});
+
+
 // Initialize the application
 document.addEventListener("DOMContentLoaded", () => {
   const tableBody = document.getElementById("clientTableBody");
