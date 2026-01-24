@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const username = usernameInput.value.trim();
+        let username = usernameInput.value.trim();
         const password = passwordInput.value.trim();
 
         if (!username || !password) {
@@ -80,7 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Loading state (UNCHANGED)
+        // Normalize username for case-insensitive check
+        const normalizedUsername = username.toLowerCase();
+        username = username.charAt(0).toUpperCase() + username.slice(1).toLowerCase(); // Standardize to 'Dman', 'Rajat', etc.
+
+        // Loading state
         submitBtn.classList.add('loading');
         btnText.textContent = 'Authenticating...';
         submitBtn.disabled = true;
@@ -98,34 +102,26 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('password');
         }
 
-        // ===== AUTH LOGIC (FIXED, UI SAME) =====
-        if (username === 'Dman' && password === 'dman7047') {
+        // AUTH LOGIC (case-insensitive for username)
+        let fullName = '';
+        let userId = normalizedUsername; // Use lowercase for ID/image
 
-            // 🔑 store logged in user name
-            localStorage.setItem('loggedInUser', 'Dhiman Sutradhar');
+        if (normalizedUsername === 'dman' && password === 'dman7047') {
+            fullName = 'Dhiman Sutradhar';
+        } else if (normalizedUsername === 'rajat' && password === '8250') {
+            fullName = 'Rajat Roy';
+        } else if (normalizedUsername === 'yudhisthir' && password === '9851') {
+            fullName = 'Yudhisthir Sutradhar';
+        }
 
-            showSuccess('Login successful! Redirecting...');
-            await new Promise(resolve => setTimeout(resolve, 800));
-            window.location.href = "../home/home.html";
-
-        } else if (username === 'Rajat' && password === '8250') {
-
-            localStorage.setItem('loggedInUser', 'Rajat Roy');
-
-            showSuccess('Login successful! Redirecting...');
-            await new Promise(resolve => setTimeout(resolve, 800));
-            window.location.href = "../home/home.html";
-
-        } 
-         else if (username === 'Yudhisthir' && password === '9851') {
-
-            localStorage.setItem('loggedInUser', 'Yudhisthir Sutradhar');
+        if (fullName) {
+            localStorage.setItem("loggedInUser", fullName);
+            localStorage.setItem("loggedInUserId", userId);
 
             showSuccess('Login successful! Redirecting...');
             await new Promise(resolve => setTimeout(resolve, 800));
-            window.location.href = "../home/home.html";
-
-        }else {
+            window.location.href = "../home/home.html"; // Assume this path is correct; adjust if needed
+        } else {
             showError('Invalid credentials');
             resetButton();
 
@@ -156,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ===== Helpers (UNCHANGED) =====
+    // Helpers (UNCHANGED)
     function resetButton() {
         submitBtn.classList.remove('loading');
         btnText.textContent = 'Sign In';
