@@ -297,7 +297,7 @@ function renderTable(clients) {
   const specialCount = clients.filter(c => c.isSpecial).length;
   let countText = `<i class="fa-solid fa-users"></i> Total: ${clients.length}`;
   if (specialCount > 0) {
-    countText += ` <span style="color: #f59e0b; margin-left: 10px;"><i class="fa-solid fa-star"></i> Special: ${specialCount}</span>`;
+    countText += ` <span style="color: #f59e0b; margin-left: 10px;"><i class="fa-solid fa-star"></i> Monthly: ${specialCount}</span>`;
   }
   countBox.innerHTML = countText;
 

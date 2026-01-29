@@ -1,56 +1,62 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Dashboard Layout</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Layout</title>
 
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-<link rel="icon" type="image/jpeg" href="../logo.png">
-<!-- Sidebar CSS -->
-<link rel="stylesheet" href="../home/home.css">
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="icon" type="image/jpeg" href="../logo.png" />
+    <!-- Sidebar CSS -->
+    <link rel="stylesheet" href="../home/home.css" />
 
-<!-- Your Page CSS -->
-<link rel="stylesheet" href="./daily.css">
-</head>
+    <!-- Your Page CSS -->
+    <link rel="stylesheet" href="./daily.css" />
+  </head>
 
-<body>
-<script>
-function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("overlay");
+  <body>
+    <script>
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
 
-  sidebar.classList.toggle("active");
-  overlay.classList.toggle("active");
-}
-</script>
+        sidebar.classList.toggle("active");
+        overlay.classList.toggle("active");
+      }
+    </script>
 
-<!-- ================= HEADER ================= -->
-<header class="header">
-  <div class="app-title">LIC Collection</div>
-  <button class="menu-btn" onclick="toggleSidebar()">
-    <i class="fa-solid fa-bars"></i>
-  </button>
-</header>
+    <!-- ================= HEADER ================= -->
+    <header class="header">
+      <div class="app-title">LIC Collection</div>
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </header>
 
-<!-- ================= SIDEBAR ================= -->
-<aside class="sidebar" id="sidebar">
-  <div class="logo-container">
-    <div class="logo-icon">
-      <i class="fa-solid fa-shield"></i>
-    </div>
-    <div>
-      <div class="logo-text">LIC Collection</div>
-      <div class="logo-subtext">Book Manager</div>
-    </div>
-  </div>
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <div class="logo-icon">
+          <i class="fa-solid fa-shield"></i>
+        </div>
+        <div>
+          <div class="logo-text">LIC Collection</div>
+          <div class="logo-subtext">Book Manager</div>
+        </div>
+      </div>
 
-  <nav class="menu-list">
-   <a href="../home/home.html" class="menu-item ">
+      <nav class="menu-list">
+        <a href="../home/home.html" class="menu-item">
           <span class="menu-icon"
             ><i class="fa-solid fa-diagram-next"></i
           ></span>
@@ -65,87 +71,89 @@ function toggleSidebar() {
           Clients
         </a>
         <a href="../push/push.html" class="menu-item">
-          <span class="menu-icon"> <i class="fa-solid fa-chalkboard-user" style="color: #fbffff;"></i></span>
-          Push Client 
+          <span class="menu-icon">
+            <i class="fa-solid fa-chalkboard-user" style="color: #fbffff"></i
+          ></span>
+          Push Client
         </a>
         <a href="../report/report.html" class="menu-item">
           <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
           Reports
         </a>
-  </nav>
+      </nav>
 
-  <div class="user-section">
-    <div class="user-avatar">
-      <img id="userAvatar" src="../userImg/dman.jpg" alt="User Avatar">
-    </div>
-    <div class="user-name" id="userName">User</div>
-    <div class="user-role">Chief Executive Officer</div>
-    <a href="../index.html" class="logout">
-      <i class="fa-solid fa-arrow-right-from-bracket"></i>
-      Logout
-    </a>
-  </div>
-</aside>
-
-<div class="main-content">
-  <div class="container">
-    <!-- Header -->
-    <div class="top-bar">
-      <h1>Daily Collection</h1>
-    </div>
-
-    <div class="date-pill">
-      <i class="fa-regular fa-calendar"></i>
-      <span id="todayDate"></span>
-      <input type="date" id="selectedDate" value="" />
-    </div>
-  </div>
-
-  <!-- Panels -->
-  <div class="panels">
-    <!-- Pending -->
-    <div class="panel">
-      <div class="panel-header" id="pendingHeader">
-        <i class="fa-solid fa-clock" style="color:var(--orange)"></i>
-        Pending (0)
-      </div>
-      <div class="panel-body" id="pendingBody">
-        <!-- Regular pending clients will be injected here -->
-      </div>
-      
-      <!-- Special Clients Section (Added via "1" button) -->
-      <div class="special-section">
-        <div class="section-header">
-          <i class="fa-solid fa-1" style="color:#8b5cf6"></i>
-          Clients with monthly payment
+      <div class="user-section">
+        <div class="user-avatar">
+          <img id="userAvatar" src="../userImg/dman.jpg" alt="User Avatar" />
         </div>
-        <div class="panel-body" id="specialBody">
-          <!-- Special clients will be injected here -->
+        <div class="user-name" id="userName">User</div>
+        <div class="user-role">Chief Executive Officer</div>
+        <a href="../index.html" class="logout">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          Logout
+        </a>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <div class="container">
+        <!-- Header -->
+        <div class="top-bar">
+          <h1>Daily Collection</h1>
+        </div>
+
+        <div class="date-pill">
+          <i class="fa-regular fa-calendar"></i>
+          <span id="todayDate"></span>
+          <input type="date" id="selectedDate" value="" />
         </div>
       </div>
-    </div>
 
-    <!-- Collected -->
-    <div class="panel">
-      <div class="panel-header" id="collectedHeader">
-        <i class="fa-solid fa-circle-check" style="color:var(--green)"></i>
-        Collected (0)
-      </div>
-      <div class="panel-body" id="collectedBody">
-        <div class="empty" id="collectedEmpty">
-          <i class="fa-regular fa-clock" style="font-size:42px;"></i>
-          No payments collected yet
+      <!-- Panels -->
+      <div class="panels">
+        <!-- Pending -->
+        <div class="panel">
+          <div class="panel-header" id="pendingHeader">
+            <i class="fa-solid fa-clock" style="color: var(--orange)"></i>
+            Pending (0)
+          </div>
+          <div class="panel-body" id="pendingBody">
+            <!-- Regular pending clients will be injected here -->
+          </div>
+
+          <!-- Special Clients Section (Added via "1" button) -->
+          <div class="special-section">
+            <div class="section-header" id="specialHeader">
+              <i class="fa-solid fa-1" style="color: #8b5cf6"></i>
+              Clients with monthly payment ( 0 )
+            </div>
+
+            <div class="panel-body" id="specialBody">
+              <!-- Special clients will be injected here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Collected -->
+        <div class="panel">
+          <div class="panel-header" id="collectedHeader">
+            <i class="fa-solid fa-circle-check" style="color: var(--green)"></i>
+            Collected (0)
+          </div>
+          <div class="panel-body" id="collectedBody">
+            <div class="empty" id="collectedEmpty">
+              <i class="fa-regular fa-clock" style="font-size: 42px"></i>
+              No payments collected yet
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- ================= OVERLAY ================= -->
-<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <!-- ================= OVERLAY ================= -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-<script src="../common/sidebar.js"></script>
-<script src="./daily.js"></script>
-
-</body>
+    <script src="../common/sidebar.js"></script>
+    <script src="./daily.js"></script>
+  </body>
 </html>

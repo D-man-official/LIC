@@ -54,17 +54,33 @@ setInterval(updateDate, 60000); // Refresh every minute
 // ===== Current Month Total Clients =====
 function loadCurrentMonthClientCount() {
   const now = new Date();
-  const currentMonth = now.toISOString().slice(0, 7); // "2026-01"
+  const currentMonth = now.toISOString().slice(0, 7); // "YYYY-MM"
 
-  const monthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || null;
+  const monthlyData =
+    JSON.parse(localStorage.getItem("monthlyClients")) || {
+      month: currentMonth,
+      clients: [],
+    };
 
-  const count = (monthlyData && monthlyData.month === currentMonth)
-    ? monthlyData.clients.length
-    : 0;
+  const specialMonthlyData =
+    JSON.parse(localStorage.getItem("specialMonthlyClients")) || {
+      month: currentMonth,
+      clients: [],
+    };
+
+  let total = 0;
+
+  if (monthlyData.month === currentMonth) {
+    total += monthlyData.clients.length;
+  }
+
+  if (specialMonthlyData.month === currentMonth) {
+    total += specialMonthlyData.clients.length;
+  }
 
   const totalClientsEl = document.getElementById("totalClients");
   if (totalClientsEl) {
-    totalClientsEl.textContent = count;
+    totalClientsEl.textContent = total;
   }
 }
 

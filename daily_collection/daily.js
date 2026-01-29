@@ -77,6 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const collectedEmpty = document.getElementById("collectedEmpty");
   const pendingHeader = document.getElementById("pendingHeader");
   const collectedHeader = document.getElementById("collectedHeader");
+  const specialHeader = document.getElementById("specialHeader");
+
 
   const now = new Date();
   const currentMonth = now.toISOString().slice(0, 7); // e.g. "2026-01"
@@ -155,6 +157,13 @@ document.addEventListener("DOMContentLoaded", () => {
     <i class="fa-solid fa-circle-check" style="color:var(--green)"></i>
     Collected (${collected.length}) • ₹${totalCollectedAmount}
   `;
+  if (specialHeader) {
+  specialHeader.innerHTML = `
+    <i class="fa-solid fa-1" style="color:#8b5cf6"></i>
+    Clients with monthly payment (${special.length})
+  `;
+}
+
 
   pendingBody.innerHTML = "";
   collectedBody.innerHTML = "";
