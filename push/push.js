@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       // Deactivate special mode
       specialPushBtn.classList.remove("active");
-      specialPushBtn.innerHTML = '<i class="fa-solid fa-1"></i> ';
+      specialPushBtn.innerHTML = '<i class="fa-solid fa-calendar-day"></i> ';
       specialPushBtn.style.background = "";
       
       // Reset submit button
