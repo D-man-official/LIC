@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (isSpecialPush) {
       // Activate special mode
       specialPushBtn.classList.add("active");
-      specialPushBtn.innerHTML = '<i class="fa-solid fa-1" style="color: #10b981;"></i> Special Mode ON';
+      specialPushBtn.innerHTML = 'Special Mode ON';
       specialPushBtn.style.background = "linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)";
       
       // Update submit button text
@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       // Deactivate special mode
       specialPushBtn.classList.remove("active");
-      specialPushBtn.innerHTML = '<i class="fa-solid fa-1"></i> 1';
+      specialPushBtn.innerHTML = '<i class="fa-solid fa-1"></i> ';
       specialPushBtn.style.background = "";
       
       // Reset submit button
