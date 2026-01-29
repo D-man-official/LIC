@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ─── Special Clients (from "1" button) ─────────────────────────────
   if (special.length === 0) {
-    specialBody.innerHTML = '<div class="special-empty"><p>No special clients added via "1" button</p></div>';
+    specialBody.innerHTML = '<div class="special-empty"><p>No clients added yet !</p></div>';
   } else {
     special.forEach(item => {
       const card = document.createElement("div");

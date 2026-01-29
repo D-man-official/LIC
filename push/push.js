@@ -141,26 +141,26 @@ document.addEventListener("DOMContentLoaded", () => {
     if (isSpecialPush) {
       // Activate special mode
       specialPushBtn.classList.add("active");
-      specialPushBtn.innerHTML = 'Special Mode ON';
+      specialPushBtn.innerHTML = '<i class="fa-solid fa-calendar-day"></i> Monthly';
       specialPushBtn.style.background = "linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)";
       
       // Update submit button text
-      submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Push (Special)';
+      submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Push Client';
       submitBtn.style.background = "linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)";
       
       // Show notification
-      showNotification("Special Push Mode Activated", "success");
+      showNotification("Switched to monthly view", "success");
     } else {
       // Deactivate special mode
       specialPushBtn.classList.remove("active");
-      specialPushBtn.innerHTML = '<i class="fa-solid fa-calendar-day"></i> ';
+      specialPushBtn.innerHTML = '<i class="fa-solid fa-calendar-day"></i> Monthly';
       specialPushBtn.style.background = "";
       
       // Reset submit button
       submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Push Client';
       submitBtn.style.background = "";
       
-      showNotification("Special Push Mode Deactivated", "info");
+      showNotification("Back to regular monthly list", "info");
     }
   });
 

@@ -222,11 +222,11 @@ function renderTable(clients) {
       <td>
         <div style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
           ${client.name}
-          ${client.isSpecial ? '<span class="special-badge"><i class="fa-solid fa-star"></i> Special</span>' : ''}
+          ${client.isSpecial ? '<span class="special-badge"><i class="fa-solid fa-star"></i> Monthly</span>' : ''}
         </div>
         <small style="color: var(--text-light); font-size: 0.85rem;">
           Policy: ${client.policyNo || 'N/A'}
-          ${client.isSpecial ? ' • Pushed via: 1-Button' : ''}
+          ${client.isSpecial ? "" : ''}
         </small>
       </td>
     `;
