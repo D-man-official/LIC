@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // Reset buttons to normal state
       specialPushBtn.classList.remove("active");
-      specialPushBtn.innerHTML = '<i class="fa-solid fa-1"></i> 1';
+      specialPushBtn.innerHTML = '<i class="fa-solid fa-calendar-day"></i> Monthly';
       specialPushBtn.style.background = "";
       
       // Add visual feedback
