@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (specialHeader) {
   specialHeader.innerHTML = `
     <i class="fa-solid fa-1" style="color:#8b5cf6"></i>
-    Clients with monthly payment (${special.length})
+    Monthly Pay Clients (${special.length})
   `;
 }
 
