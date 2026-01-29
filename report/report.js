@@ -45,6 +45,31 @@ const monthNames = [
   "December",
 ];
 
+/* =========================
+   ✅ COMBINED DATA FUNCTION
+========================= */
+function getCombinedMonthlyData(monthKey) {
+  const normal = JSON.parse(localStorage.getItem("monthlyClients"));
+  const special = JSON.parse(localStorage.getItem("specialMonthlyClients"));
+
+  let clients = [];
+
+  if (normal && normal.month === monthKey) {
+    clients = [...normal.clients];
+  }
+
+  if (special && special.month === monthKey) {
+    special.clients.forEach(sc => {
+      if (!clients.some(c => c.sl === sc.sl)) {
+        clients.push(sc);
+      }
+    });
+  }
+
+  if (clients.length === 0) return null;
+  return { month: monthKey, clients };
+}
+
 // Initialize month dropdown
 monthNames.forEach((m, i) => {
   const opt = document.createElement("option");
@@ -92,7 +117,7 @@ function updateSelectedInfo() {
   const month = Number(monthSelect.value);
   const year = Number(yearSelect.value);
   const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
-  const monthlyData = JSON.parse(localStorage.getItem("monthlyClients"));
+  const monthlyData = getCombinedMonthlyData(monthKey);
 
   const selectedMonthYear = document.getElementById("selectedMonthYear");
   if (selectedMonthYear) {
@@ -104,7 +129,7 @@ function updateSelectedInfo() {
     selectedInfo.classList.add("show");
   }
 
-  if (monthlyData && monthlyData.month === monthKey) {
+  if (monthlyData) {
     if (noDataMessage) {
       noDataMessage.style.display = "none";
     }
@@ -136,13 +161,13 @@ function updateSelectedInfo() {
 // Update statistics display
 function updateStatistics(month, year, noData = false) {
   const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
-  const monthlyData = JSON.parse(localStorage.getItem("monthlyClients"));
+  const monthlyData = getCombinedMonthlyData(monthKey);
 
   let totalClients = 0;
   let totalCollection = 0;
   let collectedClients = 0;
 
-  if (!noData && monthlyData && monthlyData.month === monthKey) {
+  if (!noData && monthlyData) {
     const clients = [...monthlyData.clients];
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     totalClients = clients.length;
@@ -189,9 +214,9 @@ function generatePreview() {
   const month = Number(monthSelect.value);
   const year = Number(yearSelect.value);
   const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
-  const monthlyData = JSON.parse(localStorage.getItem("monthlyClients"));
+  const monthlyData = getCombinedMonthlyData(monthKey);
 
-  if (!monthlyData || monthlyData.month !== monthKey) {
+  if (!monthlyData) {
     alert("No data found for selected month");
     return;
   }
@@ -333,9 +358,9 @@ function generatePDFAsBlob() {
   const month = Number(monthSelect.value);
   const year = Number(yearSelect.value);
   const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
-  const monthlyData = JSON.parse(localStorage.getItem("monthlyClients"));
+  const monthlyData = getCombinedMonthlyData(monthKey);
 
-  if (!monthlyData || monthlyData.month !== monthKey) {
+  if (!monthlyData) {
     throw new Error("No data found for selected month");
   }
 
@@ -521,7 +546,7 @@ function generatePDFAsBlob() {
   doc.text("© 2026 LIC Collection Book. All rights reserved to:", 110, 192);
   doc.setTextColor(30, 58, 138);
   doc.textWithLink("Dhiman Sutradhar", 190, 192, {
-    url: "https://www.linkedin.com/in/dhiman-sutradhar-097283329/",
+    url: "https://www.facebook.com/dhiman.sutradhar.92",
   });
 
   const contactY = 198;
