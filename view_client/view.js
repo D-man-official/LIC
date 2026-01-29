@@ -133,15 +133,46 @@ function loadMonthlyClients() {
   const month = currentViewDate.getMonth();
   const currentMonthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
   
-  const monthlyData = JSON.parse(localStorage.getItem("monthlyClients"));
-
-  if (!monthlyData || monthlyData.month !== currentMonthKey) {
-    renderTable([]);
-    updateSummaryStats(0, 0, 0);
-    return;
+  // Load BOTH regular and special monthly clients
+  const monthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || { month: currentMonthKey, clients: [] };
+  const specialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients")) || { month: currentMonthKey, clients: [] };
+  
+  // Combine both lists for the current month
+  let combinedClients = [];
+  
+  // Add regular clients for current month
+  if (monthlyData.month === currentMonthKey) {
+    combinedClients = [...monthlyData.clients];
+  }
+  
+  // Add special clients for current month
+  if (specialMonthlyData.month === currentMonthKey) {
+    // Mark special clients and merge
+    specialMonthlyData.clients.forEach(specialClient => {
+      // Check if already exists in combined list
+      const existingIndex = combinedClients.findIndex(c => c.sl.toString() === specialClient.sl.toString());
+      
+      if (existingIndex !== -1) {
+        // Update existing client with special marking
+        combinedClients[existingIndex] = {
+          ...combinedClients[existingIndex],
+          isSpecial: true,
+          amount: specialClient.amount, // Use special amount
+          pushedVia: "special",
+          pushDate: specialClient.pushDate
+        };
+      } else {
+        // Add new special client
+        combinedClients.push({
+          ...specialClient,
+          isSpecial: true,
+          pushedVia: "special"
+        });
+      }
+    });
   }
 
-  const sortedClients = [...monthlyData.clients].sort((a, b) => a.sl - b.sl);
+  const sortedClients = combinedClients.sort((a, b) => a.sl - b.sl);
   renderTable(sortedClients);
 }
 
@@ -180,13 +211,22 @@ function renderTable(clients) {
 
   clients.forEach(client => {
     const row = document.createElement("tr");
+    
+    // Add special class for special clients
+    if (client.isSpecial) {
+      row.classList.add("special-client");
+    }
 
     let cells = `
       <td>${client.sl}</td>
       <td>
-        <div style="font-weight: 600;">${client.name}</div>
+        <div style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+          ${client.name}
+          ${client.isSpecial ? '<span class="special-badge"><i class="fa-solid fa-star"></i> Special</span>' : ''}
+        </div>
         <small style="color: var(--text-light); font-size: 0.85rem;">
           Policy: ${client.policyNo || 'N/A'}
+          ${client.isSpecial ? ' • Pushed via: 1-Button' : ''}
         </small>
       </td>
     `;
@@ -253,8 +293,13 @@ function renderTable(clients) {
   totalRow.innerHTML = totalCells;
   tableBody.appendChild(totalRow);
 
-  // Update client count
-  countBox.innerHTML = `<i class="fa-solid fa-users"></i> Total Clients: ${clients.length}`;
+  // Update client count with special count
+  const specialCount = clients.filter(c => c.isSpecial).length;
+  let countText = `<i class="fa-solid fa-users"></i> Total: ${clients.length}`;
+  if (specialCount > 0) {
+    countText += ` <span style="color: #f59e0b; margin-left: 10px;"><i class="fa-solid fa-star"></i> Special: ${specialCount}</span>`;
+  }
+  countBox.innerHTML = countText;
 
   // Update summary stats
   const collectionRate = maxPossiblePayments > 0 ? 
@@ -292,6 +337,33 @@ function addStickyTotalStyles() {
       min-width: 120px !important;
     }
     
+    /* Special client styling */
+    .special-client {
+      background: linear-gradient(90deg, #fffbeb 0%, #fef3c7 100%) !important;
+      border-left: 4px solid #f59e0b !important;
+    }
+    
+    .special-client:hover {
+      background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%) !important;
+    }
+    
+    .special-badge {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.125rem 0.5rem;
+      border-radius: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      box-shadow: 0 1px 3px rgba(245, 158, 11, 0.3);
+    }
+    
+    .special-badge i {
+      font-size: 0.6rem;
+    }
+    
     /* Ensure hover states work */
     tbody tr:hover .sticky-total {
       background: linear-gradient(135deg, #a7f3d0 0%, #86efac 100%) !important;
@@ -312,6 +384,11 @@ function addStickyTotalStyles() {
       .grand-total div {
         font-size: 0.85rem !important;
       }
+      
+      .special-badge {
+        font-size: 0.6rem;
+        padding: 0.1rem 0.4rem;
+      }
     }
 `;
   document.head.appendChild(style);
@@ -331,10 +408,39 @@ document.querySelector(".search-box")?.addEventListener("input", function(e) {
   const searchTerm = e.target.value.toLowerCase().trim();
   
   searchTimeout = setTimeout(() => {
-    const monthlyData = JSON.parse(localStorage.getItem("monthlyClients"));
-    if (!monthlyData) return;
+    const year = currentViewDate.getFullYear();
+    const month = currentViewDate.getMonth();
+    const currentMonthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+    
+    // Load both regular and special clients for current month
+    const monthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || { month: currentMonthKey, clients: [] };
+    const specialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients")) || { month: currentMonthKey, clients: [] };
+    
+    // Combine clients
+    let combinedClients = [];
+    if (monthlyData.month === currentMonthKey) {
+      combinedClients = [...monthlyData.clients];
+    }
+    if (specialMonthlyData.month === currentMonthKey) {
+      specialMonthlyData.clients.forEach(specialClient => {
+        const existingIndex = combinedClients.findIndex(c => c.sl.toString() === specialClient.sl.toString());
+        if (existingIndex !== -1) {
+          combinedClients[existingIndex] = {
+            ...combinedClients[existingIndex],
+            isSpecial: true,
+            amount: specialClient.amount
+          };
+        } else {
+          combinedClients.push({
+            ...specialClient,
+            isSpecial: true
+          });
+        }
+      });
+    }
 
-    const filtered = monthlyData.clients.filter(c =>
+    // Filter based on search term
+    const filtered = combinedClients.filter(c =>
       c.sl.toString().includes(searchTerm) ||
       c.name.toLowerCase().includes(searchTerm)
     );
@@ -342,11 +448,19 @@ document.querySelector(".search-box")?.addEventListener("input", function(e) {
     renderTable(filtered);
     
     // Update count for filtered results
-    const countBox = document.querySelector(".client-count");
+    const specialCount = filtered.filter(c => c.isSpecial).length;
     if (searchTerm) {
-      countBox.innerHTML = `<i class="fa-solid fa-filter"></i> Filtered: ${filtered.length}`;
+      let countText = `<i class="fa-solid fa-filter"></i> Filtered: ${filtered.length}`;
+      if (specialCount > 0) {
+        countText += ` <span style="color: #f59e0b; margin-left: 10px;"><i class="fa-solid fa-star"></i> Special: ${specialCount}</span>`;
+      }
+      countBox.innerHTML = countText;
     } else {
-      countBox.innerHTML = `<i class="fa-solid fa-users"></i> Total Clients: ${filtered.length}`;
+      let countText = `<i class="fa-solid fa-users"></i> Total: ${filtered.length}`;
+      if (specialCount > 0) {
+        countText += ` <span style="color: #f59e0b; margin-left: 10px;"><i class="fa-solid fa-star"></i> Special: ${specialCount}</span>`;
+      }
+      countBox.innerHTML = countText;
     }
   }, 300);
 });

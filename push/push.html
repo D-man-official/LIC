@@ -10,7 +10,6 @@
 
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
 <!-- Sidebar CSS -->
 <link rel="stylesheet" href="../add_client/add.css">
 <link rel="icon" type="image/jpeg" href="../logo.png">
@@ -28,11 +27,7 @@ function toggleSidebar() {
   sidebar.classList.toggle("active");
   overlay.classList.toggle("active");
 }
-
 </script>
-
-
-
 
 <!-- ================= HEADER ================= -->
 <header class="header">
@@ -82,13 +77,10 @@ function toggleSidebar() {
 
   <div class="user-section">
     <div class="user-avatar">
-
-       <img id="userAvatar" src="../userImg/dman.jpg" alt="User Avatar">
+      <img id="userAvatar" src="../userImg/dman.jpg" alt="User Avatar">
     </div>
    <div class="user-name" id="userName">User</div>
-
     <div class="user-role">Chief Officer</div>
-
     <a href="../index.html" class="logout">
       <i class="fa-solid fa-arrow-right-from-bracket"></i>
       Logout
@@ -98,6 +90,7 @@ function toggleSidebar() {
 
 <!-- ================= OVERLAY ================= -->
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
 <form id="clientForm">
  <div class="wrapper">
         <div class="card" style="margin-top: 2rem;">
@@ -109,6 +102,7 @@ function toggleSidebar() {
               <div class="card-subtitle">Enter the client SL or name to search and add records</div>
             </div>
           </div>
+  
   <!-- SL -->
   <div class="form-group">
     <label>SL *</label>
@@ -121,17 +115,39 @@ function toggleSidebar() {
     <input id="name" type="text" placeholder="Enter full name" required />
   </div>
 
+  <!-- Amount -->
   <div class="form-group">
     <label>Amount *</label>
     <input id="amount" type="number" placeholder="Enter amount" required />
   </div>
 
+  <!-- Buttons -->
   <div class="button-row">
+    <button type="button" class="btn btn-primary" id="specialPushBtn">
+      <i class="fa-solid fa-1"></i>
+      
+    </button>
     <button type="reset" class="btn btn-cancel">Clear</button>
-    <button type="submit" class="btn btn-primary">Push Client</button>
+    <button type="submit" class="btn btn-primary">
+      <i class="fa-solid fa-paper-plane"></i>
+      Push Client
+    </button>
   </div>
-</form>
 
+  <!-- Info Message -->
+  <div class="info-message">
+    <div class="helper">
+      <i class="fa-solid fa-info-circle"></i>
+      <strong>"1" Button:</strong> Adds client with special marking for Daily page
+    </div>
+    <div class="helper">
+      <i class="fa-solid fa-info-circle"></i>
+      <strong>"Push Client":</strong> Adds client to regular monthly list
+    </div>
+  </div>
+        </div>
+      </div>
+</form>
 
 <script src="./push.js"></script>
 <script src="../common/sidebar.js"></script>

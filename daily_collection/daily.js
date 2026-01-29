@@ -73,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const pendingBody = document.getElementById("pendingBody");
   const collectedBody = document.getElementById("collectedBody");
+  const specialBody = document.getElementById("specialBody");
   const collectedEmpty = document.getElementById("collectedEmpty");
   const pendingHeader = document.getElementById("pendingHeader");
   const collectedHeader = document.getElementById("collectedHeader");
@@ -80,18 +81,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const now = new Date();
   const currentMonth = now.toISOString().slice(0, 7); // e.g. "2026-01"
 
+  // Load regular monthly data
   let monthlyData = JSON.parse(localStorage.getItem("monthlyClients"));
+  
+  // Load special monthly data (from "1" button)
+  let specialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients"));
 
-  // Auto-reset when month changes
+  // Auto-reset when month changes (for both regular and special)
   if (!monthlyData || monthlyData.month !== currentMonth) {
     localStorage.removeItem("monthlyClients");
-    Object.keys(localStorage)
-      .filter(k => k.startsWith("dailyStatus-"))
-      .forEach(k => localStorage.removeItem(k));
+    monthlyData = { month: currentMonth, clients: [] };
+  }
 
-    pendingBody.innerHTML = '<p style="text-align:center; padding:2rem; color:#666;">New month started — no clients yet</p>';
-    collectedEmpty.style.display = "block";
-    return;
+  if (!specialMonthlyData || specialMonthlyData.month !== currentMonth) {
+    localStorage.removeItem("specialMonthlyClients");
+    specialMonthlyData = { month: currentMonth, clients: [] };
   }
 
   const dailyKey = `dailyStatus-${activeDate}`;
@@ -99,9 +103,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const pending = [];
   const collected = [];
+  const special = [];
 
+  // Process regular clients
   monthlyData.clients.forEach(client => {
-    const statusEntry = dailyStatus.find(d => d.sl === client.sl);
+    const statusEntry = dailyStatus.find(d => d.sl === client.sl && !d.isSpecial);
     const status = statusEntry ? statusEntry.status : "pending";
 
     const record = {
@@ -109,25 +115,42 @@ document.addEventListener("DOMContentLoaded", () => {
       name: client.name,
       amount: statusEntry?.paidAmount ?? client.amount,
       status,
+      isSpecial: false
     };
 
     if (status === "pending") pending.push(record);
     else collected.push(record);
   });
 
+  // Process special clients (from "1" button)
+  specialMonthlyData.clients.forEach(client => {
+    const statusEntry = dailyStatus.find(d => d.sl === client.sl && d.isSpecial);
+    const status = statusEntry ? statusEntry.status : "pending";
+
+    const record = {
+      sl: client.sl,
+      name: client.name,
+      amount: statusEntry?.paidAmount ?? client.amount,
+      status,
+      isSpecial: true,
+      policyNo: client.policyNo || "-"
+    };
+
+    if (status === "pending") special.push(record);
+    else collected.push(record);
+  });
+
   // Sort by serial number
   pending.sort((a, b) => a.sl - b.sl);
   collected.sort((a, b) => a.sl - b.sl);
+  special.sort((a, b) => a.sl - b.sl);
 
   // Daily total collected
   const totalCollectedAmount = collected.reduce((sum, item) => sum + Number(item.amount), 0);
-
- 
   localStorage.setItem("todayCollectionAmount", totalCollectedAmount);
 
   // Update headers
   pendingHeader.innerHTML = `<i class="fa-solid fa-clock" style="color:var(--orange)"></i> Pending (${pending.length})`;
-
   collectedHeader.innerHTML = `
     <i class="fa-solid fa-circle-check" style="color:var(--green)"></i>
     Collected (${collected.length}) • ₹${totalCollectedAmount}
@@ -135,76 +158,153 @@ document.addEventListener("DOMContentLoaded", () => {
 
   pendingBody.innerHTML = "";
   collectedBody.innerHTML = "";
+  specialBody.innerHTML = "";
 
-  // ─── Pending Clients ──────────────────────────────────────
-  pending.forEach(item => {
-    const card = document.createElement("div");
-    card.className = "client-card";
+  // ─── Regular Pending Clients ──────────────────────────────────────
+  if (pending.length === 0) {
+    pendingBody.innerHTML = '<div class="empty"><i class="fa-regular fa-folder-open"></i><p>No pending clients</p></div>';
+  } else {
+    pending.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "client-card";
 
-    card.innerHTML = `
-      <div class="client-info">
-        <h3>${item.name}</h3>
-        <p>SL ${item.sl}</p>
-      </div>
+      card.innerHTML = `
+        <div class="client-info">
+          <h3>${item.name}</h3>
+          <p>SL ${item.sl}</p>
+        </div>
 
-      <div style="display:flex; align-items:center; gap:8px;">
-        <div class="payment-box">
-          <select class="multiplier" onchange="onMultiplierChange(this, ${item.amount})">
-            <option value="1">1×</option>
-            <option value="2">2×</option>
-            <option value="3">3×</option>
-            <option value="4">4×</option>
-            <option value="5">5×</option>
-            <option value="6">6×</option>
-          </select>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="payment-box">
+            <select class="multiplier" onchange="onMultiplierChange(this, ${item.amount})">
+              <option value="1">1×</option>
+              <option value="2">2×</option>
+              <option value="3">3×</option>
+              <option value="4">4×</option>
+              <option value="5">5×</option>
+              <option value="6">6×</option>
+            </select>
 
-          <input type="number" class="paid-amount" value="${item.amount}" min="0" />
+            <input type="number" class="paid-amount" value="${item.amount}" min="0" />
 
-          <div class="button-group">
-            <button class="mark-btn">Mark Paid</button>
-            <button class="remove-btn">Remove</button>
+            <div class="button-group">
+              <button class="mark-btn">Mark Paid</button>
+              <button class="remove-btn">Remove</button>
+            </div>
           </div>
         </div>
-      </div>
-    `;
+      `;
 
-    // Mark as Paid
-    card.querySelector(".mark-btn").addEventListener("click", () => {
-      const paidAmount = Number(card.querySelector(".paid-amount").value);
+      // Mark as Paid
+      card.querySelector(".mark-btn").addEventListener("click", () => {
+        const paidAmount = Number(card.querySelector(".paid-amount").value);
 
-      const paymentKey = `payment-${activeDate}`;
-      let paymentData = JSON.parse(localStorage.getItem(paymentKey)) || [];
+        const paymentKey = `payment-${activeDate}`;
+        let paymentData = JSON.parse(localStorage.getItem(paymentKey)) || [];
 
-      paymentData = paymentData.filter(p => p.sl !== item.sl);
-      paymentData.push({ sl: item.sl, amount: paidAmount });
-      localStorage.setItem(paymentKey, JSON.stringify(paymentData));
+        paymentData = paymentData.filter(p => p.sl !== item.sl);
+        paymentData.push({ 
+          sl: item.sl, 
+          amount: paidAmount,
+          isSpecial: false 
+        });
+        localStorage.setItem(paymentKey, JSON.stringify(paymentData));
 
-      dailyStatus = dailyStatus.filter(d => d.sl !== item.sl);
-      dailyStatus.push({
-        sl: item.sl,
-        status: "collected",
-        paidAmount
+        dailyStatus = dailyStatus.filter(d => d.sl !== item.sl);
+        dailyStatus.push({
+          sl: item.sl,
+          status: "collected",
+          paidAmount,
+          isSpecial: false
+        });
+
+        localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
+        location.reload();
       });
 
-      localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
-      location.reload();
+      // Remove from monthly list
+      card.querySelector(".remove-btn").addEventListener("click", () => {
+        if (!confirm(`Remove ${item.name} from this month's list?`)) return;
+
+        monthlyData.clients = monthlyData.clients.filter(c => c.sl !== item.sl);
+        localStorage.setItem("monthlyClients", JSON.stringify(monthlyData));
+
+        dailyStatus = dailyStatus.filter(d => d.sl !== item.sl);
+        localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
+
+        location.reload();
+      });
+
+      pendingBody.appendChild(card);
     });
+  }
 
-    // Remove from monthly list
-    card.querySelector(".remove-btn").addEventListener("click", () => {
-      if (!confirm(`Remove ${item.name} from this month's list?`)) return;
+  // ─── Special Clients (from "1" button) ─────────────────────────────
+  if (special.length === 0) {
+    specialBody.innerHTML = '<div class="special-empty"><p>No special clients added via "1" button</p></div>';
+  } else {
+    special.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "special-client-card";
 
-      monthlyData.clients = monthlyData.clients.filter(c => c.sl !== item.sl);
-      localStorage.setItem("monthlyClients", JSON.stringify(monthlyData));
+      card.innerHTML = `
+        <div class="special-info">
+          <h3>${item.name}</h3>
+          <p>SL ${item.sl} ${item.policyNo && item.policyNo !== "-" ? `• Policy: ${item.policyNo}` : ''}</p>
+        </div>
 
-      dailyStatus = dailyStatus.filter(d => d.sl !== item.sl);
-      localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="special-amount">₹${item.amount}</div>
+          <div class="special-controls">
+            <button class="special-mark-btn">Mark Paid</button>
+            <button class="special-remove-btn">Remove</button>
+          </div>
+        </div>
+      `;
 
-      location.reload();
+      // Mark as Paid (Special)
+      card.querySelector(".special-mark-btn").addEventListener("click", () => {
+        const paidAmount = item.amount;
+
+        const paymentKey = `payment-${activeDate}`;
+        let paymentData = JSON.parse(localStorage.getItem(paymentKey)) || [];
+
+        paymentData = paymentData.filter(p => p.sl !== item.sl || !p.isSpecial);
+        paymentData.push({ 
+          sl: item.sl, 
+          amount: paidAmount,
+          isSpecial: true 
+        });
+        localStorage.setItem(paymentKey, JSON.stringify(paymentData));
+
+        dailyStatus = dailyStatus.filter(d => !(d.sl === item.sl && d.isSpecial));
+        dailyStatus.push({
+          sl: item.sl,
+          status: "collected",
+          paidAmount,
+          isSpecial: true
+        });
+
+        localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
+        location.reload();
+      });
+
+      // Remove from special monthly list
+      card.querySelector(".special-remove-btn").addEventListener("click", () => {
+        if (!confirm(`Remove ${item.name} from special list?`)) return;
+
+        specialMonthlyData.clients = specialMonthlyData.clients.filter(c => c.sl !== item.sl);
+        localStorage.setItem("specialMonthlyClients", JSON.stringify(specialMonthlyData));
+
+        dailyStatus = dailyStatus.filter(d => !(d.sl === item.sl && d.isSpecial));
+        localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
+
+        location.reload();
+      });
+
+      specialBody.appendChild(card);
     });
-
-    pendingBody.appendChild(card);
-  });
+  }
 
   // ─── Collected Section ────────────────────────────────────
   if (collected.length === 0) {
@@ -215,10 +315,15 @@ document.addEventListener("DOMContentLoaded", () => {
     collected.forEach(item => {
       const card = document.createElement("div");
       card.className = "client-card";
+      
+      if (item.isSpecial) {
+        card.style.borderLeft = "4px solid #8b5cf6";
+        card.style.background = "#faf5ff";
+      }
 
       card.innerHTML = `
         <div class="client-info">
-          <h3>${item.name}</h3>
+          <h3>${item.name} ${item.isSpecial ? '<span style="background:#8b5cf6; color:white; padding:2px 6px; border-radius:4px; font-size:0.7rem;">1</span>' : ''}</h3>
           <p>SL ${item.sl}</p>
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
@@ -228,12 +333,12 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
 
       card.querySelector(".undo-btn").addEventListener("click", () => {
-        dailyStatus = dailyStatus.filter(d => d.sl !== item.sl);
+        dailyStatus = dailyStatus.filter(d => !(d.sl === item.sl && d.isSpecial === item.isSpecial));
         localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
 
         const paymentKey = `payment-${activeDate}`;
         let paymentData = JSON.parse(localStorage.getItem(paymentKey)) || [];
-        paymentData = paymentData.filter(p => p.sl !== item.sl);
+        paymentData = paymentData.filter(p => !(p.sl === item.sl && p.isSpecial === item.isSpecial));
         localStorage.setItem(paymentKey, JSON.stringify(paymentData));
 
         location.reload();
@@ -243,5 +348,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
-

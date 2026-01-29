@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   // ===== GET CLIENT DATA FROM LOCALSTORAGE =====
-  // Instead of hardcoded data, fetch from the main client database
   const getClientsFromStorage = () => {
     try {
       const clients = JSON.parse(localStorage.getItem("clients")) || [];
@@ -15,9 +14,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // Load client data from localStorage
   const rawClientData = getClientsFromStorage();
 
+  // DOM Elements
   const slInput = document.getElementById("sl");
   const nameInput = document.getElementById("name");
+  const amountInput = document.getElementById("amount");
   const form = document.getElementById("clientForm");
+  const specialPushBtn = document.getElementById("specialPushBtn");
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const clearBtn = form.querySelector('button[type="reset"]');
+
+  // Flag to track if special push is selected
+  let isSpecialPush = false;
 
   /* ===== Create suggestion box ===== */
   const suggestionBox = document.createElement("div");
@@ -76,7 +83,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Filter clients from localStorage data
     const matches = rawClientData.filter(client => {
-      // Handle cases where client or name might be undefined/null
       if (!client) return false;
       
       const slMatch = client.sl && client.sl.toString().includes(value);
@@ -101,17 +107,11 @@ document.addEventListener("DOMContentLoaded", () => {
     handleSearch(e.target.value, nameInput)
   );
 
-  /* ===== Form submit ===== */
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-
-    const sl = slInput.value.trim();
-    const name = nameInput.value.trim();
-    const amount = document.getElementById("amount").value.trim();
-
+  /* ===== VALIDATE FORM DATA ===== */
+  function validateFormData(sl, name, amount) {
     if (!sl || !name || !amount) {
       alert("Please fill all required fields");
-      return;
+      return false;
     }
 
     // Find client in localStorage data
@@ -122,52 +122,183 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!client) {
       alert("Client not found in master list. Please add client first from 'Add Client' page.");
-      return;
+      return false;
     }
 
-    // Check if amount is valid number
     if (isNaN(amount) || Number(amount) <= 0) {
       alert("Please enter a valid amount");
-      return;
+      return false;
     }
 
-    const now = new Date();
-    const currentMonth = now.toISOString().slice(0, 7); // YYYY-MM
+    return { client, amount: Number(amount) };
+  }
 
-    let monthlyData = JSON.parse(localStorage.getItem("monthlyClients"));
-
-    if (!monthlyData || monthlyData.month !== currentMonth) {
-      monthlyData = {
-        month: currentMonth,
-        clients: []
-      };
+  /* ===== "1" BUTTON CLICK - TOGGLE SPECIAL PUSH MODE ===== */
+  specialPushBtn.addEventListener("click", () => {
+    // Toggle special push mode
+    isSpecialPush = !isSpecialPush;
+    
+    if (isSpecialPush) {
+      // Activate special mode
+      specialPushBtn.classList.add("active");
+      specialPushBtn.innerHTML = '<i class="fa-solid fa-1" style="color: #10b981;"></i> Special Mode ON';
+      specialPushBtn.style.background = "linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)";
+      
+      // Update submit button text
+      submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Push (Special)';
+      submitBtn.style.background = "linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)";
+      
+      // Show notification
+      showNotification("Special Push Mode Activated", "success");
+    } else {
+      // Deactivate special mode
+      specialPushBtn.classList.remove("active");
+      specialPushBtn.innerHTML = '<i class="fa-solid fa-1"></i> 1';
+      specialPushBtn.style.background = "";
+      
+      // Reset submit button
+      submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Push Client';
+      submitBtn.style.background = "";
+      
+      showNotification("Special Push Mode Deactivated", "info");
     }
+  });
 
-    // Check if client already added this month
-    const alreadyExists = monthlyData.clients.some(
-      c => c.sl.toString() === client.sl.toString()
-    );
+  /* ===== FORM SUBMIT - HANDLE BOTH REGULAR AND SPECIAL PUSH ===== */
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    if (alreadyExists) {
-      alert("This client is already added for this month");
-      return;
+    const sl = slInput.value.trim();
+    const name = nameInput.value.trim();
+    const amount = amountInput.value.trim();
+
+    const validation = validateFormData(sl, name, amount);
+    if (!validation) return;
+
+    const { client, amount: validatedAmount } = validation;
+
+    // Add button loading state
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+    submitBtn.disabled = true;
+    specialPushBtn.disabled = true;
+
+    try {
+      const now = new Date();
+      const currentMonth = now.toISOString().slice(0, 7); // YYYY-MM
+
+      if (isSpecialPush) {
+        // ===== SPECIAL PUSH LOGIC =====
+        // Get or create special monthly data
+        let specialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients")) || { 
+          month: currentMonth, 
+          clients: [] 
+        };
+
+        // Reset if month changed
+        if (specialMonthlyData.month !== currentMonth) {
+          specialMonthlyData = { month: currentMonth, clients: [] };
+        }
+
+        // Check if client already added this month (special)
+        const alreadyExists = specialMonthlyData.clients.some(
+          c => c.sl.toString() === client.sl.toString()
+        );
+
+        if (alreadyExists) {
+          alert("This client is already added for this month (special list)");
+          return;
+        }
+
+        // Add to special monthly list
+        specialMonthlyData.clients.push({
+          sl: client.sl,
+          name: client.name,
+          amount: validatedAmount,
+          addedDate: new Date().toISOString(),
+          policyNo: client.policyNo || "-",
+          isSpecial: true,
+          pushedVia: "1-button",
+          pushDate: new Date().toISOString()
+        });
+
+        localStorage.setItem("specialMonthlyClients", JSON.stringify(specialMonthlyData));
+
+        // Success message
+        setTimeout(() => {
+          alert(`✅ SPECIAL PUSH SUCCESS!\n\nClient: "${client.name}" (SL: ${client.sl})\nAmount: ₹${validatedAmount}\n\nThis client will appear in Daily page with special marking.`);
+        }, 100);
+        
+      } else {
+        // ===== REGULAR PUSH LOGIC =====
+        // Get or create regular monthly data
+        let monthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || { 
+          month: currentMonth, 
+          clients: [] 
+        };
+
+        // Reset if month changed
+        if (monthlyData.month !== currentMonth) {
+          monthlyData = { month: currentMonth, clients: [] };
+        }
+
+        // Check if client already added this month
+        const alreadyExists = monthlyData.clients.some(
+          c => c.sl.toString() === client.sl.toString()
+        );
+
+        if (alreadyExists) {
+          alert("This client is already added for this month");
+          return;
+        }
+
+        // Add to regular monthly list
+        monthlyData.clients.push({
+          sl: client.sl,
+          name: client.name,
+          amount: validatedAmount,
+          addedDate: new Date().toISOString(),
+          policyNo: client.policyNo || "-",
+          isSpecial: false,
+          pushedVia: "regular-push",
+          pushDate: new Date().toISOString()
+        });
+
+        localStorage.setItem("monthlyClients", JSON.stringify(monthlyData));
+
+        // Success message
+        setTimeout(() => {
+          alert(`✅ REGULAR PUSH SUCCESS!\n\nClient: "${client.name}" (SL: ${client.sl})\nAmount: ₹${validatedAmount}\n\nThis client will appear in Daily page normally.`);
+        }, 100);
+      }
+
+      // Reset form and mode
+      form.reset();
+      isSpecialPush = false;
+      suggestionBox.style.display = "none";
+      
+      // Reset buttons to normal state
+      specialPushBtn.classList.remove("active");
+      specialPushBtn.innerHTML = '<i class="fa-solid fa-1"></i> 1';
+      specialPushBtn.style.background = "";
+      
+      // Add visual feedback
+      submitBtn.classList.add("clicked");
+      setTimeout(() => {
+        submitBtn.classList.remove("clicked");
+      }, 300);
+      
+    } catch (error) {
+      console.error("Error in push operation:", error);
+      alert("An error occurred. Please try again.");
+    } finally {
+      // Reset button state
+      submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Push Client';
+      submitBtn.disabled = false;
+      submitBtn.style.background = "";
+      
+      specialPushBtn.disabled = false;
+      specialPushBtn.style.background = "";
     }
-
-    // Add to monthly list
-    monthlyData.clients.push({
-      sl: client.sl,
-      name: client.name,
-      amount: Number(amount),
-      addedDate: new Date().toISOString(),
-      policyNo: client.policyNo || "-"
-    });
-
-    localStorage.setItem("monthlyClients", JSON.stringify(monthlyData));
-
-    alert(`✅ Client "${client.name}" (SL: ${client.sl}) added to Monthly List with amount: ₹${amount}`);
-
-    form.reset();
-    suggestionBox.style.display = "none";
   });
 
   // Close suggestion box when clicking outside
@@ -178,4 +309,73 @@ document.addEventListener("DOMContentLoaded", () => {
       suggestionBox.style.display = "none";
     }
   });
+
+  // Form reset handler
+  form.addEventListener("reset", () => {
+    suggestionBox.style.display = "none";
+    
+    // Reset special push mode
+    isSpecialPush = false;
+    
+    // Reset button states and styles
+    specialPushBtn.classList.remove("active");
+    specialPushBtn.innerHTML = '<i class="fa-solid fa-1"></i> 1';
+    specialPushBtn.disabled = false;
+    specialPushBtn.style.background = "";
+    
+    submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Push Client';
+    submitBtn.disabled = false;
+    submitBtn.classList.remove("clicked");
+    submitBtn.style.background = "";
+  });
+
+  /* ===== HELPER FUNCTION FOR NOTIFICATIONS ===== */
+  function showNotification(message, type = "info") {
+    const notification = document.createElement("div");
+    notification.style.position = "fixed";
+    notification.style.top = "80px";
+    notification.style.right = "20px";
+    notification.style.padding = "12px 20px";
+    notification.style.borderRadius = "8px";
+    notification.style.color = "white";
+    notification.style.fontWeight = "500";
+    notification.style.zIndex = "9999";
+    notification.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+    notification.style.animation = "slideIn 0.3s ease";
+    
+    if (type === "success") {
+      notification.style.background = "linear-gradient(135deg, #10b981 0%, #34d399 100%)";
+    } else if (type === "error") {
+      notification.style.background = "linear-gradient(135deg, #ef4444 0%, #f87171 100%)";
+    } else {
+      notification.style.background = "linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)";
+    }
+    
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+      notification.style.animation = "slideOut 0.3s ease";
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 300);
+    }, 3000);
+  }
+
+  // Add CSS for notifications
+  const style = document.createElement("style");
+  style.textContent = `
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(style);
 });

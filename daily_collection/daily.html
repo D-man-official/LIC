@@ -18,12 +18,16 @@
 <link rel="stylesheet" href="./daily.css">
 </head>
 
-
-
 <body>
+<script>
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
 
-
-
+  sidebar.classList.toggle("active");
+  overlay.classList.toggle("active");
+}
+</script>
 
 <!-- ================= HEADER ================= -->
 <header class="header">
@@ -68,17 +72,14 @@
           <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
           Reports
         </a>
-
   </nav>
 
   <div class="user-section">
     <div class="user-avatar">
-             <img id="userAvatar" src="../userImg/dman.jpg" alt="User Avatar">
-
+      <img id="userAvatar" src="../userImg/dman.jpg" alt="User Avatar">
     </div>
     <div class="user-name" id="userName">User</div>
     <div class="user-role">Chief Executive Officer</div>
-
     <a href="../index.html" class="logout">
       <i class="fa-solid fa-arrow-right-from-bracket"></i>
       Logout
@@ -86,66 +87,59 @@
   </div>
 </aside>
 
-
-
 <div class="main-content">
-
-<div class="container">
-
+  <div class="container">
     <!-- Header -->
     <div class="top-bar">
-        <h1>Daily Collection</h1>
-        
+      <h1>Daily Collection</h1>
     </div>
 
-  <div class="date-pill">
-    <i class="fa-regular fa-calendar"></i>
-    <span id="todayDate"></span>
-    <input
-      type="date"
-      id="selectedDate"
-      value=""
-    />
-  </div>
-
-</div>
-
-   <!-- Panels -->
-<div class="panels">
-
-  <!-- Pending -->
-  <div class="panel">
-    <div class="panel-header" id="pendingHeader">
-      <i class="fa-solid fa-clock" style="color:var(--orange)"></i>
-      Pending (0)
-    </div>
-
-    <div class="panel-body" id="pendingBody">
-      <!-- Pending client cards will be injected here -->
+    <div class="date-pill">
+      <i class="fa-regular fa-calendar"></i>
+      <span id="todayDate"></span>
+      <input type="date" id="selectedDate" value="" />
     </div>
   </div>
 
-  <!-- Collected -->
-  <div class="panel">
-    <div class="panel-header" id="collectedHeader">
-      <i class="fa-solid fa-circle-check" style="color:var(--green)"></i>
-      Collected (0)
+  <!-- Panels -->
+  <div class="panels">
+    <!-- Pending -->
+    <div class="panel">
+      <div class="panel-header" id="pendingHeader">
+        <i class="fa-solid fa-clock" style="color:var(--orange)"></i>
+        Pending (0)
+      </div>
+      <div class="panel-body" id="pendingBody">
+        <!-- Regular pending clients will be injected here -->
+      </div>
+      
+      <!-- Special Clients Section (Added via "1" button) -->
+      <div class="special-section">
+        <div class="section-header">
+          <i class="fa-solid fa-1" style="color:#8b5cf6"></i>
+          Special Clients (via "1" button)
+        </div>
+        <div class="panel-body" id="specialBody">
+          <!-- Special clients will be injected here -->
+        </div>
+      </div>
     </div>
 
-    <div class="panel-body" id="collectedBody">
-      <div class="empty" id="collectedEmpty">
-        <i class="fa-regular fa-clock" style="font-size:42px;"></i>
-        No payments collected yet
+    <!-- Collected -->
+    <div class="panel">
+      <div class="panel-header" id="collectedHeader">
+        <i class="fa-solid fa-circle-check" style="color:var(--green)"></i>
+        Collected (0)
+      </div>
+      <div class="panel-body" id="collectedBody">
+        <div class="empty" id="collectedEmpty">
+          <i class="fa-regular fa-clock" style="font-size:42px;"></i>
+          No payments collected yet
+        </div>
       </div>
     </div>
   </div>
-
 </div>
-
-
-<script>
-
-</script>
 
 <!-- ================= OVERLAY ================= -->
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -155,4 +149,3 @@
 
 </body>
 </html>
-

@@ -10,7 +10,134 @@
   --text: #111827;
   --text-light: #4b5563;
   --border: #e5e7eb;
+  --special: #8b5cf6;
+  --special-light: #ede9fe;
 }
+
+/* ========== SPECIAL SECTION ========== */
+.special-section {
+  margin-top: 1rem;
+  border-top: 2px solid var(--special);
+  background: var(--special-light);
+  border-radius: 0 0 20px 20px;
+}
+
+.section-header {
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.special-client-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  border: 2px solid var(--special);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.special-client-card:hover {
+  background: #faf5ff;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+  transform: translateX(4px);
+}
+
+.special-client-card::before {
+  content: '1';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 24px;
+  height: 24px;
+  background: var(--special);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3);
+}
+
+.special-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.special-info p {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-top: 0.25rem;
+}
+
+.special-amount {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--special);
+}
+
+.special-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.special-mark-btn {
+  background: var(--special);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.special-mark-btn:hover {
+  background: #7c3aed;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
+}
+
+.special-remove-btn {
+  background: white;
+  color: #dc2626;
+  border: 2px solid #fecaca;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.special-remove-btn:hover {
+  background: #fee2e2;
+  transform: translateY(-2px);
+}
+
+.special-empty {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-light);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* Rest of your existing daily.css code remains the same below */
 
 * {
   box-sizing: border-box;
@@ -461,6 +588,15 @@ h1 {
   
   .date-pill {
     flex-wrap: wrap;
+  }
+  
+  .special-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .special-mark-btn, .special-remove-btn {
+    width: 100%;
   }
 }
 
