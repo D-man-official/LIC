@@ -55,23 +55,7 @@
   transform: translateX(4px);
 }
 
-.special-client-card::before {
-  content: '1';
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  width: 24px;
-  height: 24px;
-  background: var(--special);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.8rem;
-  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3);
-}
+
 
 .special-info h3 {
   font-size: 1.1rem;
