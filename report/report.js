@@ -3,10 +3,11 @@ const { jsPDF } = window.jspdf;
 /* =========================
    GOOGLE DRIVE CONFIGURATION
 ========================= */
-const GOOGLE_CLIENT_ID = '252795430368-rl11dnk11d7mpr0s1m0esln0otdgv9p1.apps.googleusercontent.com';
-const GOOGLE_API_KEY = 'AIzaSyCUeSEUkWUenh0xmD7sFGLKAr6eAWXukAY';
-const DRIVE_FOLDER_ID = '1-KYADCmIDbarZ0oR26ECdctvWHPwvN7n';
-const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/drive.file';
+const GOOGLE_CLIENT_ID =
+  "252795430368-rl11dnk11d7mpr0s1m0esln0otdgv9p1.apps.googleusercontent.com";
+const GOOGLE_API_KEY = "AIzaSyCUeSEUkWUenh0xmD7sFGLKAr6eAWXukAY";
+const DRIVE_FOLDER_ID = "1-KYADCmIDbarZ0oR26ECdctvWHPwvN7n";
+const GOOGLE_SCOPES = "https://www.googleapis.com/auth/drive.file";
 
 // Global variables
 let googleAccessToken = null;
@@ -59,8 +60,8 @@ function getCombinedMonthlyData(monthKey) {
   }
 
   if (special && special.month === monthKey) {
-    special.clients.forEach(sc => {
-      if (!clients.some(c => c.sl === sc.sl)) {
+    special.clients.forEach((sc) => {
+      if (!clients.some((c) => c.sl === sc.sl)) {
         clients.push(sc);
       }
     });
@@ -442,14 +443,19 @@ function generatePDFAsBlob() {
 
     doc.autoTable({
       head,
+      head,
       body,
-      startY: 20,
+      startY: 18,
+
       styles: {
-        fontSize: 8,
+        fontSize: 6, // smaller text
         halign: "center",
-        cellPadding: 2,
+        cellPadding: 1, // smaller padding
         font: "helvetica",
       },
+
+      rowPageBreak: "avoid", // do not split rows
+      pageBreak: "avoid", // try to keep on one page
       headStyles: {
         fillColor: [30, 58, 138],
         textColor: 255,
@@ -567,12 +573,12 @@ function generatePDFAsBlob() {
     url: "mailto:dhimans7047@gmail.com",
   });
 
-  const pdfBlob = doc.output('blob');
+  const pdfBlob = doc.output("blob");
   return {
     blob: pdfBlob,
     filename: `LIC_Report_${monthNames[month]}_${year}.pdf`,
     monthName: monthNames[month],
-    year: year
+    year: year,
   };
 }
 
@@ -586,9 +592,9 @@ function downloadPDF() {
 
   try {
     const { blob, filename } = generatePDFAsBlob();
-    
+
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
@@ -597,12 +603,14 @@ function downloadPDF() {
     URL.revokeObjectURL(url);
 
     downloadBtn.classList.remove("loading");
-    downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF Report';
+    downloadBtn.innerHTML =
+      '<i class="fas fa-download"></i> Download PDF Report';
     showSuccessMessage(filename, false);
   } catch (error) {
     alert("No data found for selected month");
     downloadBtn.classList.remove("loading");
-    downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF Report';
+    downloadBtn.innerHTML =
+      '<i class="fas fa-download"></i> Download PDF Report';
   }
 }
 
@@ -613,12 +621,12 @@ function downloadPDF() {
 // Show Drive Upload Instructions
 function showDriveInstructions(pdfData) {
   const url = URL.createObjectURL(pdfData.blob);
-  const a = document.createElement('a');
+  const a = document.createElement("a");
   a.href = url;
   a.download = pdfData.filename;
-  a.style.display = 'none';
+  a.style.display = "none";
   document.body.appendChild(a);
-  
+
   const modalHTML = `
     <div id="driveModal" style="
       position: fixed;
@@ -727,39 +735,42 @@ function showDriveInstructions(pdfData) {
       }
     </style>
   `;
-  
-  const modalDiv = document.createElement('div');
+
+  const modalDiv = document.createElement("div");
   modalDiv.innerHTML = modalHTML;
   document.body.appendChild(modalDiv);
-  
+
   // Close modal
-  document.getElementById('closeModalBtn').onclick = function() {
+  document.getElementById("closeModalBtn").onclick = function () {
     document.body.removeChild(modalDiv);
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
-  
-  document.getElementById('cancelBtn').onclick = function() {
+
+  document.getElementById("cancelBtn").onclick = function () {
     document.body.removeChild(modalDiv);
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
-  
+
   // Download and open Drive
-  document.getElementById('downloadAndOpenBtn').onclick = function() {
+  document.getElementById("downloadAndOpenBtn").onclick = function () {
     // Trigger download
     a.click();
-    
+
     // Open Drive folder after 1 second
     setTimeout(() => {
-      window.open(`https://drive.google.com/drive/folders/${DRIVE_FOLDER_ID}`, '_blank');
+      window.open(
+        `https://drive.google.com/drive/folders/${DRIVE_FOLDER_ID}`,
+        "_blank",
+      );
     }, 1000);
-    
+
     // Close modal
     document.body.removeChild(modalDiv);
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    
+
     // Show success message
     showSuccessMessage(pdfData.filename, true);
   };
@@ -769,26 +780,28 @@ function showDriveInstructions(pdfData) {
 async function exportToDrive() {
   try {
     driveBtn.classList.add("loading");
-    driveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
-    
+    driveBtn.innerHTML =
+      '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+
     const pdfData = generatePDFAsBlob();
-    
+
     // Skip OAuth attempt, go directly to manual instructions
     driveBtn.classList.remove("loading");
-    driveBtn.innerHTML = '<i class="fa-brands fa-google-drive"></i> Export to Drive';
-    
+    driveBtn.innerHTML =
+      '<i class="fa-brands fa-google-drive"></i> Export to Drive';
+
     showDriveInstructions(pdfData);
-    
   } catch (error) {
-    console.error('Drive export error:', error);
-    
+    console.error("Drive export error:", error);
+
     driveBtn.classList.remove("loading");
-    driveBtn.innerHTML = '<i class="fa-brands fa-google-drive"></i> Export to Drive';
-    
-    if (error.message.includes('No data found')) {
-      alert('No data found for selected month');
+    driveBtn.innerHTML =
+      '<i class="fa-brands fa-google-drive"></i> Export to Drive';
+
+    if (error.message.includes("No data found")) {
+      alert("No data found for selected month");
     } else {
-      alert('Error generating PDF');
+      alert("Error generating PDF");
     }
   }
 }
@@ -797,20 +810,24 @@ async function exportToDrive() {
 function showSuccessMessage(filename, isDrive = false, driveFileId = null) {
   const successMessage = document.createElement("div");
   successMessage.className = "success-message";
-  
+
   if (isDrive) {
     successMessage.innerHTML = `
       <i class="fa-brands fa-google-drive" style="color: #34A853;"></i>
       <div>
         <div class="message" style="font-weight: 600;">PDF Uploaded to Google Drive!</div>
         <div class="filename">${filename}</div>
-        ${driveFileId ? `
+        ${
+          driveFileId
+            ? `
         <div style="margin-top: 5px;">
           <a href="https://drive.google.com/file/d/${driveFileId}/view" target="_blank" 
              style="color: white; text-decoration: underline; font-size: 0.8rem;">
             <i class="fas fa-external-link-alt"></i> Open in Drive
           </a>
-        </div>` : ''}
+        </div>`
+            : ""
+        }
       </div>
     `;
   } else {
