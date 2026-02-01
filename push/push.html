@@ -104,37 +104,36 @@ function toggleSidebar() {
           </div>
           
           <!-- ========== MONTH-YEAR PICKER ========== -->
-          <div class="form-group">
-            <label>Select Month & Year *</label>
-            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 0.5rem;">
-              <div style="flex: 1; display: flex; gap: 0.5rem;">
-                <select id="yearPicker" style="flex: 1; padding: 1rem; border: 2px solid var(--border); border-radius: 12px; font-size: 1rem; font-weight: 500; background: white; cursor: pointer;">
-                  <!-- Years will be populated by JS -->
-                </select>
-                <select id="monthPicker" style="flex: 1; padding: 1rem; border: 2px solid var(--border); border-radius: 12px; font-size: 1rem; font-weight: 500; background: white; cursor: pointer;">
-                  <option value="01">January</option>
-                  <option value="02">February</option>
-                  <option value="03">March</option>
-                  <option value="04">April</option>
-                  <option value="05">May</option>
-                  <option value="06">June</option>
-                  <option value="07">July</option>
-                  <option value="08">August</option>
-                  <option value="09">September</option>
-                  <option value="10">October</option>
-                  <option value="11">November</option>
-                  <option value="12">December</option>
-                </select>
-              </div>
-              <button type="button" id="currentMonthBtn" style="padding: 1rem 1.5rem; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 0.5rem;">
-                <i class="fa-solid fa-calendar-day"></i> Current
-              </button>
-            </div>
-            <div class="helper">
-              <i class="fa-solid fa-info-circle"></i>
-              Select any month to add client. Default is current month.
-            </div>
-          </div>
+        <!-- ========== MONTH-YEAR PICKER ========== -->
+<div class="form-group">
+  <label>Select Month & Year *</label>
+  <div class="month-picker-container">
+    <div class="month-picker-inner">
+      <select id="yearPicker"></select>
+      <select id="monthPicker">
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+        <option value="08">August</option>
+        <option value="09">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+    </div>
+    <button type="button" id="currentMonthBtn">
+      <i class="fa-solid fa-calendar-day"></i> Current
+    </button>
+  </div>
+  <div class="helper">
+    <i class="fa-solid fa-info-circle"></i>
+    Select any month to add client. Default is current month.
+  </div>
+</div>
   
   <!-- SL -->
   <div class="form-group">
