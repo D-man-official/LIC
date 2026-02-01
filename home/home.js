@@ -56,27 +56,15 @@ function loadCurrentMonthClientCount() {
   const now = new Date();
   const currentMonth = now.toISOString().slice(0, 7); // "YYYY-MM"
 
-  const monthlyData =
-    JSON.parse(localStorage.getItem("monthlyClients")) || {
-      month: currentMonth,
-      clients: [],
-    };
+  // NEW STRUCTURE - compatible with view.js
+  const allMonthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || {};
+  const allSpecialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients")) || {};
 
-  const specialMonthlyData =
-    JSON.parse(localStorage.getItem("specialMonthlyClients")) || {
-      month: currentMonth,
-      clients: [],
-    };
+  // Get data for current month only
+  const monthlyClients = allMonthlyData[currentMonth] || [];
+  const specialMonthlyClients = allSpecialMonthlyData[currentMonth] || [];
 
-  let total = 0;
-
-  if (monthlyData.month === currentMonth) {
-    total += monthlyData.clients.length;
-  }
-
-  if (specialMonthlyData.month === currentMonth) {
-    total += specialMonthlyData.clients.length;
-  }
+  let total = monthlyClients.length + specialMonthlyClients.length;
 
   const totalClientsEl = document.getElementById("totalClients");
   if (totalClientsEl) {
@@ -180,5 +168,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 150);
   }
 });
-
-
