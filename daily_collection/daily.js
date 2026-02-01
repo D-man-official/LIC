@@ -79,25 +79,29 @@ document.addEventListener("DOMContentLoaded", () => {
   const collectedHeader = document.getElementById("collectedHeader");
   const specialHeader = document.getElementById("specialHeader");
 
+  // Get active month from activeDate
+  const activeMonth = activeDate.slice(0, 7); // "2026-01"
 
-  const now = new Date();
-  const currentMonth = now.toISOString().slice(0, 7); // e.g. "2026-01"
-
-  // Load regular monthly data
-  let monthlyData = JSON.parse(localStorage.getItem("monthlyClients"));
+  // Load regular monthly data FOR ACTIVE MONTH
+  let monthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || { 
+    month: activeMonth, 
+    clients: [] 
+  };
   
-  // Load special monthly data (from "1" button)
-  let specialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients"));
+  // Load special monthly data FOR ACTIVE MONTH (from "1" button)
+  let specialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients")) || { 
+    month: activeMonth, 
+    clients: [] 
+  };
 
-  // Auto-reset when month changes (for both regular and special)
-  if (!monthlyData || monthlyData.month !== currentMonth) {
-    localStorage.removeItem("monthlyClients");
-    monthlyData = { month: currentMonth, clients: [] };
+  // NO AUTO-RESET - Keep all months data as is
+  // If loaded data is for different month, initialize new data for this month
+  if (monthlyData.month !== activeMonth) {
+    monthlyData = { month: activeMonth, clients: [] };
   }
 
-  if (!specialMonthlyData || specialMonthlyData.month !== currentMonth) {
-    localStorage.removeItem("specialMonthlyClients");
-    specialMonthlyData = { month: currentMonth, clients: [] };
+  if (specialMonthlyData.month !== activeMonth) {
+    specialMonthlyData = { month: activeMonth, clients: [] };
   }
 
   const dailyKey = `dailyStatus-${activeDate}`;

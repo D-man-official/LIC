@@ -194,10 +194,9 @@ document.addEventListener("DOMContentLoaded", () => {
           clients: [] 
         };
 
-        // Reset if month changed
-        if (specialMonthlyData.month !== currentMonth) {
-          specialMonthlyData = { month: currentMonth, clients: [] };
-        }
+        // NO MONTH RESET - Keep existing data
+        // Just ensure the month property is current
+        specialMonthlyData.month = currentMonth;
 
         // Check if client already added this month (special)
         const alreadyExists = specialMonthlyData.clients.some(
@@ -236,10 +235,9 @@ document.addEventListener("DOMContentLoaded", () => {
           clients: [] 
         };
 
-        // Reset if month changed
-        if (monthlyData.month !== currentMonth) {
-          monthlyData = { month: currentMonth, clients: [] };
-        }
+        // NO MONTH RESET - Keep existing data
+        // Just ensure the month property is current
+        monthlyData.month = currentMonth;
 
         // Check if client already added this month
         const alreadyExists = monthlyData.clients.some(
