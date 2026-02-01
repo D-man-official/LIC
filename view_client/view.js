@@ -661,3 +661,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Refresh data every 30 seconds
   setInterval(loadMonthlyClients, 30000);
 });
+
+// Add this function to view.js to refresh data
+function refreshViewPage() {
+  loadMonthlyClients();
+  // Also trigger any other data-dependent updates
+}
+
+// You can call refreshViewPage() after successful import

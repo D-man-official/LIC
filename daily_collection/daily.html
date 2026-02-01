@@ -102,6 +102,8 @@
           <h1>Daily Collection</h1>
         </div>
 
+        
+
         <div class="date-pill">
           <i class="fa-regular fa-calendar"></i>
           <span id="todayDate"></span>
@@ -148,8 +150,117 @@
           </div>
         </div>
       </div>
+
+
+
+
+      <!-- Add this after the date-pill div in daily.html -->
+        <div class="data-transfer-section">
+          <div class="transfer-controls">
+            <!-- Month/Year Selection for Export -->
+            <div class="month-picker-section">
+              <h3>
+                <i class="fa-solid fa-calendar-download"></i> Select Month to
+                Export
+              </h3>
+
+              <div class="month-picker">
+                <div class="form-group">
+                  <label for="exportMonthSelect">
+                    <i class="fa-solid fa-calendar-alt"></i>
+                    Select Month
+                  </label>
+                  <div class="select-wrapper">
+                    <select id="exportMonthSelect">
+                      <option value="01">January</option>
+                      <option value="02">February</option>
+                      <option value="03">March</option>
+                      <option value="04">April</option>
+                      <option value="05">May</option>
+                      <option value="06">June</option>
+                      <option value="07">July</option>
+                      <option value="08">August</option>
+                      <option value="09">September</option>
+                      <option value="10">October</option>
+                      <option value="11">November</option>
+                      <option value="12">December</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="exportYearSelect">
+                    <i class="fa-solid fa-calendar"></i>
+                    Select Year
+                  </label>
+                  <div class="select-wrapper">
+                    <select id="exportYearSelect">
+                      <!-- Years will be populated by JavaScript -->
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label style="opacity: 0.7">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    Selected Month
+                  </label>
+                  <div class="selected-month-display" id="selectedMonthDisplay">
+                    January 2026
+                  </div>
+                </div>
+              </div>
+
+              <div class="transfer-buttons">
+                <button class="transfer-btn export-btn" id="exportBtn">
+                  <i class="fa-solid fa-file-export"></i>
+                  Export Selected Month
+                </button>
+                <button class="transfer-btn import-btn" id="importBtn">
+                  <i class="fa-solid fa-file-import"></i>
+                  Import Month Data
+                </button>
+              </div>
+            </div>
+
+            <!-- Import Section -->
+            <div class="import-section" id="importSection">
+              <h3><i class="fa-solid fa-calendar-upload"></i> Import Data</h3>
+              <div class="file-input-wrapper">
+                <input
+                  type="file"
+                  id="importFileInput"
+                  accept=".json"
+                  style="display: none"
+                />
+                <label for="importFileInput" class="file-input-label">
+                  <i class="fa-solid fa-folder-open"></i>
+                  Choose JSON File to Import
+                </label>
+                <div class="file-name" id="fileName">No file chosen</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status and Preview -->
+          <div class="transfer-info-container">
+            <div class="transfer-info" id="transferInfo">
+              <i class="fa-solid fa-circle-info"></i>
+              Select a month above and click Export to download data
+            </div>
+
+            <!-- Export Preview -->
+            <div class="export-preview" id="exportPreview">
+              <h4><i class="fa-solid fa-eye"></i> Export Preview</h4>
+              <div class="preview-content" id="previewContent">
+                <!-- Preview will be shown here -->
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
 
+    
     <!-- ================= OVERLAY ================= -->
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
