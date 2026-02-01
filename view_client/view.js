@@ -133,44 +133,50 @@ function loadMonthlyClients() {
   const month = currentViewDate.getMonth();
   const currentMonthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
   
-  // Load BOTH regular and special monthly clients
-  const monthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || { month: currentMonthKey, clients: [] };
-  const specialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients")) || { month: currentMonthKey, clients: [] };
+  // Load ALL monthly data (all months) - NEW STRUCTURE
+  const allMonthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || {};
+  const allSpecialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients")) || {};
+  
+  // Get data for current month only
+  const monthlyData = {
+    month: currentMonthKey,
+    clients: allMonthlyData[currentMonthKey] || []
+  };
+  
+  const specialMonthlyData = {
+    month: currentMonthKey,
+    clients: allSpecialMonthlyData[currentMonthKey] || []
+  };
   
   // Combine both lists for the current month
   let combinedClients = [];
   
   // Add regular clients for current month
-  if (monthlyData.month === currentMonthKey) {
-    combinedClients = [...monthlyData.clients];
-  }
+  combinedClients = [...monthlyData.clients];
   
   // Add special clients for current month
-  if (specialMonthlyData.month === currentMonthKey) {
-    // Mark special clients and merge
-    specialMonthlyData.clients.forEach(specialClient => {
-      // Check if already exists in combined list
-      const existingIndex = combinedClients.findIndex(c => c.sl.toString() === specialClient.sl.toString());
-      
-      if (existingIndex !== -1) {
-        // Update existing client with special marking
-        combinedClients[existingIndex] = {
-          ...combinedClients[existingIndex],
-          isSpecial: true,
-          amount: specialClient.amount, // Use special amount
-          pushedVia: "special",
-          pushDate: specialClient.pushDate
-        };
-      } else {
-        // Add new special client
-        combinedClients.push({
-          ...specialClient,
-          isSpecial: true,
-          pushedVia: "special"
-        });
-      }
-    });
-  }
+  specialMonthlyData.clients.forEach(specialClient => {
+    // Check if already exists in combined list
+    const existingIndex = combinedClients.findIndex(c => c.sl.toString() === specialClient.sl.toString());
+    
+    if (existingIndex !== -1) {
+      // Update existing client with special marking
+      combinedClients[existingIndex] = {
+        ...combinedClients[existingIndex],
+        isSpecial: true,
+        amount: specialClient.amount, // Use special amount
+        pushedVia: "special",
+        pushDate: specialClient.pushDate
+      };
+    } else {
+      // Add new special client
+      combinedClients.push({
+        ...specialClient,
+        isSpecial: true,
+        pushedVia: "special"
+      });
+    }
+  });
 
   const sortedClients = combinedClients.sort((a, b) => a.sl - b.sl);
   renderTable(sortedClients);
@@ -412,32 +418,40 @@ document.querySelector(".search-box")?.addEventListener("input", function(e) {
     const month = currentViewDate.getMonth();
     const currentMonthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
     
-    // Load both regular and special clients for current month
-    const monthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || { month: currentMonthKey, clients: [] };
-    const specialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients")) || { month: currentMonthKey, clients: [] };
+    // Load ALL monthly data
+    const allMonthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || {};
+    const allSpecialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients")) || {};
+    
+    // Get data for current month only
+    const monthlyData = {
+      month: currentMonthKey,
+      clients: allMonthlyData[currentMonthKey] || []
+    };
+    
+    const specialMonthlyData = {
+      month: currentMonthKey,
+      clients: allSpecialMonthlyData[currentMonthKey] || []
+    };
     
     // Combine clients
     let combinedClients = [];
-    if (monthlyData.month === currentMonthKey) {
-      combinedClients = [...monthlyData.clients];
-    }
-    if (specialMonthlyData.month === currentMonthKey) {
-      specialMonthlyData.clients.forEach(specialClient => {
-        const existingIndex = combinedClients.findIndex(c => c.sl.toString() === specialClient.sl.toString());
-        if (existingIndex !== -1) {
-          combinedClients[existingIndex] = {
-            ...combinedClients[existingIndex],
-            isSpecial: true,
-            amount: specialClient.amount
-          };
-        } else {
-          combinedClients.push({
-            ...specialClient,
-            isSpecial: true
-          });
-        }
-      });
-    }
+    combinedClients = [...monthlyData.clients];
+    
+    specialMonthlyData.clients.forEach(specialClient => {
+      const existingIndex = combinedClients.findIndex(c => c.sl.toString() === specialClient.sl.toString());
+      if (existingIndex !== -1) {
+        combinedClients[existingIndex] = {
+          ...combinedClients[existingIndex],
+          isSpecial: true,
+          amount: specialClient.amount
+        };
+      } else {
+        combinedClients.push({
+          ...specialClient,
+          isSpecial: true
+        });
+      }
+    });
 
     // Filter based on search term
     const filtered = combinedClients.filter(c =>
@@ -464,7 +478,6 @@ document.querySelector(".search-box")?.addEventListener("input", function(e) {
     }
   }, 300);
 });
-
 
 function generatePDFReport() {
   // Check if jsPDF is available

@@ -82,27 +82,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // Get active month from activeDate
   const activeMonth = activeDate.slice(0, 7); // "2026-01"
 
-  // Load regular monthly data FOR ACTIVE MONTH
-  let monthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || { 
-    month: activeMonth, 
-    clients: [] 
+  // Load ALL monthly data (all months) - NEW STRUCTURE
+  let allMonthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || {};
+  let allSpecialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients")) || {};
+  
+  // Get data for ACTIVE MONTH only
+  let monthlyData = {
+    month: activeMonth,
+    clients: allMonthlyData[activeMonth] || []
   };
   
-  // Load special monthly data FOR ACTIVE MONTH (from "1" button)
-  let specialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients")) || { 
-    month: activeMonth, 
-    clients: [] 
+  let specialMonthlyData = {
+    month: activeMonth,
+    clients: allSpecialMonthlyData[activeMonth] || []
   };
-
-  // NO AUTO-RESET - Keep all months data as is
-  // If loaded data is for different month, initialize new data for this month
-  if (monthlyData.month !== activeMonth) {
-    monthlyData = { month: activeMonth, clients: [] };
-  }
-
-  if (specialMonthlyData.month !== activeMonth) {
-    specialMonthlyData = { month: activeMonth, clients: [] };
-  }
 
   const dailyKey = `dailyStatus-${activeDate}`;
   let dailyStatus = JSON.parse(localStorage.getItem(dailyKey)) || [];
@@ -239,8 +232,14 @@ document.addEventListener("DOMContentLoaded", () => {
       card.querySelector(".remove-btn").addEventListener("click", () => {
         if (!confirm(`Remove ${item.name} from this month's list?`)) return;
 
-        monthlyData.clients = monthlyData.clients.filter(c => c.sl !== item.sl);
-        localStorage.setItem("monthlyClients", JSON.stringify(monthlyData));
+        // Get all monthly data
+        let allMonthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || {};
+        
+        // Remove from active month
+        if (allMonthlyData[activeMonth]) {
+          allMonthlyData[activeMonth] = allMonthlyData[activeMonth].filter(c => c.sl !== item.sl);
+          localStorage.setItem("monthlyClients", JSON.stringify(allMonthlyData));
+        }
 
         dailyStatus = dailyStatus.filter(d => d.sl !== item.sl);
         localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
@@ -306,8 +305,14 @@ document.addEventListener("DOMContentLoaded", () => {
       card.querySelector(".special-remove-btn").addEventListener("click", () => {
         if (!confirm(`Remove ${item.name} from special list?`)) return;
 
-        specialMonthlyData.clients = specialMonthlyData.clients.filter(c => c.sl !== item.sl);
-        localStorage.setItem("specialMonthlyClients", JSON.stringify(specialMonthlyData));
+        // Get all special monthly data
+        let allSpecialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients")) || {};
+        
+        // Remove from active month
+        if (allSpecialMonthlyData[activeMonth]) {
+          allSpecialMonthlyData[activeMonth] = allSpecialMonthlyData[activeMonth].filter(c => c.sl !== item.sl);
+          localStorage.setItem("specialMonthlyClients", JSON.stringify(allSpecialMonthlyData));
+        }
 
         dailyStatus = dailyStatus.filter(d => !(d.sl === item.sl && d.isSpecial));
         localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));

@@ -3,8 +3,7 @@ const { jsPDF } = window.jspdf;
 /* =========================
    GOOGLE DRIVE CONFIGURATION
 ========================= */
-const GOOGLE_CLIENT_ID =
-  "252795430368-rl11dnk11d7mpr0s1m0esln0otdgv9p1.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "252795430368-rl11dnk11d7mpr0s1m0esln0otdgv9p1.apps.googleusercontent.com";
 const GOOGLE_API_KEY = "AIzaSyCUeSEUkWUenh0xmD7sFGLKAr6eAWXukAY";
 const DRIVE_FOLDER_ID = "1-KYADCmIDbarZ0oR26ECdctvWHPwvN7n";
 const GOOGLE_SCOPES = "https://www.googleapis.com/auth/drive.file";
@@ -27,45 +26,40 @@ const noDataMessage = document.getElementById("noDataMessage");
 const reportPreview = document.getElementById("reportPreview");
 const previewContent = document.getElementById("previewContent");
 const closePreview = document.getElementById("closePreview");
-const successMessageContainer = document.getElementById(
-  "successMessageContainer",
-);
+const successMessageContainer = document.getElementById("successMessageContainer");
 
 const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
 ];
 
 /* =========================
-   ✅ COMBINED DATA FUNCTION
+   ✅ COMBINED DATA FUNCTION - FIXED VERSION
 ========================= */
 function getCombinedMonthlyData(monthKey) {
-  const normal = JSON.parse(localStorage.getItem("monthlyClients"));
-  const special = JSON.parse(localStorage.getItem("specialMonthlyClients"));
+  // নতুন স্ট্রাকচার: { "2024-01": [...], "2024-02": [...] }
+  const allMonthlyData = JSON.parse(localStorage.getItem("monthlyClients")) || {};
+  const allSpecialMonthlyData = JSON.parse(localStorage.getItem("specialMonthlyClients")) || {};
 
   let clients = [];
 
-  if (normal && normal.month === monthKey) {
-    clients = [...normal.clients];
+  // রেগুলার ক্লায়েন্ট যোগ করো
+  if (allMonthlyData[monthKey]) {
+    clients = [...allMonthlyData[monthKey]];
   }
 
-  if (special && special.month === monthKey) {
-    special.clients.forEach((sc) => {
-      if (!clients.some((c) => c.sl === sc.sl)) {
-        clients.push(sc);
+  // স্পেশাল ক্লায়েন্ট যোগ করো (ডুপ্লিকেট চেক করে)
+  if (allSpecialMonthlyData[monthKey]) {
+    allSpecialMonthlyData[monthKey].forEach((specialClient) => {
+      const alreadyExists = clients.some(c => c.sl.toString() === specialClient.sl.toString());
+      if (!alreadyExists) {
+        clients.push(specialClient);
       }
     });
   }
+
+  // ক্লায়েন্টগুলো SL নম্বর দিয়ে সর্ট করো
+  clients.sort((a, b) => Number(a.sl) - Number(b.sl));
 
   if (clients.length === 0) return null;
   return { month: monthKey, clients };
@@ -227,7 +221,7 @@ function generatePreview() {
     '<i class="fas fa-spinner fa-spin"></i> Generating Preview...';
 
   setTimeout(() => {
-    const clients = [...monthlyData.clients].sort((a, b) => a.sl - b.sl);
+    const clients = [...monthlyData.clients];
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     let grandMonthlyTotal = 0;
 
@@ -367,7 +361,7 @@ function generatePDFAsBlob() {
 
   let grandMonthlyTotal = 0;
 
-  const clients = [...monthlyData.clients].sort((a, b) => a.sl - b.sl);
+  const clients = [...monthlyData.clients];
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   const doc = new jsPDF({
