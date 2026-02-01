@@ -155,12 +155,11 @@ document.addEventListener("DOMContentLoaded", () => {
     Collected (${collected.length}) • ₹${totalCollectedAmount}
   `;
   if (specialHeader) {
-  specialHeader.innerHTML = `
-    <i class="fa-solid fa-1" style="color:#8b5cf6"></i>
-    Monthly Pay Clients (${special.length})
-  `;
-}
-
+    specialHeader.innerHTML = `
+      <i class="fa-solid fa-1" style="color:#8b5cf6"></i>
+      Monthly Pay Clients (${special.length})
+    `;
+  }
 
   pendingBody.innerHTML = "";
   collectedBody.innerHTML = "";
@@ -342,22 +341,50 @@ document.addEventListener("DOMContentLoaded", () => {
       card.innerHTML = `
         <div class="client-info">
           <h3>${item.name} ${item.isSpecial ? '<span style="background:#8b5cf6; color:white; padding:2px 6px; border-radius:4px; font-size:0.7rem;">1</span>' : ''}</h3>
-          <p>SL ${item.sl}</p>
+          <p>SL ${item.sl} ${item.isSpecial ? '(Monthly Pay)' : ''}</p>
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
           <div class="amount">₹${item.amount}</div>
-          <button class="undo-btn">Undo</button>
+          <button class="undo-btn" data-sl="${item.sl}" data-special="${item.isSpecial ? 'true' : 'false'}">Undo</button>
         </div>
       `;
 
-      card.querySelector(".undo-btn").addEventListener("click", () => {
-        dailyStatus = dailyStatus.filter(d => !(d.sl === item.sl && d.isSpecial === item.isSpecial));
+      // Use data attributes for easier filtering
+      card.querySelector(".undo-btn").addEventListener("click", function() {
+        const sl = parseInt(this.getAttribute("data-sl"));
+        const isSpecial = this.getAttribute("data-special") === "true";
+        
+        // Debug log (you can remove this in production)
+        console.log(`Undo clicked: SL ${sl}, isSpecial: ${isSpecial}`);
+        
+        // Filter from dailyStatus
+        dailyStatus = dailyStatus.filter(d => {
+          if (isSpecial) {
+            return !(d.sl === sl && d.isSpecial === true);
+          } else {
+            return !(d.sl === sl && (!d.isSpecial || d.isSpecial === false));
+          }
+        });
+        
         localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
 
+        // Filter from payment data
         const paymentKey = `payment-${activeDate}`;
         let paymentData = JSON.parse(localStorage.getItem(paymentKey)) || [];
-        paymentData = paymentData.filter(p => !(p.sl === item.sl && p.isSpecial === item.isSpecial));
+        
+        paymentData = paymentData.filter(p => {
+          if (isSpecial) {
+            return !(p.sl === sl && p.isSpecial === true);
+          } else {
+            return !(p.sl === sl && (!p.isSpecial || p.isSpecial === false));
+          }
+        });
+        
         localStorage.setItem(paymentKey, JSON.stringify(paymentData));
+
+        // Update today's collection amount
+        const newTotal = paymentData.reduce((sum, p) => sum + Number(p.amount), 0);
+        localStorage.setItem("todayCollectionAmount", newTotal);
 
         location.reload();
       });
