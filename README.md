@@ -50,7 +50,7 @@ lic-project/
 
 1. Download or clone the repository:
    ```bash
-   git clone <your-repository-link>
+   git clone https://github.com/D-man-official/LIC.git
 ````
 
 2. Open **index.html** in a browser
