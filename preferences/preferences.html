@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Monthly Preferences</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<!-- Sidebar CSS -->
+<link rel="stylesheet" href="../add_client/add.css">
+<link rel="icon" type="image/jpeg" href="../logo.png">
+<!-- Your Page CSS -->
+<link rel="stylesheet" href="../home/home.css">
+<link rel="stylesheet" href="./preferences.css">
+</head>
+
+<body>
+<script>
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+
+  sidebar.classList.toggle("active");
+  overlay.classList.toggle("active");
+}
+</script>
+
+<!-- ================= HEADER ================= -->
+<header class="header">
+  <div class="app-title">LIC Collection</div>
+  <button class="menu-btn" onclick="toggleSidebar()">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+</header>
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar" id="sidebar">
+  <div class="logo-container">
+    <div class="logo-icon">
+      <i class="fa-solid fa-shield"></i>
+    </div>
+    <div>
+      <div class="logo-text">LIC Collection</div>
+      <div class="logo-subtext">Book Manager</div>
+    </div>
+  </div>
+
+  <nav class="menu-list">
+    <a href="../home/home.html" class="menu-item ">
+          <span class="menu-icon"
+            ><i class="fa-solid fa-diagram-next"></i
+          ></span>
+          Dashboard
+        </a>
+        <a href="../daily_collection/daily.html" class="menu-item">
+          <span class="menu-icon"><i class="fa-regular fa-calendar"></i></span>
+          Daily Collection
+        </a>
+        <a href="../view_client/view.html" class="menu-item">
+          <span class="menu-icon"><i class="fa-solid fa-users"></i></span> View
+          Clients
+        </a>
+        <a href="../push/push.html" class="menu-item">
+          <span class="menu-icon"> <i class="fa-solid fa-chalkboard-user" style="color: #fbffff;"></i></span>
+          Push Client 
+        </a>
+        <a href="./preferences.html" class="menu-item active">
+          <span class="menu-icon"><i class="fa-solid fa-gear"></i></span>
+          Preferences
+        </a>
+        <a href="../report/report.html" class="menu-item">
+          <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
+          Reports
+        </a>
+
+  </nav>
+
+  <div class="user-section">
+    <div class="user-avatar">
+      <img id="userAvatar" src="../userImg/dman.jpg" alt="User Avatar">
+    </div>
+   <div class="user-name" id="userName">User</div>
+    <div class="user-role">Chief Officer</div>
+    <a href="../index.html" class="logout">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      Logout
+    </a>
+  </div>
+</aside>
+
+<!-- ================= OVERLAY ================= -->
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- ================= MAIN CONTENT ================= -->
+<div class="main-content">
+  <div class="wrapper">
+    <div class="card">
+      <!-- Card Header -->
+      <div class="card-header">
+        <div class="icon-box"><i class="fa-solid fa-calendar-check"></i></div>
+        <div>
+          <div class="card-title">Monthly Auto-Add Preferences</div>
+          <div class="card-subtitle">Set clients who should be added automatically every month</div>
+        </div>
+      </div>
+
+      <!-- Info Message -->
+      <div class="info-box">
+        <i class="fa-solid fa-circle-info"></i>
+        <p>
+          <strong>How it works:</strong> Clients added here will be automatically added to the 
+          monthly list at the beginning of each month. You don't need to manually push them every month.
+        </p>
+      </div>
+
+      <!-- Search Client -->
+      <div class="form-group">
+        <label>Search Client to Add *</label>
+        <div class="search-box">
+          <input type="text" id="searchClient" placeholder="Search by SL or Name...">
+          <button type="button" id="searchBtn"><i class="fa-solid fa-search"></i></button>
+        </div>
+        <div class="helper">
+          <i class="fa-solid fa-info-circle"></i>
+          Search and select clients from your master list
+        </div>
+      </div>
+
+      <!-- Search Results -->
+      <div class="search-results" id="searchResults">
+        <!-- Results will appear here -->
+      </div>
+
+      <!-- Selected Clients List -->
+      <div class="selected-clients-section">
+        <div class="section-title">
+          <i class="fa-solid fa-list-check"></i>
+          Selected Clients for Auto-Add (<span id="selectedCount">0</span>)
+        </div>
+        
+        <div class="clients-table-container">
+          <table class="clients-table">
+            <thead>
+              <tr>
+                <th>SL</th>
+                <th>Name</th>
+                
+                <th>Monthly Amount</th>
+               
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="selectedClientsTable">
+              <!-- Selected clients will appear here -->
+            </tbody>
+          </table>
+          
+          <div class="empty-state" id="emptySelected">
+            <i class="fa-solid fa-calendar-plus"></i>
+            <p>No clients selected yet. Search and add clients above.</p>
+          </div>
+        </div>
+
+        <!-- Auto-Add Type Selection -->
+        
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button type="button" class="btn btn-secondary" id="clearAllBtn">
+            <i class="fa-solid fa-trash"></i> Clear All
+          </button>
+          <button type="button" class="btn btn-primary" id="savePreferencesBtn">
+            <i class="fa-solid fa-floppy-disk"></i> Save Preferences
+          </button>
+          <button type="button" class="btn btn-success" id="testGenerateBtn">
+            <i class="fa-solid fa-play"></i> Test Generate for Current Month
+          </button>
+        </div>
+
+        <!-- Status Message -->
+        <div id="statusMessage" class="status-message"></div>
+      </div>
+
+      <!-- Current Preferences Info -->
+      <div class="current-preferences">
+        <div class="section-title">
+          <i class="fa-solid fa-history"></i>
+          Current Preferences Status
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <i class="fa-solid fa-users"></i>
+            <div>
+              <h3 id="prefsCount">0</h3>
+              <p>Clients in Preferences</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-calendar-alt"></i>
+            <div>
+              <h3 id="lastGenerated">Never</h3>
+              <p>Last Generated</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-toggle-on"></i>
+            <div>
+              <h3 id="autoStatus">Inactive</h3>
+              <p>Auto-Generate Status</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="./preferences.js"></script>
+<script src="../common/sidebar.js"></script>
+
+</body>
+</html>

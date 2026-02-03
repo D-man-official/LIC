@@ -32,9 +32,16 @@ function toggleSidebar() {
 <!-- ================= HEADER ================= -->
 <header class="header">
   <div class="app-title">LIC Collection</div>
-  <button class="menu-btn" onclick="toggleSidebar()">
-    <i class="fa-solid fa-bars"></i>
-  </button>
+  <!-- Right side controls -->
+  <div class="header-right">
+    <a href="../preferences/preferences.html" class="btn-preferences" title="Settings & Preferences">
+      <i class="fa-solid fa-gear"></i>
+      <span class="btn-text">Preferences</span>
+    </a>
+    <button class="menu-btn" onclick="toggleSidebar()">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
 </header>
 
 <!-- ================= SIDEBAR ================= -->
