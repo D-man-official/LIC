@@ -21,6 +21,51 @@
 
     <!-- Sidebar CSS -->
     <link rel="stylesheet" href="../home/home.css" />
+    
+    <style>
+      /* Additional styles for policy auto-fill */
+      .policy-auto-fill-hint {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: #3b82f6;
+        margin-top: 4px;
+        font-weight: 500;
+      }
+      
+      .policy-auto-fill-hint i {
+        font-size: 11px;
+      }
+      
+      .policy-badge-preview {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        margin-left: 8px;
+        vertical-align: middle;
+      }
+      
+      .jeevan-preview {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+      }
+      
+      .endowment-preview {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+      }
+      
+      .shortcut-hint {
+        font-size: 11px;
+        color: #64748b;
+        margin-top: 2px;
+      }
+    </style>
   </head>
 
   <body>
@@ -71,12 +116,9 @@
       <div class="user-section">
         <div class="user-avatar">
                  <img id="userAvatar" src="../userImg/dman.jpg" alt="User Avatar">
-
         </div>
        <div class="user-name" id="userName">User</div>
-
         <div class="user-role">Chief Officer</div>
-
         <a href="../index.html" class="logout">
           <i class="fa-solid fa-arrow-right-from-bracket"></i>
           Logout
@@ -131,7 +173,11 @@
             <!-- Table Number -->
             <div class="form-group">
               <label>Table Number *</label>
-              <input id="tableNo" type="text" placeholder="e.g., T-01" required />
+              <input id="tableNo" type="text" placeholder="e.g., 814/12 or 820/14" required />
+              <div class="policy-auto-fill-hint">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                Tab out of this field to auto-fill policy name for 814/820 series
+              </div>
             </div>
 
             <!-- Premium Amount -->
@@ -161,7 +207,10 @@
             <!-- Policy Name -->
             <div class="form-group">
               <label>Policy Name *</label>
-              <input id="policyName" type="text" placeholder="e.g., LIC Jeevan Anand" required />
+              <input id="policyName" type="text" placeholder="Will auto-fill for 814/820 series" required />
+              <div class="shortcut-hint">
+                <i class="fa-solid fa-keyboard"></i> Press Ctrl+Shift+T in Table Number field to auto-fill
+              </div>
             </div>
 
             <!-- Buttons -->

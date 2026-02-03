@@ -1895,3 +1895,92 @@ body {
     transform: translateY(0) scale(1);
   }
 }
+
+
+/* ================= POLICY BADGE STYLES ================= */
+
+.policy-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-top: 4px;
+  width: fit-content;
+}
+
+.policy-jeevan {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.policy-endowment {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Make policy name column wider to accommodate badges */
+#clientTableMain th:nth-child(9),
+#clientTableMain td:nth-child(9) {
+  min-width: 200px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .policy-badge {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+  }
+  
+  #clientTableMain th:nth-child(9),
+  #clientTableMain td:nth-child(9) {
+    min-width: 180px !important;
+  }
+}
+
+/* ================= POLICY BADGE STYLES ================= */
+
+.policy-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-top: 4px;
+  width: fit-content;
+}
+
+.policy-jeevan {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.policy-endowment {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Make policy name column wider to accommodate badges */
+#clientTableMain th:nth-child(9),
+#clientTableMain td:nth-child(9) {
+  min-width: 200px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .policy-badge {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+  }
+  
+  #clientTableMain th:nth-child(9),
+  #clientTableMain td:nth-child(9) {
+    min-width: 180px !important;
+  }
+}

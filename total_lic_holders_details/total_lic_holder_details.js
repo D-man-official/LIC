@@ -1,5 +1,3 @@
-
-
 // Ensure DOM is fully loaded before attaching the shortcut listener
 document.addEventListener('DOMContentLoaded', function() {
   // Keyboard shortcut: Ctrl + Shift + F to focus search bar
@@ -19,9 +17,98 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Search input not found! Check ID: clientSearchInput'); // Error log
       }
     }
+
+    // ================= POLICY NUMBER QUICK FILTER SHORTCUTS =================
+    
+    // Ctrl+Shift+8 to filter 814 series (New Jeevan Anand)
+    if (event.ctrlKey && event.shiftKey && event.key === '8') {
+      event.preventDefault();
+      filterData('withPolicy');
+      const searchInput = document.getElementById('clientSearchInput');
+      if (searchInput) {
+        searchInput.value = '814';
+        searchInput.focus();
+        window.filterTableData(window.currentFilter);
+        console.log('Shortcut triggered: Filter 814 series (New Jeevan Anand)');
+      }
+    }
+    
+    // Ctrl+Shift+0 to filter 820 series (New Endowment Plan)
+    if (event.ctrlKey && event.shiftKey && event.key === '0') {
+      event.preventDefault();
+      filterData('withPolicy');
+      const searchInput = document.getElementById('clientSearchInput');
+      if (searchInput) {
+        searchInput.value = '820';
+        searchInput.focus();
+        window.filterTableData(window.currentFilter);
+        console.log('Shortcut triggered: Filter 820 series (New Endowment Plan)');
+      }
+    }
   });
 });
 
+// ================= POLICY DETECTION LOGIC (BASED ON TABLE NUMBER) =================
+
+function getPolicyNameFromTableNo(tableNo) {
+  if (!tableNo || tableNo === "-" || tableNo === "") {
+    return "-";
+  }
+  
+  const tableStr = String(tableNo);
+  
+  // Check if table number contains 814
+  if (tableStr.includes("814")) {
+    return "New Jeevan Anand";
+  }
+  
+  // Check if table number contains 820
+  if (tableStr.includes("820")) {
+    return "New Endowment Plan";
+  }
+  
+  // Return original table number if no match
+  return tableStr;
+}
+
+function formatPolicyDisplay(tableNo, originalPolicyName) {
+  const detectedName = getPolicyNameFromTableNo(tableNo);
+  const originalName = originalPolicyName || "";
+  
+  // If we detected a known policy type
+  if (detectedName !== tableNo && detectedName !== "-" && detectedName !== "") {
+    let badgeClass = "policy-badge";
+    let badgeText = "";
+    let badgeColor = "";
+    
+    if (detectedName === "New Jeevan Anand") {
+      badgeClass += " policy-jeevan";
+      badgeText = "🟢 Jeevan Anand";
+      badgeColor = "var(--success-green)";
+    } else if (detectedName === "New Endowment Plan") {
+      badgeClass += " policy-endowment";
+      badgeText = "🔵 Endowment Plan";
+      badgeColor = "var(--primary-blue)";
+    }
+    
+    // Return formatted display with badge
+    return `
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <div style="font-weight: 600; color: var(--text-primary);">${detectedName}</div>
+        <span style="display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; background: rgba(${badgeColor === 'var(--success-green)' ? '16, 185, 129' : '59, 130, 246'}, 0.1); color: ${badgeColor}; border: 1px solid rgba(${badgeColor === 'var(--success-green)' ? '16, 185, 129' : '59, 130, 246'}, 0.3); width: fit-content;">
+          ${badgeText}
+        </span>
+        ${originalName && originalName !== detectedName && originalName !== "-" && originalName !== "" ? 
+          `<div style="font-size: 0.75rem; color: var(--text-light); margin-top: 4px; font-style: italic;">
+            <i class="fa-solid fa-note-sticky" style="margin-right: 4px;"></i>Original: ${originalName}
+          </div>` : ''}
+      </div>
+    `;
+  }
+  
+  // Return original if no detection
+  return originalName && originalName !== "-" ? originalName : "-";
+}
 
 // Initialize the application
 document.addEventListener("DOMContentLoaded", () => {
@@ -105,35 +192,37 @@ document.addEventListener("DOMContentLoaded", () => {
       tr.ondblclick = () => showClientDetails(item.sl);
       
       tr.innerHTML = `
-        <td style="font-weight: 600; color: var(--primary-blue);">${item.sl}</td>
+        <td style="font-weight: 800; color: #1d4ed8; background: rgba(59, 130, 246, 0.08); text-align: center; font-size: 1.1rem; border-right: 2px solid #dbeafe;">
+          <strong>${item.sl}</strong>
+        </td>
         <td>
           <div style="display: flex; align-items: center;">
             ${nameAvatar}
             <div>
               <div style="font-weight: 600; color: var(--text-primary);">${formatCell(item.name)}</div>
-              ${!hasName ? '<div style="font-size: 0.75rem; color: var(--danger-red); font-weight: 500;">Name Required</div>' : ''}
+              ${!hasName ? '<div class="warning-text">Name Required</div>' : ''}
             </div>
           </div>
         </td>
         <td>
           ${formatCell(item.policyNo)}
-          ${!hasPolicy ? '<div style="font-size: 0.75rem; color: var(--danger-red); font-weight: 500;">Policy Required</div>' : ''}
+          ${!hasPolicy ? '<div class="warning-text">Policy Required</div>' : ''}
         </td>
-        <td>${formatCell(item.doc)}</td>
+        <td style="text-align: center; min-width: 90px;">${formatCell(item.doc)}</td>
         <td>${formatCell(item.tableNo)}</td>
         <td style="font-weight: 600;">${formatCell(item.premium, true, true)}</td>
         <td>${formatCell(item.premiumType)}</td>
         <td style="font-weight: 700; color: var(--secondary-purple);">${formatCell(item.sumAsset, true)}</td>
-        <td>${formatCell(item.policyName)}</td>
+        <td>${formatPolicyDisplay(item.tableNo, item.policyName)}</td>
         <td>
           <div class="table-row-actions">
-            <div class="action-icon action-view"  onclick="showClientDetails(${item.sl})">
+            <div class="action-icon action-view" title="View Details" onclick="showClientDetails(${item.sl})">
               <i class="fa-solid fa-eye"></i>
             </div>
-            <div class="action-icon action-edit"  onclick="editClient(${item.sl})">
+            <div class="action-icon action-edit" title="Edit Client" onclick="editClient(${item.sl})">
               <i class="fa-solid fa-pen"></i>
             </div>
-            <div class="action-icon action-delete"  onclick="deleteClient(${item.sl})" style="background: rgba(239, 71, 111, 0.1); color: var(--danger-red);">
+            <div class="action-icon action-delete" title="Delete Client" onclick="deleteClient(${item.sl})" style="background: rgba(239, 71, 111, 0.15); color: var(--danger-red); border: 1px solid rgba(239, 71, 111, 0.3);">
               <i class="fa-solid fa-trash"></i>
             </div>
           </div>
@@ -257,6 +346,10 @@ function showClientDetails(sl) {
   
   if (!modal || !content) return;
   
+  // Get detected policy name from table number
+  const detectedPolicyName = getPolicyNameFromTableNo(client.tableNo);
+  const showOriginalName = client.policyName && client.policyName !== detectedPolicyName && client.policyName !== "-";
+  
   content.innerHTML = `
   <!-- HEADER -->
   <div class="detail-header">
@@ -290,10 +383,26 @@ function showClientDetails(sl) {
     <div><label>DOC</label><p>${client.doc || '—'}</p></div>
     <div><label>Table No</label><p>${client.tableNo || '—'}</p></div>
     <div><label>Premium Type</label><p>${client.premiumType || '—'}</p></div>
-    <div class="full"><label>Policy Name</label><p>${client.policyName || '—'}</p></div>
+    <div class="full">
+      <label>Policy Name</label>
+      <p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-weight: 700; color: var(--text-primary); font-size: 1.1rem;">
+            ${detectedPolicyName}
+          </div>
+          ${client.tableNo && (client.tableNo.includes('814') || client.tableNo.includes('820')) ? 
+            `<span style="display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; background: ${client.tableNo.includes('814') ? 'rgba(16, 185, 129, 0.15)' : 'rgba(59, 130, 246, 0.15)'}; color: ${client.tableNo.includes('814') ? 'var(--success-green)' : 'var(--primary-blue)'}; border: 1px solid ${client.tableNo.includes('814') ? 'rgba(16, 185, 129, 0.3)' : 'rgba(59, 130, 246, 0.3)'}; width: fit-content;">
+              ${client.tableNo.includes('814') ? '🟢 814 series (Jeevan Anand)' : '🔵 820 series (Endowment Plan)'}
+            </span>` : ''}
+          ${showOriginalName ? 
+            `<div style="font-size: 0.85rem; color: var(--text-light); margin-top: 4px;">
+              <i class="fa-solid fa-note-sticky" style="margin-right: 6px;"></i>Original: ${client.policyName}
+            </div>` : ''}
+        </div>
+      </p>
+    </div>
   </div>
 `;
-
   
   modal.style.display = 'flex';
   modal.setAttribute('data-current-sl', sl);
@@ -315,7 +424,6 @@ function editCurrentClient() {
 
 function refreshData() {
     location.reload();
-  
 }
 
 // ================= SIMPLE EXPORT FUNCTION =================
@@ -523,6 +631,10 @@ function showConflictResolutionModal() {
   window.importState.conflicts.forEach(conflict => {
     const decision = window.importState.decisions[conflict.sl] || 'skip';
     
+    // Get policy names from table number for display
+    const existingPolicyName = getPolicyNameFromTableNo(conflict.existing.tableNo);
+    const newPolicyName = getPolicyNameFromTableNo(conflict.new.tableNo);
+    
     const conflictItem = document.createElement('div');
     conflictItem.className = 'conflict-item';
     conflictItem.innerHTML = `
@@ -555,13 +667,13 @@ function showConflictResolutionModal() {
             <strong>Name:</strong> ${conflict.existing.name || 'Not Set'}
           </div>
           <div class="data-value ${!conflict.existing.policyNo || conflict.existing.policyNo === '-' ? 'missing' : ''}">
-            <strong>Policy:</strong> ${conflict.existing.policyNo || 'Not Set'}
+            <strong>Policy No:</strong> ${conflict.existing.policyNo || 'Not Set'}
           </div>
-          <div class="data-value ${!conflict.existing.premium || conflict.existing.premium === '-' ? 'missing' : ''}">
-            <strong>Premium:</strong> ${conflict.existing.premium || 'Not Set'}
+          <div class="data-value ${!conflict.existing.tableNo || conflict.existing.tableNo === '-' ? 'missing' : ''}">
+            <strong>Table No:</strong> ${conflict.existing.tableNo || 'Not Set'}
           </div>
-          <div class="data-value ${!conflict.existing.sumAsset || conflict.existing.sumAsset === '-' ? 'missing' : ''}">
-            <strong>Sum Assured:</strong> ${conflict.existing.sumAsset || 'Not Set'}
+          <div class="data-value">
+            <strong>Policy Type:</strong> ${existingPolicyName !== conflict.existing.tableNo ? `<span style="color: ${conflict.existing.tableNo && conflict.existing.tableNo.includes('814') ? '#10b981' : conflict.existing.tableNo && conflict.existing.tableNo.includes('820') ? '#3b82f6' : '#e5e7eb'}">${existingPolicyName}</span>` : '—'}
           </div>
         </div>
         
@@ -574,13 +686,13 @@ function showConflictResolutionModal() {
             <strong>Name:</strong> ${conflict.new.name || 'Not Set'}
           </div>
           <div class="data-value ${!conflict.new.policyNo || conflict.new.policyNo === '-' ? 'missing' : ''}">
-            <strong>Policy:</strong> ${conflict.new.policyNo || 'Not Set'}
+            <strong>Policy No:</strong> ${conflict.new.policyNo || 'Not Set'}
           </div>
-          <div class="data-value ${!conflict.new.premium || conflict.new.premium === '-' ? 'missing' : ''}">
-            <strong>Premium:</strong> ${conflict.new.premium || 'Not Set'}
+          <div class="data-value ${!conflict.new.tableNo || conflict.new.tableNo === '-' ? 'missing' : ''}">
+            <strong>Table No:</strong> ${conflict.new.tableNo || 'Not Set'}
           </div>
-          <div class="data-value ${!conflict.new.sumAsset || conflict.new.sumAsset === '-' ? 'missing' : ''}">
-            <strong>Sum Assured:</strong> ${conflict.new.sumAsset || 'Not Set'}
+          <div class="data-value">
+            <strong>Policy Type:</strong> ${newPolicyName !== conflict.new.tableNo ? `<span style="color: ${conflict.new.tableNo && conflict.new.tableNo.includes('814') ? '#10b981' : conflict.new.tableNo && conflict.new.tableNo.includes('820') ? '#3b82f6' : '#e5e7eb'}">${newPolicyName}</span>` : '—'}
           </div>
         </div>
       </div>
@@ -778,41 +890,3 @@ function formatSLColumn() {
 window.addEventListener('resize', function() {
   formatSLColumn();
 });
-// renderTable ফাংশনে SL কলামের জন্য এই কোডটি আপডেট করুন
-tr.innerHTML = `
-  <td style="font-weight: 800; color: #1d4ed8; background: rgba(59, 130, 246, 0.08); text-align: center; font-size: 1.1rem; border-right: 2px solid #dbeafe;">
-    <strong>${item.sl}</strong>
-  </td>
-  <td>
-    <div style="display: flex; align-items: center;">
-      ${nameAvatar}
-      <div>
-        <div style="font-weight: 600; color: var(--text-primary);">${formatCell(item.name)}</div>
-        ${!hasName ? '<div class="warning-text">Name Required</div>' : ''}
-      </div>
-    </div>
-  </td>
-  <td>
-    ${formatCell(item.policyNo)}
-    ${!hasPolicy ? '<div class="warning-text">Policy Required</div>' : ''}
-  </td>
-  <td style="text-align: center; min-width: 90px;">${formatCell(item.doc)}</td>
-  <td>${formatCell(item.tableNo)}</td>
-  <td style="font-weight: 600;">${formatCell(item.premium, true, true)}</td>
-  <td>${formatCell(item.premiumType)}</td>
-  <td style="font-weight: 700; color: var(--secondary-purple);">${formatCell(item.sumAsset, true)}</td>
-  <td>${formatCell(item.policyName)}</td>
-  <td>
-    <div class="table-row-actions">
-      <div class="action-icon action-view" title="View Details" onclick="showClientDetails(${item.sl})">
-        <i class="fa-solid fa-eye"></i>
-      </div>
-      <div class="action-icon action-edit" title="Edit Client" onclick="editClient(${item.sl})">
-        <i class="fa-solid fa-pen"></i>
-      </div>
-      <div class="action-icon action-delete" title="Delete Client" onclick="deleteClient(${item.sl})" style="background: rgba(239, 71, 111, 0.15); color: var(--danger-red); border: 1px solid rgba(239, 71, 111, 0.3);">
-        <i class="fa-solid fa-trash"></i>
-      </div>
-    </div>
-  </td>
-`;
