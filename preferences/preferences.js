@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-
   /* ===================== CONSTANTS ===================== */
   const PREFERENCES_KEY = "monthlyPreferences";
   const MONTHLY_KEY = "monthlyClients";
@@ -37,11 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!saved || !saved.clients) return;
 
     selectedClients.clear();
-    saved.clients.forEach(c => {
+    saved.clients.forEach((c) => {
       selectedClients.set(String(c.sl), {
         sl: String(c.sl),
         name: c.name,
-        amount: Number(c.amount) || 0
+        amount: Number(c.amount) || 0,
       });
     });
 
@@ -52,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function savePreferences() {
     const data = {
       clients: Array.from(selectedClients.values()),
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
     localStorage.setItem(PREFERENCES_KEY, JSON.stringify(data));
   }
@@ -72,10 +71,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const monthList = allMonthly[monthKey];
 
-    prefs.clients.forEach(p => {
-      const exists = monthList.some(m =>
-        String(m.sl) === String(p.sl) ||
-        normalizeName(m.name) === normalizeName(p.name)
+    prefs.clients.forEach((p) => {
+      const exists = monthList.some(
+        (m) =>
+          String(m.sl) === String(p.sl) ||
+          normalizeName(m.name) === normalizeName(p.name),
       );
 
       if (!exists) {
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
           isSpecial: false,
           pushedVia: "auto-preference",
           pushDate: new Date().toISOString(),
-          month: monthKey
+          month: monthKey,
         });
       }
     });
@@ -104,13 +104,16 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const res = rawClients.filter(c =>
-      c.sl.toString().includes(q) ||
-      c.name.toLowerCase().includes(q.toLowerCase())
-    ).slice(0, 10);
+    const res = rawClients
+      .filter(
+        (c) =>
+          c.sl.toString().includes(q) ||
+          c.name.toLowerCase().includes(q.toLowerCase()),
+      )
+      .slice(0, 10);
 
     searchResults.innerHTML = "";
-    res.forEach(c => {
+    res.forEach((c) => {
       const div = document.createElement("div");
       div.className = "result-item";
       div.innerHTML = `
@@ -135,11 +138,16 @@ document.addEventListener("DOMContentLoaded", () => {
     selectedClients.set(String(c.sl), {
       sl: String(c.sl),
       name: c.name,
-      amount: Number(c.amount) || 0
+      amount: Number(c.amount) || 0,
     });
 
     savePreferences();
     renderTable();
+
+    // 🔽 UX FIX STARTS HERE
+    searchInput.value = ""; // clear search box
+    searchResults.innerHTML = ""; // remove old results
+    searchResults.classList.remove("active"); // hide dropdown
   }
 
   /* ===================== RENDER ===================== */
@@ -157,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     [...selectedClients.values()]
       .sort((a, b) => a.sl - b.sl)
-      .forEach(c => {
+      .forEach((c) => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${c.sl}</td>
@@ -166,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <td><button class="action-btn remove">Remove</button></td>
         `;
 
-        tr.querySelector("input").oninput = e => {
+        tr.querySelector("input").oninput = (e) => {
           c.amount = Number(e.target.value) || 0;
           savePreferences();
         };
@@ -182,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ===================== EVENTS ===================== */
-  searchInput.oninput = e => searchClients(e.target.value);
+  searchInput.oninput = (e) => searchClients(e.target.value);
   searchBtn.onclick = () => searchClients(searchInput.value);
 
   savePreferencesBtn.onclick = () => {
@@ -206,5 +214,4 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ===================== INIT ===================== */
   loadPreferences();
   generateForMonth(false);
-
 });
