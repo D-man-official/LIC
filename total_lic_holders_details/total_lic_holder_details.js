@@ -449,12 +449,14 @@ function exportData() {
   const jsonText = JSON.stringify(exportObject, null, 2);
 
   // Create TXT file
-  const blob = new Blob([jsonText], { type: "text/plain;charset=utf-8" });
+const blob = new Blob([jsonText], { type: "application/json;charset=utf-8" });
+
   const url = URL.createObjectURL(blob);
 
   const link = document.createElement("a");
   link.href = url;
-  link.download = `lic-data-${new Date().toISOString().split("T")[0]}.txt`;
+ link.download = `lic-data-${new Date().toISOString().split("T")[0]}.json`;
+
 
   document.body.appendChild(link);
   link.click();
@@ -510,11 +512,48 @@ document.addEventListener('DOMContentLoaded', function() {
   }, 100);
 });
 
-// ================= ENHANCED IMPORT FUNCTION =================
 function importData() {
-  const modal = document.getElementById("importConsoleModal");
-  if (modal) modal.style.display = "flex";
+  let fileInput = document.getElementById("importJsonInput");
+
+  // যদি input আগে না থাকে, dynamically তৈরি করবে
+  if (!fileInput) {
+    fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = ".json,.txt";
+    fileInput.id = "importJsonInput";
+    fileInput.style.display = "none";
+    document.body.appendChild(fileInput);
+  }
+
+  fileInput.click();
+
+  fileInput.onchange = function () {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      const text = e.target.result.trim();
+
+      // 🔁 EXACTLY reuse existing paste-import logic
+      const textarea = document.getElementById("importConsoleTextarea");
+      if (!textarea) {
+        alert("Import console not found");
+        return;
+      }
+
+      textarea.value = text;
+
+      // existing function call (DO NOT TOUCH)
+      applyImportConsole();
+    };
+
+    reader.readAsText(file);
+    fileInput.value = "";
+  };
 }
+
 
 function closeImportConsole() {
   document.getElementById("importConsoleModal").style.display = "none";
