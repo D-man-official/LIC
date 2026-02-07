@@ -1,465 +1,506 @@
-
-// Initialize storage keys
-const PREMIUM_STORAGE_KEY = "premiumTrackerRecords";
-const CLIENTS_STORAGE_KEY = "clients";
-
-// Global variables
-let premiumRecords = [];
-let currentFilter = 'all';
-
-// Initialize storage with sample data if empty
-function initializeStorage() {
-  // Initialize premium records
-  if (!localStorage.getItem(PREMIUM_STORAGE_KEY)) {
-    localStorage.setItem(PREMIUM_STORAGE_KEY, JSON.stringify([]));
+// ===================== NEW premium.js CONTENT =====================
+document.addEventListener("DOMContentLoaded", () => {
+  /* ===================== CONSTANTS ===================== */
+  const PREMIUM_ENTRIES_KEY = "premiumEntries";
+  const MASTER_CLIENTS_KEY = "clients";
+  
+  /* ===================== ELEMENTS ===================== */
+  const premiumTotalEntries = document.getElementById("premiumTotalEntries");
+  const totalClients = document.getElementById("totalClients");
+  const submittedCount = document.getElementById("submittedCount");
+  const pendingCount = document.getElementById("pendingCount");
+  const clientSelect = document.getElementById("clientSelect");
+  const addClientBtn = document.getElementById("addClientBtn");
+  const premiumTableBody = document.getElementById("premiumTableBody");
+  const noPremiumData = document.getElementById("noPremiumData");
+  const showingCount = document.getElementById("showingCount");
+  const totalCount = document.getElementById("totalCount");
+  
+  let allPremiumEntries = [];
+  let filteredEntries = [];
+  let currentFilter = 'all';
+  
+  /* ===================== INITIALIZATION ===================== */
+  function init() {
+    loadMasterClients();
+    loadPremiumData();
+    updateStatistics();
+    renderTable();
+    
+    // Auto-sync with master list
+    syncWithMasterList();
+    
+    // Event listeners
+    addClientBtn.addEventListener("click", addClientToTracker);
+    
+    // Refresh data every 30 seconds (optional)
+    setInterval(refreshAllData, 30000);
   }
   
-  // Check if clients exist (they should from your other pages)
-  if (!localStorage.getItem(CLIENTS_STORAGE_KEY)) {
-    // If no clients exist, create some sample data
-    const sampleClients = [
-      { id: 1, sl: 1, name: "Rahul Sharma", policyNo: "LIC123456", doc: "15/05/2023", tableNo: "123", premium: "5000", premiumType: "Monthly", sumAsset: "500000", policyName: "Jeevan Anand" },
-      { id: 2, sl: 2, name: "Priya Patel", policyNo: "LIC789012", doc: "20/06/2023", tableNo: "456", premium: "7500", premiumType: "Quarterly", sumAsset: "750000", policyName: "Jeevan Labh" },
-      { id: 3, sl: 3, name: "Amit Kumar", policyNo: "LIC345678", doc: "10/07/2023", tableNo: "789", premium: "10000", premiumType: "Yearly", sumAsset: "1000000", policyName: "Jeevan Umang" }
-    ];
-    localStorage.setItem(CLIENTS_STORAGE_KEY, JSON.stringify(sampleClients));
-  }
-}
-
-// Load premium records from localStorage
-function loadPremiumRecords() {
-  const records = localStorage.getItem(PREMIUM_STORAGE_KEY);
-  premiumRecords = records ? JSON.parse(records) : [];
-  return premiumRecords;
-}
-
-// Save premium records to localStorage
-function savePremiumRecords() {
-  localStorage.setItem(PREMIUM_STORAGE_KEY, JSON.stringify(premiumRecords));
-}
-
-// Load clients from localStorage to populate dropdown
-function loadClientsToDropdown() {
-  const clients = JSON.parse(localStorage.getItem(CLIENTS_STORAGE_KEY)) || [];
-  const clientSelect = document.getElementById('clientSelect');
-  
-  // Clear existing options except the first one
-  clientSelect.innerHTML = '<option value="">Select a client to add...</option>';
-  
-  // Get existing premium records to avoid adding duplicates
-  const existingClientIds = premiumRecords.map(record => record.clientId);
-  
-  // Add clients that are not already in premium tracker
-  clients.forEach(client => {
-    if (!existingClientIds.includes(client.id)) {
-      const option = document.createElement('option');
-      option.value = client.id;
-      option.textContent = `${client.sl}. ${client.name} (${client.policyNo})`;
+  /* ===================== LOAD MASTER CLIENTS FOR DROPDOWN ===================== */
+  function loadMasterClients() {
+    // Get fresh data from localStorage EVERY TIME
+    const masterClients = getMasterClients();
+    
+    // Clear existing options except first
+    clientSelect.innerHTML = '<option value="">Select a client to add...</option>';
+    
+    if (masterClients.length === 0) {
+      const option = document.createElement("option");
+      option.value = "";
+      option.textContent = "No clients found in database";
+      option.disabled = true;
+      clientSelect.appendChild(option);
+      return;
+    }
+    
+    // Add clients that are NOT already in premium tracker
+    const existingPremiumSLs = allPremiumEntries.map(entry => entry.sl);
+    
+    // Sort by SL number
+    const sortedClients = masterClients.sort((a, b) => Number(a.sl) - Number(b.sl));
+    
+    sortedClients.forEach(client => {
+      // Skip if already in premium tracker
+      if (!existingPremiumSLs.includes(parseInt(client.sl))) {
+        const option = document.createElement("option");
+        option.value = client.sl;
+        const name = client.name && client.name !== "-" ? client.name : "Unnamed Client";
+        const premium = client.premium && client.premium !== "-" ? client.premium : "0";
+        option.textContent = `SL ${client.sl} - ${name} (₹${premium})`;
+        option.title = `Policy: ${client.policyNo || "-"} | DOC: ${client.doc || "-"}`;
+        clientSelect.appendChild(option);
+      }
+    });
+    
+    // If all clients are already in premium tracker
+    if (clientSelect.options.length === 1 && clientSelect.options[0].disabled) {
+      const option = document.createElement("option");
+      option.value = "";
+      option.textContent = "All clients already in premium tracker";
+      option.disabled = true;
       clientSelect.appendChild(option);
     }
-  });
-  
-  // Update dropdown count
-  const availableCount = clients.length - existingClientIds.length;
-  if (availableCount === 0) {
-    const option = document.createElement('option');
-    option.value = "";
-    option.textContent = "All clients are already in tracker";
-    option.disabled = true;
-    clientSelect.appendChild(option);
-  }
-}
-
-// Add a new client to premium tracker
-function addClientToTracker() {
-  const clientSelect = document.getElementById('clientSelect');
-  const selectedClientId = parseInt(clientSelect.value);
-  
-  if (!selectedClientId) {
-    alert("Please select a client first!");
-    return;
   }
   
-  // Get client details from clients storage
-  const clients = JSON.parse(localStorage.getItem(CLIENTS_STORAGE_KEY)) || [];
-  const client = clients.find(c => c.id === selectedClientId);
-  
-  if (!client) {
-    alert("Client not found in database!");
-    return;
-  }
-  
-  // Check if client already exists in premium tracker
-  if (premiumRecords.some(record => record.clientId === selectedClientId)) {
-    alert("This client is already in the premium tracker!");
-    return;
-  }
-  
-  // Create new premium record
-  const newRecord = {
-    id: Date.now(), // Unique ID for the record
-    clientId: client.id,
-    sl: client.sl,
-    name: client.name,
-    premiumAmount: "",
-    paymentMethod: "",
-    dateSubmitted: "",
-    submissionLocation: "",
-    status: "pending"
-  };
-  
-  premiumRecords.push(newRecord);
-  savePremiumRecords();
-  
-  // Refresh UI
-  renderPremiumTable();
-  loadClientsToDropdown();
-  updateStats();
-  
-  // Reset select
-  clientSelect.value = "";
-  
-  // Show success message
-  showMessage(`Client "${client.name}" added to premium tracker successfully!`, 'success');
-}
-
-// Render premium table
-function renderPremiumTable(filter = 'all') {
-  const tableBody = document.getElementById('premiumTableBody');
-  const noDataMessage = document.getElementById('noPremiumData');
-  
-  // Filter records
-  let filteredRecords = premiumRecords;
-  if (filter === 'submitted') {
-    filteredRecords = premiumRecords.filter(record => record.status === 'submitted');
-  } else if (filter === 'pending') {
-    filteredRecords = premiumRecords.filter(record => record.status === 'pending');
-  }
-  
-  // Clear table body
-  tableBody.innerHTML = '';
-  
-  if (filteredRecords.length === 0) {
-    noDataMessage.style.display = 'block';
-    document.getElementById('showingCount').textContent = '0';
-    document.getElementById('totalCount').textContent = premiumRecords.length;
-    return;
-  }
-  
-  noDataMessage.style.display = 'none';
-  
-  // Add rows for each premium record
-  filteredRecords.forEach((record, index) => {
-    const row = document.createElement('tr');
-    
-    // Determine status badge
-    const statusClass = record.status === 'submitted' ? 'status-submitted' : 'status-pending';
-    const statusText = record.status === 'submitted' ? 'Submitted' : 'Pending';
-    
-    // Format date for display
-    let displayDate = record.dateSubmitted;
-    if (displayDate) {
-      const dateObj = new Date(displayDate);
-      displayDate = dateObj.toLocaleDateString('en-IN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      });
-    }
-    
-    row.innerHTML = `
-      <td style="font-weight: 600; color: var(--primary-blue);">${record.sl}</td>
-      <td style="font-weight: 600;">${record.name}</td>
-      <td>
-        <input 
-          type="number" 
-          class="premium-input" 
-          data-id="${record.id}" 
-          value="${record.premiumAmount || ''}" 
-          placeholder="Enter amount"
-          onchange="updateRecordField(${record.id}, 'premiumAmount', this.value)"
-          min="0"
-          step="0.01"
-        >
-      </td>
-      <td>
-        <select 
-          class="premium-select" 
-          data-id="${record.id}"
-          onchange="updateRecordField(${record.id}, 'paymentMethod', this.value)"
-        >
-          <option value="">Select method</option>
-          <option value="cash" ${record.paymentMethod === 'cash' ? 'selected' : ''}>Cash</option>
-          <option value="upi" ${record.paymentMethod === 'upi' ? 'selected' : ''}>UPI</option>
-          <option value="cheque" ${record.paymentMethod === 'cheque' ? 'selected' : ''}>Cheque</option>
-          <option value="bank-transfer" ${record.paymentMethod === 'bank-transfer' ? 'selected' : ''}>Bank Transfer</option>
-        </select>
-      </td>
-      <td>
-        <input 
-          type="date" 
-          class="premium-input" 
-          data-id="${record.id}" 
-          value="${record.dateSubmitted || ''}" 
-          onchange="updateRecordField(${record.id}, 'dateSubmitted', this.value)"
-        >
-      </td>
-      <td>
-        <select 
-          class="premium-select" 
-          data-id="${record.id}"
-          onchange="updateRecordField(${record.id}, 'submissionLocation', this.value)"
-        >
-          <option value="">Select location</option>
-          <option value="inside-office" ${record.submissionLocation === 'inside-office' ? 'selected' : ''}>Inside Office</option>
-          <option value="outside-office" ${record.submissionLocation === 'outside-office' ? 'selected' : ''}>Outside Office</option>
-        </select>
-      </td>
-      <td>
-        <span class="status-badge ${statusClass}">${statusText}</span>
-      </td>
-      <td>
-        <div class="action-buttons">
-          <button class="delete-btn" onclick="deleteRecord(${record.id})" title="Remove from tracker">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-        </div>
-      </td>
-    `;
-    
-    tableBody.appendChild(row);
-  });
-  
-  // Update counts
-  document.getElementById('showingCount').textContent = filteredRecords.length;
-  document.getElementById('totalCount').textContent = premiumRecords.length;
-}
-
-// Update a field in a record
-function updateRecordField(recordId, field, value) {
-  const recordIndex = premiumRecords.findIndex(record => record.id === recordId);
-  
-  if (recordIndex !== -1) {
-    // Update the field
-    premiumRecords[recordIndex][field] = value;
-    
-    // Check if all required fields are filled to update status
-    const record = premiumRecords[recordIndex];
-    const requiredFields = ['premiumAmount', 'paymentMethod', 'dateSubmitted', 'submissionLocation'];
-    const allFieldsFilled = requiredFields.every(field => record[field] && record[field].toString().trim() !== '');
-    
-    // Update status based on field completion
-    if (allFieldsFilled && record.status !== 'submitted') {
-      record.status = 'submitted';
-      // Re-render table to update status badge
-      renderPremiumTable(currentFilter);
-      updateStats();
-    } else if (!allFieldsFilled && record.status === 'submitted') {
-      record.status = 'pending';
-      // Re-render table to update status badge
-      renderPremiumTable(currentFilter);
-      updateStats();
-    }
-    
-    // Save changes
-    savePremiumRecords();
-  }
-}
-
-// Delete a record
-function deleteRecord(recordId) {
-  if (confirm("Are you sure you want to remove this client from the premium tracker?")) {
-    premiumRecords = premiumRecords.filter(record => record.id !== recordId);
-    savePremiumRecords();
-    
-    // Refresh UI
-    renderPremiumTable(currentFilter);
-    loadClientsToDropdown();
-    updateStats();
-    
-    showMessage("Client removed from premium tracker successfully!", 'success');
-  }
-}
-
-// Filter data
-function filterData(filter) {
-  currentFilter = filter;
-  
-  // Update active filter button
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.classList.remove('active');
-  });
-  
-  // Find and activate the clicked button
-  const buttons = document.querySelectorAll('.filter-btn');
-  for (let btn of buttons) {
-    if (btn.textContent.includes(filter === 'all' ? 'All Premiums' : 
-                                filter === 'submitted' ? 'Submitted' : 'Pending')) {
-      btn.classList.add('active');
-      break;
+  /* ===================== GET FRESH MASTER CLIENTS ===================== */
+  function getMasterClients() {
+    // Always get fresh data from localStorage
+    try {
+      const rawData = localStorage.getItem(MASTER_CLIENTS_KEY);
+      if (!rawData) return [];
+      
+      const clients = JSON.parse(rawData);
+      // Filter out completely empty entries
+      return clients.filter(client => 
+        client && (
+          client.sl || 
+          (client.name && client.name !== "-") || 
+          (client.policyNo && client.policyNo !== "-")
+        )
+      );
+    } catch (error) {
+      console.error("Error loading master clients:", error);
+      return [];
     }
   }
   
-  renderPremiumTable(filter);
-}
-
-// Update statistics
-function updateStats() {
-  const totalClients = premiumRecords.length;
-  const submittedCount = premiumRecords.filter(record => record.status === 'submitted').length;
-  const pendingCount = totalClients - submittedCount;
-  
-  document.getElementById('totalClients').textContent = totalClients;
-  document.getElementById('submittedCount').textContent = submittedCount;
-  document.getElementById('pendingCount').textContent = pendingCount;
-  
-  // Update header badge
-  document.getElementById('premiumTotalEntries').textContent = `${totalClients} Entries`;
-}
-
-// Refresh premium data
-function refreshPremiumData() {
-  loadPremiumRecords();
-  loadClientsToDropdown();
-  renderPremiumTable(currentFilter);
-  updateStats();
-  showMessage("Premium data refreshed successfully!", 'success');
-}
-
-// Export premium data
-function exportPremiumData() {
-  if (premiumRecords.length === 0) {
-    alert("No premium data to export!");
-    return;
+  /* ===================== LOAD PREMIUM DATA ===================== */
+  function loadPremiumData() {
+    allPremiumEntries = JSON.parse(localStorage.getItem(PREMIUM_ENTRIES_KEY)) || [];
+    filteredEntries = [...allPremiumEntries];
+    
+    // Sort by SL number for consistent display
+    allPremiumEntries.sort((a, b) => Number(a.sl) - Number(b.sl));
+    filteredEntries.sort((a, b) => Number(a.sl) - Number(b.sl));
+    
+    // Update counts
+    const entryCount = allPremiumEntries.length;
+    premiumTotalEntries.textContent = `${entryCount} ${entryCount === 1 ? 'Entry' : 'Entries'}`;
+    totalCount.textContent = entryCount;
+    showingCount.textContent = entryCount;
   }
   
-  // Create export data
-  const exportData = {
-    exportDate: new Date().toISOString(),
-    recordCount: premiumRecords.length,
-    submittedCount: premiumRecords.filter(r => r.status === 'submitted').length,
-    pendingCount: premiumRecords.filter(r => r.status === 'pending').length,
-    premiumRecords: premiumRecords
-  };
+  /* ===================== SYNC WITH MASTER LIST ===================== */
+  function syncWithMasterList() {
+    const masterClients = getMasterClients();
+    const masterClientSLs = masterClients.map(client => parseInt(client.sl));
+    
+    // Remove premium entries for clients no longer in master list
+    let removedCount = 0;
+    const updatedPremiumEntries = allPremiumEntries.filter(premiumEntry => {
+      const existsInMaster = masterClientSLs.includes(parseInt(premiumEntry.sl));
+      if (!existsInMaster) {
+        removedCount++;
+        console.log(`Removing premium entry for SL ${premiumEntry.sl} - client not found in master list`);
+      }
+      return existsInMaster;
+    });
+    
+    // Update if any were removed
+    if (removedCount > 0) {
+      allPremiumEntries = updatedPremiumEntries;
+      localStorage.setItem(PREMIUM_ENTRIES_KEY, JSON.stringify(allPremiumEntries));
+      loadPremiumData();
+      renderTable();
+      
+      if (removedCount > 0) {
+        console.log(`Synced: Removed ${removedCount} premium entries (clients deleted from master list)`);
+      }
+    }
+  }
   
-  // Convert to JSON string
-  const dataStr = JSON.stringify(exportData, null, 2);
-  const dataBlob = new Blob([dataStr], { type: 'application/json' });
+  /* ===================== UPDATE STATISTICS ===================== */
+  function updateStatistics() {
+    // Get FRESH data every time
+    const masterClients = getMasterClients();
+    
+    // Total clients from master list (dynamic)
+    const totalMasterClients = masterClients.length;
+    totalClients.textContent = totalMasterClients;
+    
+    // Count submitted and pending from premium entries
+    const submitted = allPremiumEntries.filter(entry => entry.status === 'submitted').length;
+    const pending = allPremiumEntries.filter(entry => entry.status === 'pending').length;
+    
+    submittedCount.textContent = submitted;
+    pendingCount.textContent = pending;
+    
+    // Also update the header badge with fresh count
+    const premiumCount = allPremiumEntries.length;
+    premiumTotalEntries.textContent = `${premiumCount} ${premiumCount === 1 ? 'Entry' : 'Entries'}`;
+  }
   
-  // Create download link
-  const url = URL.createObjectURL(dataBlob);
-  const downloadLink = document.createElement('a');
-  downloadLink.href = url;
-  downloadLink.download = `lic-premium-tracker-${new Date().toISOString().split('T')[0]}.json`;
-  
-  // Trigger download
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-  document.body.removeChild(downloadLink);
-  
-  showMessage("Premium data exported successfully!", 'success');
-}
-
-// Show message
-function showMessage(message, type = 'info') {
-  // Create message element
-  const messageDiv = document.createElement('div');
-  messageDiv.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 1rem 1.5rem;
-    border-radius: var(--radius-md);
-    background: ${type === 'success' ? 'var(--success-green)' : 'var(--primary-blue)'};
-    color: white;
-    font-weight: 600;
-    z-index: 1000;
-    box-shadow: var(--shadow-lg);
-    animation: slideIn 0.3s ease;
-    max-width: 400px;
-  `;
-  
-  messageDiv.innerHTML = `
-    <div style="display: flex; align-items: center; gap: 0.75rem;">
-      <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i>
-      <span>${message}</span>
-    </div>
-  `;
-  
-  document.body.appendChild(messageDiv);
-  
-  // Remove message after 3 seconds
-  setTimeout(() => {
-    messageDiv.style.animation = 'slideOut 0.3s ease';
+  /* ===================== ADD CLIENT TO TRACKER ===================== */
+  function addClientToTracker() {
+    const selectedValue = clientSelect.value;
+    if (!selectedValue) {
+      alert("Please select a client first!");
+      return;
+    }
+    
+    // Get FRESH master client data
+    const masterClients = getMasterClients();
+    const selectedClient = masterClients.find(client => 
+      parseInt(client.sl) === parseInt(selectedValue)
+    );
+    
+    if (!selectedClient) {
+      alert("Client not found in master database!");
+      loadMasterClients(); // Refresh dropdown
+      return;
+    }
+    
+    // Check if already in tracker
+    const alreadyExists = allPremiumEntries.some(entry => 
+      parseInt(entry.sl) === parseInt(selectedClient.sl)
+    );
+    
+    if (alreadyExists) {
+      alert("This client is already in the premium tracker!");
+      return;
+    }
+    
+    // Get fresh master data for this client (in case it was updated)
+    const clientName = selectedClient.name && selectedClient.name !== "-" ? 
+                      selectedClient.name : "Unnamed Client";
+    const clientPremium = selectedClient.premium && selectedClient.premium !== "-" ? 
+                         selectedClient.premium : "0";
+    const clientPolicy = selectedClient.policyNo && selectedClient.policyNo !== "-" ? 
+                        selectedClient.policyNo : "-";
+    const clientTableNo = selectedClient.tableNo && selectedClient.tableNo !== "-" ? 
+                         selectedClient.tableNo : "-";
+    
+    // Create new premium entry
+    const newEntry = {
+      id: Date.now(), // Unique ID
+      sl: parseInt(selectedClient.sl),
+      name: clientName,
+      premiumAmount: clientPremium,
+      paymentMethod: '', // Empty initially
+      dateSubmitted: '', // Empty initially
+      status: 'pending', // Default status
+      policyNo: clientPolicy,
+      tableNo: clientTableNo,
+      premiumType: selectedClient.premiumType || '-',
+      sumAssured: selectedClient.sumAsset || '-',
+      doc: selectedClient.doc || '-',
+      addedDate: new Date().toISOString().split('T')[0],
+      lastUpdated: new Date().toISOString()
+    };
+    
+    // Add to entries
+    allPremiumEntries.push(newEntry);
+    localStorage.setItem(PREMIUM_ENTRIES_KEY, JSON.stringify(allPremiumEntries));
+    
+    // Refresh ALL data
+    refreshAllData();
+    
+    // Show success message
+    alert(`✅ Client ${clientName} (SL ${selectedClient.sl}) added to premium tracker!`);
+    
+    // Scroll to the new entry
     setTimeout(() => {
-      document.body.removeChild(messageDiv);
-    }, 300);
-  }, 3000);
-}
-
-// Add CSS for animations
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes slideIn {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
+      const newRow = document.querySelector(`[data-sl="${selectedClient.sl}"]`);
+      if (newRow) {
+        newRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        newRow.style.backgroundColor = 'rgba(34, 197, 94, 0.1)';
+        setTimeout(() => {
+          newRow.style.backgroundColor = '';
+        }, 2000);
+      }
+    }, 500);
   }
   
-  @keyframes slideOut {
-    from {
-      transform: translateX(0);
-      opacity: 1;
+  /* ===================== RENDER TABLE ===================== */
+  function renderTable() {
+    premiumTableBody.innerHTML = '';
+    
+    if (filteredEntries.length === 0) {
+      noPremiumData.style.display = 'flex';
+      return;
     }
-    to {
-      transform: translateX(100%);
-      opacity: 0;
-    }
+    
+    noPremiumData.style.display = 'none';
+    
+    filteredEntries.forEach((entry, index) => {
+      const row = document.createElement('tr');
+      row.setAttribute('data-sl', entry.sl);
+      
+      // Get fresh master data for this client
+      const masterClients = getMasterClients();
+      const masterClient = masterClients.find(c => parseInt(c.sl) === parseInt(entry.sl));
+      
+      // If master client exists and has updated data, sync it
+      if (masterClient) {
+        // Update name if changed in master
+        const masterName = masterClient.name && masterClient.name !== "-" ? 
+                          masterClient.name : "Unnamed Client";
+        if (entry.name !== masterName) {
+          entry.name = masterName;
+        }
+        
+        // Update premium if changed in master
+        const masterPremium = masterClient.premium && masterClient.premium !== "-" ? 
+                             masterClient.premium : "0";
+        if (entry.premiumAmount !== masterPremium) {
+          entry.premiumAmount = masterPremium;
+        }
+      }
+      
+      // Format date for display (if exists)
+      const displayDate = entry.dateSubmitted ? 
+        new Date(entry.dateSubmitted).toLocaleDateString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        }) : '';
+      
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="client-avatar-small">${entry.name.charAt(0)}</div>
+            <div>
+              <strong>${entry.name}</strong>
+              <div style="font-size: 0.8rem; color: #64748b;">
+                SL: ${entry.sl} | Policy: ${entry.policyNo}
+                ${entry.tableNo && entry.tableNo !== "-" ? `| Table: ${entry.tableNo}` : ""}
+              </div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <input type="number" 
+                 class="premium-input" 
+                 value="${entry.premiumAmount}" 
+                 onchange="updatePremiumAmount(${entry.id}, this.value)"
+                 placeholder="Amount"
+                 style="font-weight: 600; color: #059669;">
+        </td>
+        <td>
+          <select class="premium-select" onchange="updatePaymentMethod(${entry.id}, this.value)" 
+                  style="min-width: 140px;">
+            <option value="">Select Method</option>
+            <option value="Cash" ${entry.paymentMethod === 'Cash' ? 'selected' : ''}>Cash</option>
+            <option value="Bank Transfer" ${entry.paymentMethod === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
+            <option value="Cheque" ${entry.paymentMethod === 'Cheque' ? 'selected' : ''}>Cheque</option>
+            <option value="UPI" ${entry.paymentMethod === 'UPI' ? 'selected' : ''}>UPI</option>
+            <option value="Auto Debit" ${entry.paymentMethod === 'Auto Debit' ? 'selected' : ''}>Auto Debit</option>
+          </select>
+        </td>
+        <td>
+          <input type="date" 
+                 class="premium-input" 
+                 value="${entry.dateSubmitted}"
+                 onchange="updateDateSubmitted(${entry.id}, this.value)"
+                 style="min-width: 130px;">
+        </td>
+        <td>
+          <span class="status-badge status-${entry.status}">
+            ${entry.status === 'submitted' ? 'Submitted' : 'Pending'}
+          </span>
+        </td>
+        <td>
+          <div class="action-buttons">
+            <button class="action-btn mark-submitted" onclick="toggleStatus(${entry.id})" 
+                    title="${entry.status === 'pending' ? 'Mark as Submitted' : 'Mark as Pending'}">
+              <i class="fa-solid fa-${entry.status === 'pending' ? 'check' : 'clock'}"></i>
+            </button>
+            <button class="delete-btn" onclick="deletePremiumEntry(${entry.id})" title="Remove">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      `;
+      
+      premiumTableBody.appendChild(row);
+    });
+    
+    showingCount.textContent = filteredEntries.length;
   }
-`;
-document.head.appendChild(style);
-
-// Initialize when page loads
-document.addEventListener('DOMContentLoaded', function() {
-  // Initialize storage
-  initializeStorage();
   
-  // Load premium records
-  loadPremiumRecords();
-  
-  // Load clients to dropdown
-  loadClientsToDropdown();
-  
-  // Render table
-  renderPremiumTable();
-  
-  // Update stats
-  updateStats();
-  
-  // Add event listener for Add Client button
-  document.getElementById('addClientBtn').addEventListener('click', addClientToTracker);
-  
-  // Add event listener for Enter key in client select
-  document.getElementById('clientSelect').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      addClientToTracker();
+  /* ===================== FILTER FUNCTIONS ===================== */
+  window.filterData = function(filterType) {
+    currentFilter = filterType;
+    
+    // Update active button
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Filter entries
+    switch(filterType) {
+      case 'submitted':
+        filteredEntries = allPremiumEntries.filter(entry => entry.status === 'submitted');
+        break;
+      case 'pending':
+        filteredEntries = allPremiumEntries.filter(entry => entry.status === 'pending');
+        break;
+      default: // 'all'
+        filteredEntries = [...allPremiumEntries];
     }
-  });
+    
+    renderTable();
+  };
+  
+  /* ===================== UPDATE FUNCTIONS (Make them global) ===================== */
+  window.updatePremiumAmount = function(id, amount) {
+    const entryIndex = allPremiumEntries.findIndex(entry => entry.id === id);
+    if (entryIndex !== -1) {
+      allPremiumEntries[entryIndex].premiumAmount = amount;
+      allPremiumEntries[entryIndex].lastUpdated = new Date().toISOString();
+      localStorage.setItem(PREMIUM_ENTRIES_KEY, JSON.stringify(allPremiumEntries));
+      updateStatistics();
+    }
+  };
+  
+  window.updatePaymentMethod = function(id, method) {
+    const entryIndex = allPremiumEntries.findIndex(entry => entry.id === id);
+    if (entryIndex !== -1) {
+      allPremiumEntries[entryIndex].paymentMethod = method;
+      allPremiumEntries[entryIndex].lastUpdated = new Date().toISOString();
+      localStorage.setItem(PREMIUM_ENTRIES_KEY, JSON.stringify(allPremiumEntries));
+    }
+  };
+  
+  window.updateDateSubmitted = function(id, date) {
+    const entryIndex = allPremiumEntries.findIndex(entry => entry.id === id);
+    if (entryIndex !== -1) {
+      allPremiumEntries[entryIndex].dateSubmitted = date;
+      allPremiumEntries[entryIndex].lastUpdated = new Date().toISOString();
+      
+      // Auto-set status to submitted if date is entered
+      if (date && allPremiumEntries[entryIndex].status === 'pending') {
+        allPremiumEntries[entryIndex].status = 'submitted';
+        updateStatistics();
+      }
+      
+      localStorage.setItem(PREMIUM_ENTRIES_KEY, JSON.stringify(allPremiumEntries));
+      if (currentFilter === 'all') renderTable();
+    }
+  };
+  
+  window.toggleStatus = function(id) {
+    const entryIndex = allPremiumEntries.findIndex(entry => entry.id === id);
+    if (entryIndex !== -1) {
+      const newStatus = allPremiumEntries[entryIndex].status === 'pending' ? 'submitted' : 'pending';
+      allPremiumEntries[entryIndex].status = newStatus;
+      
+      // Auto-set date to today if status changed to submitted
+      if (newStatus === 'submitted' && !allPremiumEntries[entryIndex].dateSubmitted) {
+        allPremiumEntries[entryIndex].dateSubmitted = new Date().toISOString().split('T')[0];
+      }
+      
+      allPremiumEntries[entryIndex].lastUpdated = new Date().toISOString();
+      localStorage.setItem(PREMIUM_ENTRIES_KEY, JSON.stringify(allPremiumEntries));
+      
+      updateStatistics();
+      if (currentFilter !== 'all') window.filterData(currentFilter);
+      else renderTable();
+    }
+  };
+  
+  window.deletePremiumEntry = function(id) {
+    const entry = allPremiumEntries.find(e => e.id === id);
+    if (!entry) return;
+    
+    if (!confirm(`Are you sure you want to remove ${entry.name} (SL ${entry.sl}) from premium tracker?`)) return;
+    
+    allPremiumEntries = allPremiumEntries.filter(entry => entry.id !== id);
+    localStorage.setItem(PREMIUM_ENTRIES_KEY, JSON.stringify(allPremiumEntries));
+    
+    refreshAllData();
+    alert(`✅ ${entry.name} removed from premium tracker!`);
+  };
+  
+  /* ===================== REFRESH ALL DATA ===================== */
+  function refreshAllData() {
+    loadPremiumData();
+    loadMasterClients(); // Refresh dropdown
+    syncWithMasterList(); // Sync with master
+    updateStatistics(); // Update counts
+    window.filterData(currentFilter); // Re-apply current filter
+  }
+  
+  /* ===================== EXPORT FUNCTION ===================== */
+  window.exportPremiumData = function() {
+    if (allPremiumEntries.length === 0) {
+      alert("No premium data to export!");
+      return;
+    }
+    
+    // Get fresh master data for better export
+    const masterClients = getMasterClients();
+    
+    // Create CSV content
+    let csvContent = "SL,Client Name,Premium Amount,Payment Method,Date Submitted,Status,Policy No,Table No,Premium Type,Sum Assured,DOC,Added Date,Last Updated\n";
+    
+    allPremiumEntries.forEach(entry => {
+      const masterClient = masterClients.find(c => parseInt(c.sl) === parseInt(entry.sl));
+      
+      csvContent += `"${entry.sl}","${entry.name}","${entry.premiumAmount}","${entry.paymentMethod}","${entry.dateSubmitted}","${entry.status}","${entry.policyNo}","${entry.tableNo}","${masterClient?.premiumType || '-'}","${masterClient?.sumAsset || '-'}","${masterClient?.doc || '-'}","${entry.addedDate}","${entry.lastUpdated || ''}"\n`;
+    });
+    
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    const date = new Date().toISOString().split('T')[0];
+    link.download = `premium-tracker-${date}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    alert(`✅ Exported ${allPremiumEntries.length} premium entries successfully!`);
+  };
+  
+  /* ===================== REFRESH FUNCTION ===================== */
+  window.refreshPremiumData = function() {
+    refreshAllData();
+    alert("✅ Premium data refreshed with latest from master database!");
+  };
+  
+  // Initialize
+  init();
 });
-
-// Sidebar toggle function
-function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("overlay");
-
-  sidebar.classList.toggle("active");
-  overlay.classList.toggle("active");
-}
-
-// Close sidebar when clicking overlay
-document.getElementById('overlay').addEventListener('click', toggleSidebar);
