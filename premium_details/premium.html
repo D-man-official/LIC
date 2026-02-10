@@ -1,206 +1,265 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5" />
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<title>LIC Premium Submission Tracker</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>LIC Premium Submission Tracker</title>
 
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-<link rel="icon" type="image/jpeg" href="../logo.png">
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="icon" type="image/jpeg" href="../logo.png" />
 
-<!-- Sidebar CSS -->
-<link rel="stylesheet" href="./sidebar.css">
+    <!-- Sidebar CSS -->
+    <link rel="stylesheet" href="./sidebar.css" />
 
-<!-- Your Page CSS -->
-<link rel="stylesheet" href="../home/home.css">
-<link rel="stylesheet" href="./premium.css">
+    <!-- Your Page CSS -->
+    <link rel="stylesheet" href="../home/home.css" />
+    <link rel="stylesheet" href="./premium.css" />
+  </head>
 
-</head>
-
-<body>
-<!-- ================= HEADER ================= -->
-<header class="header">
-  <div class="app-title">LIC Collection</div>
-  <button class="menu-btn" onclick="toggleSidebar()">
-    <i class="fa-solid fa-bars"></i>
-  </button>
-</header>
-
-<!-- ================= SIDEBAR ================= -->
-<aside class="sidebar" id="sidebar">
-  <div class="logo-container">
-    <div class="logo-icon">
-      <i class="fa-solid fa-shield"></i>
-    </div>
-    <div>
-      <div class="logo-text">LIC Collection</div>
-      <div class="logo-subtext">Book Manager</div>
-    </div>
-  </div>
-
-  <nav class="menu-list">
-    <a href="../home/home.html" class="menu-item">
-      <span class="menu-icon"><i class="fa-solid fa-diagram-next"></i></span>
-      Dashboard
-    </a>
-    <a href="../daily_collection/daily.html" class="menu-item">
-      <span class="menu-icon"><i class="fa-regular fa-calendar"></i></span>
-      Daily Collection
-    </a>
-    <a href="../view_client/view.html" class="menu-item">
-      <span class="menu-icon"><i class="fa-solid fa-users"></i></span> View Clients
-    </a>
-    <a href="../push/push.html" class="menu-item">
-      <span class="menu-icon"><i class="fa-solid fa-chalkboard-user" style="color: #fbffff;"></i></span>
-      Push Client
-    </a>
-    <a href="../report/report.html" class="menu-item">
-      <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
-      Reports
-    </a>
-  </nav>
-
-  <div class="user-section">
-    <div class="user-avatar">
-      <img id="userAvatar" src="../userImg/dman.jpg" alt="User Avatar">
-    </div>
-    <div class="user-name" id="userName">User</div>
-    <div class="user-role">Chief Officer</div>
-    <a href="../index.html" class="logout">
-      <i class="fa-solid fa-arrow-right-from-bracket"></i>
-      Logout
-    </a>
-  </div>
-</aside>
-
-<!-- ================= OVERLAY ================= -->
-<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-
-<!-- ================= MAIN CONTENT ================= -->
-<div class="main-content">
-  <!-- Header -->
-  <div class="premium-header">
-    <div>
-      <h1>LIC Premium Submission Tracker</h1>
-      <p>Monitor and manage premium payments for policyholders with automatic status tracking</p>
-    </div>
-    <div class="premium-badge">
-      <i class="fa-solid fa-file-invoice-dollar"></i>
-      <span id="premiumTotalEntries">0 Entries</span>
-    </div>
-  </div>
-
-  <!-- Stats Section -->
-  <div class="stats-section">
-    <div class="stat-card">
-      <div class="stat-icon total">
-        <i class="fa-solid fa-users"></i>
-      </div>
-      <div class="stat-info">
-        <h3 id="totalClients" style="color: black;">0</h3>
-        <p>Total Clients</p>
-      </div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-icon submitted">
-        <i class="fa-solid fa-check-circle"></i>
-      </div>
-      <div class="stat-info">
-        <h3 id="submittedCount" style="color: black;">0</h3>
-        <p>Premium Submitted</p>
-      </div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-icon pending">
-        <i class="fa-solid fa-clock"></i>
-      </div>
-      <div class="stat-info">
-        <h3 id="pendingCount" style="color: black;">0</h3>
-        <p>Pending Submission</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Add Client Section -->
-  <div class="add-client-section">
-    <h3>Add Client to Premium Tracker</h3>
-    <div class="add-client-container">
-      <div class="client-select-group">
-        <label for="clientSelect">Select Client from Database</label>
-        <select id="clientSelect">
-          <option value="">Select a client to add...</option>
-          <!-- Options will be populated from localStorage -->
-        </select>
-      </div>
-      <button class="add-btn" id="addClientBtn">
-        <i class="fa-solid fa-plus"></i> Add Client
+  <body>
+    <!-- ================= HEADER ================= -->
+    <header class="header">
+      <div class="app-title">LIC Collection</div>
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
       </button>
-    </div>
-  </div>
+    </header>
 
-  <!-- Filter Buttons -->
-  <div class="filter-section">
-    <button class="filter-btn active" onclick="filterData('all')">
-      <i class="fa-solid fa-layer-group"></i> All Premiums
-    </button>
-    <button class="filter-btn" onclick="filterData('submitted')">
-      <i class="fa-solid fa-check-circle"></i> Submitted
-    </button>
-    <button class="filter-btn" onclick="filterData('pending')">
-      <i class="fa-solid fa-clock"></i> Pending
-    </button>
-  </div>
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <div class="logo-icon">
+          <i class="fa-solid fa-shield"></i>
+        </div>
+        <div>
+          <div class="logo-text">LIC Collection</div>
+          <div class="logo-subtext">Book Manager</div>
+        </div>
+      </div>
 
-  <!-- Premium Table -->
-  <div class="premium-table-wrapper">
-    <table id="premiumTable">
-      <thead>
-        <tr>
-          <th>SL No.</th>
-          <th>Client Name</th>
-          <th>Premium Amount (₹)</th>
-          <th>Payment Method</th>
-          <th>Date Submitted</th>
-          <th>Status</th>
-          <th style="width: 70px;">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="premiumTableBody">
-        <!-- Data will be loaded by JavaScript -->
-      </tbody>
-    </table>
-    <div id="noPremiumData" class="no-data" style="display: none;">
-      <i class="fa-solid fa-clipboard-list"></i>
-      <p>No premium records found. Add clients using the "Add Client" button above.</p>
-    </div>
-  </div>
+      <nav class="menu-list">
+        <a href="../home/home.html" class="menu-item">
+          <span class="menu-icon"
+            ><i class="fa-solid fa-diagram-next"></i
+          ></span>
+          Dashboard
+        </a>
+        <a href="../daily_collection/daily.html" class="menu-item">
+          <span class="menu-icon"><i class="fa-regular fa-calendar"></i></span>
+          Daily Collection
+        </a>
+        <a href="../view_client/view.html" class="menu-item">
+          <span class="menu-icon"><i class="fa-solid fa-users"></i></span> View
+          Clients
+        </a>
+        <a href="../push/push.html" class="menu-item">
+          <span class="menu-icon"
+            ><i class="fa-solid fa-chalkboard-user" style="color: #fbffff"></i
+          ></span>
+          Push Client
+        </a>
+        <a href="../report/report.html" class="menu-item">
+          <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
+          Reports
+        </a>
+      </nav>
 
-  <!-- Footer -->
-  <div class="premium-footer">
-    <div class="result-count" id="premiumResultCount">
-      Showing <strong id="showingCount">0</strong> of <strong id="totalCount">0</strong> premium entries
-    </div>
-    <div class="footer-actions">
-      <button class="action-btn secondary" onclick="refreshPremiumData()">
-        <i class="fa-solid fa-rotate-right"></i>
-        Refresh
-      </button>
-      <button class="action-btn primary" onclick="exportPremiumData()">
-        <i class="fa-solid fa-file-export"></i>
-        Export Data
-      </button>
-    </div>
-  </div>
-</div>
-<script src="./premium.js"></script>
+      <div class="user-section">
+        <div class="user-avatar">
+          <img id="userAvatar" src="../userImg/dman.jpg" alt="User Avatar" />
+        </div>
+        <div class="user-name" id="userName">User</div>
+        <div class="user-role">Chief Officer</div>
+        <a href="../index.html" class="logout">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          Logout
+        </a>
+      </div>
+    </aside>
 
-</body>
-</html> 
+    <!-- ================= OVERLAY ================= -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <div class="main-content">
+      <!-- Header -->
+      <div class="premium-header">
+        <div>
+          <h1>LIC Premium Submission Tracker</h1>
+          <p>
+            Monitor and manage premium payments for policyholders with automatic
+            status tracking
+          </p>
+        </div>
+        <div class="premium-badge">
+          <i class="fa-solid fa-file-invoice-dollar"></i>
+          <span id="premiumTotalEntries">0 Entries</span>
+        </div>
+      </div>
+      <!-- Add this right after the premium-header div, before the stats-section -->
+      <!-- ================= MONTH NAVIGATION ================= -->
+      <div class="month-navigation">
+        <div class="month-nav-buttons">
+          <button class="month-btn" id="prevMonth">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span class="btn-text">Prev</span>
+          </button>
+          <button class="month-btn active" id="currentMonthBtn">
+            <i class="fa-solid fa-calendar-day"></i>
+            <span class="btn-text">Current</span>
+          </button>
+          <button class="month-btn" id="nextMonth">
+            <span class="btn-text">Next</span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+        <div class="current-month" id="currentMonthDisplay">February 2026</div>
+      </div>
+
+      <!-- Stats Section -->
+      <div class="stats-section">
+        <div class="stat-card">
+          <div class="stat-icon total">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalClients" style="color: black">0</h3>
+            <p>Total Clients</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon submitted">
+            <i class="fa-solid fa-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="submittedCount" style="color: black">0</h3>
+            <p>Premium Submitted</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon pending">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="pendingCount" style="color: black">0</h3>
+            <p>Pending Submission</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Client Section -->
+      <div class="add-client-section">
+        <h3>Add Client to Premium Tracker</h3>
+        <div class="add-client-container">
+          <div class="client-select-group">
+            <label for="clientSelect">Select Client from Database</label>
+            <select id="clientSelect">
+              <option value="">Select a client to add...</option>
+              <!-- Options will be populated from localStorage -->
+            </select>
+          </div>
+          <button class="add-btn" id="addClientBtn">
+            <i class="fa-solid fa-plus"></i> Add Client
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="filter-section">
+        <button class="filter-btn active" onclick="filterData('all')">
+          <i class="fa-solid fa-layer-group"></i> All Premiums
+        </button>
+        <button class="filter-btn" onclick="filterData('submitted')">
+          <i class="fa-solid fa-check-circle"></i> Submitted
+        </button>
+        <button class="filter-btn" onclick="filterData('pending')">
+          <i class="fa-solid fa-clock"></i> Pending
+        </button>
+      </div>
+      <!-- Premium Table -->
+      <div class="premium-table-wrapper">
+        <table id="premiumTable">
+          <!-- Premium Table section এর header update করুন -->
+          <thead>
+            <tr>
+              <th>SL No.</th>
+              <th>Client Name</th>
+              <th>Premium Amount (₹)</th>
+              <th>Payment Method</th>
+              <th>Date Submitted</th>
+              <th>Sum Total (₹)</th>
+              <!-- নতুন column -->
+              <th>Status</th>
+              <th style="width: 70px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="premiumTableBody">
+            <!-- Data will be loaded by JavaScript -->
+          </tbody>
+        </table>
+        <div id="noPremiumData" class="no-data" style="display: none">
+          <i class="fa-solid fa-clipboard-list"></i>
+          <p>
+            No premium records found. Add clients using the "Add Client" button
+            above.
+          </p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <!-- Footer section এর প্রথম child div এর পর এই কোডটি যোগ করুন -->
+      <div class="premium-footer">
+        <div class="result-count" id="premiumResultCount">
+          Showing <strong id="showingCount">0</strong> of
+          <strong id="totalCount">0</strong> premium entries
+        </div>
+        <div class="total-summary">
+          <span style="color: var(--text-secondary); margin-right: 10px">
+            <i class="fa-solid fa-calculator"></i> Totals:
+          </span>
+          <span style="color: var(--success-green); margin-right: 15px">
+            <i class="fa-solid fa-check-circle"></i> Submitted:
+            <strong id="submittedTotal">₹0</strong>
+          </span>
+          <span style="color: var(--danger-red)">
+            <i class="fa-solid fa-clock"></i> Pending:
+            <strong id="pendingTotal">₹0</strong>
+          </span>
+        </div>
+        <!-- In premium.html, update the footer actions section -->
+        <div class="footer-actions">
+          <button class="action-btn secondary" onclick="refreshPremiumData()">
+            <i class="fa-solid fa-rotate-right"></i>
+            Refresh
+          </button>
+          <button class="action-btn secondary" onclick="printAllPremiumData()">
+            <i class="fa-solid fa-print"></i>
+            Print 
+          </button>
+          <button class="action-btn primary" onclick="exportPremiumData()">
+            <i class="fa-solid fa-file-export"></i>
+            Export Data
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="./premium.js"></script>
+  </body>
+</html>
