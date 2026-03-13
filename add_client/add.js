@@ -1,296 +1,278 @@
+const SHEETDB_API = "https://sheetdb.io/api/v1/rzuqukl6peo56";
+
+function sheetUrl(colName, value) {
+  return `${SHEETDB_API}/${encodeURIComponent(colName)}/${encodeURIComponent(value)}`;
+}
+
 function toggleSidebar() {
   document.getElementById("sidebar").classList.toggle("active");
   document.getElementById("overlay").classList.toggle("active");
 }
 
-// ================= POLICY DETECTION LOGIC (BASED ON TABLE NUMBER) =================
-
+// ================= POLICY DETECTION =================
 function getPolicyNameFromTableNo(tableNo) {
-  if (!tableNo || tableNo === "-" || tableNo === "") {
-    return "";
-  }
-  
-  const tableStr = String(tableNo);
-  
-  // Check if table number contains 814
-  if (tableStr.includes("814")) {
-    return "New Jeevan Anand";
-  }
-  
-  // Check if table number contains 820
-  if (tableStr.includes("820")) {
-    return "New Endowment Plan";
-  }
-  
+  if (!tableNo || tableNo === "-" || tableNo === "") return "";
+  const t = String(tableNo);
+  if (t.includes("814")) return "New Jeevan Anand";
+  if (t.includes("820")) return "New Endowment Plan";
   return "";
 }
 
 function autoFillPolicyNameFromTableNo() {
   const tableNo = document.getElementById("tableNo").value;
   const policyNameInput = document.getElementById("policyName");
-  
-  if (!tableNo || tableNo === "-" || tableNo === "") {
-    return;
-  }
-  
+  if (!tableNo) return;
   const detectedName = getPolicyNameFromTableNo(tableNo);
-  
   if (detectedName) {
-    // Only auto-fill if the field is empty or contains placeholder/default value
-    if (!policyNameInput.value || 
-        policyNameInput.value === "-" || 
-        policyNameInput.value === "Enter policy name..." ||
-        policyNameInput.value.toLowerCase().includes("jeevan") ||
-        policyNameInput.value.toLowerCase().includes("endowment")) {
-      policyNameInput.value = detectedName;
-      
-      // Show a brief notification
-      const originalPlaceholder = policyNameInput.placeholder;
-      policyNameInput.placeholder = `Auto-filled: ${detectedName}`;
-      setTimeout(() => {
-        policyNameInput.placeholder = originalPlaceholder;
-      }, 2000);
-      
-      // Add visual feedback
-      policyNameInput.style.borderColor = "#10b981";
-      policyNameInput.style.boxShadow = "0 0 0 2px rgba(16, 185, 129, 0.15)";
-      setTimeout(() => {
-        policyNameInput.style.borderColor = "";
-        policyNameInput.style.boxShadow = "";
-      }, 1500);
-    }
+    policyNameInput.value = detectedName;
+    policyNameInput.style.borderColor = "#10b981";
+    policyNameInput.style.boxShadow = "0 0 0 2px rgba(16,185,129,0.15)";
+    setTimeout(() => {
+      policyNameInput.style.borderColor = "";
+      policyNameInput.style.boxShadow = "";
+    }, 1500);
   }
 }
 
-// Check if we're editing an existing client
-document.addEventListener("DOMContentLoaded", function() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const editSl = urlParams.get('edit');
-  
-  // Add table number auto-fill listener
+// ================= FILL FORM FROM ROW =================
+function fillFormFromRow(c) {
+  document.getElementById('sl').value          = c["Sl. No."] || "";
+  document.getElementById('name').value        = (c["Client Name"] && c["Client Name"] !== "-") ? c["Client Name"] : "";
+  document.getElementById('policyNo').value    = (c["Policy No."] && c["Policy No."] !== "-") ? c["Policy No."] : "";
+  document.getElementById('tableNo').value     = (c["Table No."] && c["Table No."] !== "-") ? c["Table No."] : "";
+  document.getElementById('policyName').value  = (c["Policy Name"] && c["Policy Name"] !== "-") ? c["Policy Name"] : "";
+
+  // Premium — strip ₹ and commas
+  const premRaw = c["Premium"] || "";
+  document.getElementById('premium').value = premRaw.replace(/[₹,]/g, '').trim() !== "-" ? premRaw.replace(/[₹,]/g, '').trim() : "";
+
+  // Sum Assured — strip ₹ and commas
+  const sumRaw = c["Sum Assured"] || "";
+  document.getElementById('sumAsset').value = sumRaw.replace(/[₹,]/g, '').trim() !== "-" ? sumRaw.replace(/[₹,]/g, '').trim() : "";
+
+  // Date of Commencement → yyyy-mm-dd for <input type="date">
+  const docValue = c["Date of Commencement"];
+  if (docValue && docValue !== "-") {
+    const parts = docValue.split(/[\/\-]/);
+    if (parts.length === 3) {
+      let day, month, year;
+      if (parts[0].length === 4) { year = parts[0]; month = parts[1]; day = parts[2]; }
+      else { day = parts[0]; month = parts[1]; year = parts[2]; }
+      document.getElementById('doc').value = `${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`;
+    } else {
+      document.getElementById('doc').value = docValue;
+    }
+  }
+
+  // Premium Type
+  const pt = c["Premium Type"];
+  if (pt && pt !== "-") {
+    const sel = document.getElementById('premiumType');
+    for (let opt of sel.options) {
+      if (opt.value === pt || opt.text === pt) { sel.value = opt.value; break; }
+    }
+  }
+
+  // Policy badge hint
+  const detectedName = getPolicyNameFromTableNo(c["Table No."]);
+  if (detectedName) {
+    const pg = document.querySelector("#policyName").closest(".form-group");
+    // Remove any existing badge
+    const existing = pg.querySelector('.detected-badge');
+    if (existing) existing.remove();
+    const div = document.createElement("div");
+    div.className = "helper detected-badge";
+    div.innerHTML = `<span style="color:${detectedName.includes('Jeevan') ? '#10b981' : '#3b82f6'};font-weight:600;">
+      <i class="fa-solid fa-circle-info"></i> Detected: ${detectedName}
+    </span>`;
+    pg.appendChild(div);
+  }
+}
+
+// ================= DOM READY =================
+document.addEventListener("DOMContentLoaded", async function () {
+
+  // Table No & Policy Name are optional
+  document.getElementById("tableNo").removeAttribute("required");
+  document.getElementById("policyName").removeAttribute("required");
+
+  // Auto-fill on blur/enter in Table No field
   const tableNoInput = document.getElementById("tableNo");
   if (tableNoInput) {
     tableNoInput.addEventListener("blur", autoFillPolicyNameFromTableNo);
-    
-    // Also auto-fill on Enter key in table number field
-    tableNoInput.addEventListener("keydown", function(event) {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        autoFillPolicyNameFromTableNo();
-      }
+    tableNoInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); autoFillPolicyNameFromTableNo(); }
     });
   }
-  
-  // Add a helper button for auto-fill
-  const policyNameGroup = document.querySelector("#policyName").closest(".form-group");
-  if (policyNameGroup) {
-    const helperDiv = document.createElement("div");
-    helperDiv.className = "helper";
-    helperDiv.innerHTML = `
-      <span style="display: flex; align-items: center; gap: 4px;">
-        <i class="fa-solid fa-wand-magic-sparkles" style="color: #3b82f6;"></i>
-        <span>Tip: Enter table number containing 814 or 820 and the policy name will auto-fill!</span>
-      </span>
-    `;
-    policyNameGroup.appendChild(helperDiv);
-  }
-  
+
+  addPolicyInfoBox();
+
+  // ---- EDIT MODE ----
+  const urlParams = new URLSearchParams(window.location.search);
+  const editSl = urlParams.get('edit');
+
   if (editSl) {
-    // Change page title
     document.querySelector('.card-title').textContent = 'Edit Client';
     document.querySelector('.card-subtitle').textContent = 'Update the client details below';
     document.querySelector('.btn-primary').textContent = 'Update Client';
-    
-    // Load client data
-    const savedClients = JSON.parse(localStorage.getItem("clients")) || [];
-    const clientToEdit = savedClients.find(c => c.sl == editSl);
-    
-    if (clientToEdit) {
-      // Fill form with client data
-      document.getElementById('sl').value = clientToEdit.sl;
-      document.getElementById('name').value = clientToEdit.name !== "-" ? clientToEdit.name : "";
-      document.getElementById('policyNo').value = clientToEdit.policyNo !== "-" ? clientToEdit.policyNo : "";
-      
-      // Format date for input field
-      const docValue = clientToEdit.doc;
-      if (docValue && docValue !== "-") {
-        // Convert dd/mm/yyyy to yyyy-mm-dd
-        const parts = docValue.split(/[/-]/);
-        if (parts.length === 3) {
-          let day, month, year;
-          if (parts[0].length === 4) { // yyyy-mm-dd format
-            year = parts[0];
-            month = parts[1];
-            day = parts[2];
-          } else { // dd/mm/yyyy format
-            day = parts[0];
-            month = parts[1];
-            year = parts[2];
-          }
-          // Ensure two digits for month and day
-          month = month.padStart(2, '0');
-          day = day.padStart(2, '0');
-          document.getElementById('doc').value = `${year}-${month}-${day}`;
-        } else {
-          document.getElementById('doc').value = docValue;
-        }
+    document.getElementById('sl').readOnly = true;
+
+    // Show loading indicator
+    document.querySelector('.btn-primary').textContent = 'Loading...';
+    document.querySelector('.btn-primary').disabled = true;
+
+    try {
+      // Fetch ALL rows and match SL locally — most reliable approach
+      const res = await fetch(SHEETDB_API);
+      if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+      const allRows = await res.json();
+
+      // Match by Sl. No. (compare as strings to handle "1" vs 1)
+      const match = allRows.find(r => String(r["Sl. No."]).trim() === String(editSl).trim());
+
+      if (match) {
+        fillFormFromRow(match);
+      } else {
+        alert(`No client found with SL: ${editSl}`);
       }
-      
-      document.getElementById('tableNo').value = clientToEdit.tableNo !== "-" ? clientToEdit.tableNo : "";
-      document.getElementById('premium').value = clientToEdit.premium !== "-" ? clientToEdit.premium.replace('₹', '') : "";
-      document.getElementById('premiumType').value = clientToEdit.premiumType !== "-" ? clientToEdit.premiumType : "";
-      document.getElementById('sumAsset').value = clientToEdit.sumAsset !== "-" ? clientToEdit.sumAsset.replace('₹', '') : "";
-      document.getElementById('policyName').value = clientToEdit.policyName !== "-" ? clientToEdit.policyName : "";
-      
-      // Make SL field read-only when editing
-      document.getElementById('sl').readOnly = true;
-      
-      // Show detection info if table number contains 814/820
-      const detectedName = getPolicyNameFromTableNo(clientToEdit.tableNo);
-      if (detectedName) {
-        const policyNameGroup = document.querySelector("#policyName").closest(".form-group");
-        const infoDiv = document.createElement("div");
-        infoDiv.className = "helper";
-        infoDiv.innerHTML = `
-          <span style="display: flex; align-items: center; gap: 6px; color: ${detectedName === "New Jeevan Anand" ? "#10b981" : "#3b82f6"}; font-weight: 600;">
-            <i class="fa-solid fa-circle-info"></i>
-            <span>Detected as: ${detectedName} (${clientToEdit.tableNo.includes('814') ? '🟢 814 series' : '🔵 820 series'})</span>
-          </span>
-        `;
-        policyNameGroup.appendChild(infoDiv);
-      }
+    } catch (err) {
+      console.error("Edit load error:", err);
+      alert("Could not load client data. Please try again.\n" + err.message);
+    } finally {
+      document.querySelector('.btn-primary').textContent = 'Update Client';
+      document.querySelector('.btn-primary').disabled = false;
     }
   }
 });
 
-const form = document.getElementById("clientForm");
-
-form.addEventListener("submit", function(e) {
+// ================= FORM SUBMIT =================
+document.getElementById("clientForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  // Format premium with ₹ symbol
-  const premiumValue = document.getElementById("premium").value;
-  const formattedPremium = premiumValue ? `₹${premiumValue}` : "-";
-  
-  // Format sumAsset with ₹ symbol if not already
-  let sumAssetValue = document.getElementById("sumAsset").value;
-  if (sumAssetValue && !sumAssetValue.includes('₹')) {
-    sumAssetValue = `₹${sumAssetValue}`;
-  }
+  const btn = document.querySelector('.btn-primary');
+  const originalText = btn.textContent;
+  btn.textContent = "Saving...";
+  btn.disabled = true;
 
-  const client = {
-    sl: parseInt(document.getElementById("sl").value) || 0,
-    name: document.getElementById("name").value || "-",
-    policyNo: document.getElementById("policyNo").value || "-",
-    doc: document.getElementById("doc").value || "-",
-    tableNo: document.getElementById("tableNo").value || "-",
-    premium: formattedPremium,
-    premiumType: document.getElementById("premiumType").value || "-",
-    sumAsset: sumAssetValue || "-",
-    policyName: document.getElementById("policyName").value || "-"
-  };
-
-  // Get existing clients from localStorage
-  let clients = JSON.parse(localStorage.getItem("clients")) || [];
-  
-  // Check if we're editing
   const urlParams = new URLSearchParams(window.location.search);
   const isEdit = urlParams.get('edit');
-  
-  if (isEdit) {
-    // Update existing client
-    const index = clients.findIndex(c => c.sl == isEdit);
-    if (index >= 0) {
-      clients[index] = client;
-      localStorage.setItem("clients", JSON.stringify(clients));
-      
-      // Show success with policy type if detected
-      const detectedName = getPolicyNameFromTableNo(client.tableNo);
-      let successMessage = "✅ Client updated successfully!";
-      if (detectedName) {
-        successMessage += `\n\n📋 Policy type: ${detectedName} (${client.tableNo.includes('814') ? '814 series' : '820 series'})`;
-      }
-      alert(successMessage);
-      
+
+  const premiumRaw  = document.getElementById("premium").value.trim();
+  const sumAssetRaw = document.getElementById("sumAsset").value.trim();
+  const slValue     = document.getElementById("sl").value.trim();
+
+  const rowData = {
+    "Sl. No.":              slValue || "-",
+    "Client Name":          document.getElementById("name").value.trim() || "-",
+    "Policy No.":           document.getElementById("policyNo").value.trim() || "-",
+    "Date of Commencement": document.getElementById("doc").value || "-",
+    "Table No.":            document.getElementById("tableNo").value.trim() || "-",
+    "Premium":              premiumRaw  ? premiumRaw  : "-",
+    "Premium Type":         document.getElementById("premiumType").value || "-",
+    "Sum Assured":          sumAssetRaw ? sumAssetRaw : "-",
+    "Policy Name":          document.getElementById("policyName").value.trim() || "-"
+  };
+
+  try {
+    if (isEdit) {
+      // ---- PATCH (update existing row) ----
+      const res = await fetch(sheetUrl("Sl. No.", isEdit), {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: rowData })
+      });
+      if (!res.ok) throw new Error(`Update failed: ${res.status}`);
+
+      const detectedName = getPolicyNameFromTableNo(rowData["Table No."]);
+      let msg = "✅ Client updated successfully!";
+      if (detectedName) msg += `\n📋 Policy: ${detectedName}`;
+      alert(msg);
       window.location.href = "../total_lic_holders_details/total_lic_holder_details.html";
-    }
-  } else {
-    // Add new client
-    // Check if client with same SL exists
-    const existingIndex = clients.findIndex(c => c.sl === client.sl);
-    
-    if (existingIndex >= 0) {
-      if (confirm(`Client with SL ${client.sl} already exists. Overwrite?`)) {
-        clients[existingIndex] = client;
+
+    } else {
+      // ---- CHECK DUPLICATE then ADD ----
+      let existing = [];
+      try {
+        const allRes = await fetch(SHEETDB_API);
+        if (allRes.ok) {
+          const allRows = await allRes.json();
+          existing = allRows.filter(r => String(r["Sl. No."]).trim() === String(slValue).trim());
+        }
+      } catch (_) { existing = []; }
+
+      if (existing.length > 0) {
+        if (!confirm(`SL ${slValue} already exists. Overwrite?`)) {
+          btn.textContent = originalText;
+          btn.disabled = false;
+          return;
+        }
+        // PATCH to overwrite
+        const res = await fetch(sheetUrl("Sl. No.", slValue), {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: rowData })
+        });
+        if (!res.ok) throw new Error(`Overwrite failed: ${res.status}`);
       } else {
-        return;
+        // POST new row
+        const res = await fetch(SHEETDB_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: rowData })
+        });
+        if (!res.ok) throw new Error(`Add failed: ${res.status}`);
       }
-    } else {
-      // Add new client
-      clients.push(client);
+
+      const detectedName = getPolicyNameFromTableNo(rowData["Table No."]);
+      let msg = "✅ Client added successfully!";
+      if (detectedName) msg += `\n📋 Policy: ${detectedName}`;
+      alert(msg);
+
+      if (confirm("Go to Total Clients page?")) {
+        window.location.href = "../total_lic_holders_details/total_lic_holder_details.html";
+      } else {
+        document.getElementById("clientForm").reset();
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
     }
-    
-    // Sort by SL
-    clients.sort((a, b) => a.sl - b.sl);
-    
-    localStorage.setItem("clients", JSON.stringify(clients));
-    
-    // Show success with policy type if detected
-    const detectedName = getPolicyNameFromTableNo(client.tableNo);
-    let successMessage = "✅ Client added successfully!";
-    if (detectedName) {
-      successMessage += `\n\n📋 Policy type: ${detectedName} (${client.tableNo.includes('814') ? '814 series' : '820 series'})`;
-    }
-    alert(successMessage);
-    
-    // Ask if user wants to go to total page or stay
-    if (confirm("Client added! Go to Total Clients page?")) {
-      window.location.href = "../total_lic_holders_details/total_lic_holder_details.html";
-    } else {
-      form.reset();
-    }
+  } catch (err) {
+    alert("❌ Error: " + err.message);
+    btn.textContent = originalText;
+    btn.disabled = false;
   }
 });
 
-// Add keyboard shortcut for auto-fill: Ctrl+Shift+T when in table number field
-document.addEventListener("keydown", function(event) {
-  const tableNoInput = document.getElementById("tableNo");
-  if (document.activeElement === tableNoInput && event.ctrlKey && event.shiftKey && (event.key === "T" || event.key === "t")) {
-    event.preventDefault();
+// Ctrl+Shift+T shortcut
+document.addEventListener("keydown", function (e) {
+  const t = document.getElementById("tableNo");
+  if (document.activeElement === t && e.ctrlKey && e.shiftKey && (e.key === "T" || e.key === "t")) {
+    e.preventDefault();
     autoFillPolicyNameFromTableNo();
   }
 });
 
-// Add a small info box about policy types
+// ================= POLICY INFO BOX =================
 function addPolicyInfoBox() {
-  const tableNoGroup = document.querySelector("#tableNo").closest(".form-group");
-  if (tableNoGroup) {
-    const infoBox = document.createElement("div");
-    infoBox.className = "helper";
-    infoBox.style.marginTop = "10px";
-    infoBox.style.padding = "8px 12px";
-    infoBox.style.background = "rgba(59, 130, 246, 0.05)";
-    infoBox.style.borderRadius = "6px";
-    infoBox.style.borderLeft = "3px solid #3b82f6";
-    infoBox.innerHTML = `
-      <div style="font-size: 12px; color: #475569;">
-        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-          <i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i>
-          <strong style="font-size: 13px;">Quick Policy Guide:</strong>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
-          <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 11px;">Table No with 814</span>
-          <span style="font-size: 12px;">→ New Jeevan Anand (Life cover + maturity)</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: rgba(59, 130, 246, 0.15); color: #3b82f6; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 11px;">Table No with 820</span>
-          <span style="font-size: 12px;">→ New Endowment Plan (Maturity + life cover)</span>
-        </div>
+  const tableNoGroup = document.querySelector("#tableNo")?.closest(".form-group");
+  if (!tableNoGroup) return;
+  const infoBox = document.createElement("div");
+  infoBox.className = "helper";
+  infoBox.style.cssText = "margin-top:10px;padding:8px 12px;background:rgba(59,130,246,0.05);border-radius:6px;border-left:3px solid #3b82f6;";
+  infoBox.innerHTML = `
+    <div style="font-size:12px;color:#475569;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+        <i class="fa-solid fa-lightbulb" style="color:#f59e0b;"></i>
+        <strong style="font-size:13px;">Quick Policy Guide:</strong>
       </div>
-    `;
-    tableNoGroup.appendChild(infoBox);
-  }
+      <div style="margin-bottom:2px;">
+        <span style="background:rgba(16,185,129,0.15);color:#10b981;padding:2px 8px;border-radius:4px;font-weight:600;font-size:11px;">814</span>
+        → New Jeevan Anand
+      </div>
+      <div>
+        <span style="background:rgba(59,130,246,0.15);color:#3b82f6;padding:2px 8px;border-radius:4px;font-weight:600;font-size:11px;">820</span>
+        → New Endowment Plan
+      </div>
+    </div>`;
+  tableNoGroup.appendChild(infoBox);
 }
-
-// Call the info box function after DOM loads
-setTimeout(addPolicyInfoBox, 300);

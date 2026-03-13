@@ -1,205 +1,198 @@
-// Ensure DOM is fully loaded before attaching the shortcut listener
-document.addEventListener('DOMContentLoaded', function() {
-  // Keyboard shortcut: Ctrl + Shift + F to focus search bar
-  document.addEventListener('keydown', function(event) {
-    // Log the key event for debugging (remove this line after testing)
-    console.log('Key pressed:', event.key, 'Ctrl:', event.ctrlKey, 'Shift:', event.shiftKey);
-    
-    // Check for Ctrl + Shift + F (works on Windows/Linux; on Mac, Ctrl is Command)
-    if (event.ctrlKey && event.shiftKey && (event.key === 'F' || event.key === 'f')) {
-      event.preventDefault(); // Prevent browser's default "Find in Page"
-      const searchInput = document.getElementById('clientSearchInput');
-      if (searchInput) {
-        searchInput.focus(); // Move cursor to search bar
-        searchInput.select(); // Select existing text for easy overwrite
-        console.log('Shortcut triggered: Focused on search input'); // Debug log (remove after)
-      } else {
-        console.error('Search input not found! Check ID: clientSearchInput'); // Error log
-      }
-    }
+// ================= SHEETDB API CONFIG =================
+const SHEETDB_API = "https://sheetdb.io/api/v1/rzuqukl6peo56";
 
-    // ================= POLICY NUMBER QUICK FILTER SHORTCUTS =================
-    
-    // Ctrl+Shift+8 to filter 814 series (New Jeevan Anand)
+// ================= KEYBOARD SHORTCUTS =================
+document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('keydown', function (event) {
+    if (event.ctrlKey && event.shiftKey && (event.key === 'F' || event.key === 'f')) {
+      event.preventDefault();
+      const searchInput = document.getElementById('clientSearchInput');
+      if (searchInput) { searchInput.focus(); searchInput.select(); }
+    }
     if (event.ctrlKey && event.shiftKey && event.key === '8') {
       event.preventDefault();
       filterData('withPolicy');
-      const searchInput = document.getElementById('clientSearchInput');
-      if (searchInput) {
-        searchInput.value = '814';
-        searchInput.focus();
-        window.filterTableData(window.currentFilter);
-        console.log('Shortcut triggered: Filter 814 series (New Jeevan Anand)');
-      }
+      const s = document.getElementById('clientSearchInput');
+      if (s) { s.value = '814'; window.filterTableData(window.currentFilter); }
     }
-    
-    // Ctrl+Shift+0 to filter 820 series (New Endowment Plan)
     if (event.ctrlKey && event.shiftKey && event.key === '0') {
       event.preventDefault();
       filterData('withPolicy');
-      const searchInput = document.getElementById('clientSearchInput');
-      if (searchInput) {
-        searchInput.value = '820';
-        searchInput.focus();
-        window.filterTableData(window.currentFilter);
-        console.log('Shortcut triggered: Filter 820 series (New Endowment Plan)');
-      }
+      const s = document.getElementById('clientSearchInput');
+      if (s) { s.value = '820'; window.filterTableData(window.currentFilter); }
     }
   });
 });
 
-// ================= POLICY DETECTION LOGIC (BASED ON TABLE NUMBER) =================
-
+// ================= POLICY DETECTION =================
 function getPolicyNameFromTableNo(tableNo) {
-  if (!tableNo || tableNo === "-" || tableNo === "") {
-    return "-";
-  }
-  
-  const tableStr = String(tableNo);
-  
-  // Check if table number contains 814
-  if (tableStr.includes("814")) {
-    return "New Jeevan Anand";
-  }
-  
-  // Check if table number contains 820
-  if (tableStr.includes("820")) {
-    return "New Endowment Plan";
-  }
-  
-  // Return original table number if no match
-  return tableStr;
+  if (!tableNo || tableNo === "-" || tableNo === "") return "-";
+  const t = String(tableNo);
+  if (t.includes("814")) return "New Jeevan Anand";
+  if (t.includes("820")) return "New Endowment Plan";
+  return t;
 }
 
 function formatPolicyDisplay(tableNo, originalPolicyName) {
   const detectedName = getPolicyNameFromTableNo(tableNo);
   const originalName = originalPolicyName || "";
-  
-  // If we detected a known policy type
   if (detectedName !== tableNo && detectedName !== "-" && detectedName !== "") {
-    let badgeClass = "policy-badge";
-    let badgeText = "";
-    let badgeColor = "";
-    
+    let badgeText = "", badgeColor = "";
     if (detectedName === "New Jeevan Anand") {
-      badgeClass += " policy-jeevan";
-      badgeText = "🟢 Jeevan Anand";
-      badgeColor = "var(--success-green)";
+      badgeText = "🟢 Jeevan Anand"; badgeColor = "var(--success-green)";
     } else if (detectedName === "New Endowment Plan") {
-      badgeClass += " policy-endowment";
-      badgeText = "🔵 Endowment Plan";
-      badgeColor = "var(--primary-blue)";
+      badgeText = "🔵 Endowment Plan"; badgeColor = "var(--primary-blue)";
     }
-    
-    // Return formatted display with badge
     return `
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <div style="font-weight: 600; color: var(--text-primary);">${detectedName}</div>
-        <span style="display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; background: rgba(${badgeColor === 'var(--success-green)' ? '16, 185, 129' : '59, 130, 246'}, 0.1); color: ${badgeColor}; border: 1px solid rgba(${badgeColor === 'var(--success-green)' ? '16, 185, 129' : '59, 130, 246'}, 0.3); width: fit-content;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="font-weight:600;color:var(--text-primary);">${detectedName}</div>
+        <span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;
+          background:rgba(${badgeColor==='var(--success-green)'?'16,185,129':'59,130,246'},0.1);
+          color:${badgeColor};border:1px solid rgba(${badgeColor==='var(--success-green)'?'16,185,129':'59,130,246'},0.3);width:fit-content;">
           ${badgeText}
         </span>
-        ${originalName && originalName !== detectedName && originalName !== "-" && originalName !== "" ? 
-          `<div style="font-size: 0.75rem; color: var(--text-light); margin-top: 4px; font-style: italic;">
-            <i class="fa-solid fa-note-sticky" style="margin-right: 4px;"></i>Original: ${originalName}
+        ${originalName && originalName !== detectedName && originalName !== "-" && originalName !== "" ?
+          `<div style="font-size:0.75rem;color:var(--text-light);margin-top:4px;font-style:italic;">
+            <i class="fa-solid fa-note-sticky" style="margin-right:4px;"></i>Original: ${originalName}
           </div>` : ''}
-      </div>
-    `;
+      </div>`;
   }
-  
-  // Return original if no detection
   return originalName && originalName !== "-" ? originalName : "-";
 }
 
-// Initialize the application
-document.addEventListener("DOMContentLoaded", () => {
+// ================= SHEETDB DATA FETCH =================
+async function fetchClientsFromSheetDB() {
+  try {
+    showLoadingState();
+    const response = await fetch(SHEETDB_API);
+    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    const data = await response.json();
+
+    // Normalize fields — mapping Sheet column names → app field names
+    // Sheet headers (Row 2 after deleting title row):
+    //   "Sl. No." | "Client Name" | "Policy No." | "Date of Commencement"
+    //   "Table No." | "Premium" | "Premium Type" | "Sum Assured" | "Policy Name"
+    return data.map(row => ({
+      sl:          isNaN(row["Sl. No."]) ? row["Sl. No."] : Number(row["Sl. No."]),
+      name:        row["Client Name"]           || "-",
+      policyNo:    row["Policy No."]            || "-",
+      doc:         row["Date of Commencement"]  || "-",
+      tableNo:     row["Table No."]             || "-",
+      premium:     row["Premium"]               || "-",
+      premiumType: row["Premium Type"]          || "-",
+      sumAsset:    row["Sum Assured"]           || "-",
+      policyName:  row["Policy Name"]           || "-",
+    }));
+  } catch (err) {
+    console.error("SheetDB fetch error:", err);
+    showErrorState(err.message);
+    return [];
+  }
+}
+
+function showLoadingState() {
   const tableBody = document.getElementById("clientTableBody");
-  const searchInput = document.getElementById("clientSearchInput");
-  const showingCount = document.getElementById("showingCount");
-  const totalCount = document.getElementById("totalCount");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td colspan="10" style="padding:3rem;text-align:center;">
+        <div style="font-size:2.5rem;color:var(--primary-blue);margin-bottom:1rem;animation:spin 1s linear infinite;">
+          <i class="fa-solid fa-spinner"></i>
+        </div>
+        <h3 style="color:var(--text-secondary);margin-bottom:0.5rem;">Loading clients...</h3>
+        <p style="color:var(--text-light);">Fetching data from SheetDB</p>
+      </td>
+    </tr>`;
+}
+
+function showErrorState(message) {
+  const tableBody = document.getElementById("clientTableBody");
+  if (!tableBody) return;
+  tableBody.innerHTML = `
+    <tr>
+      <td colspan="10" style="padding:3rem;text-align:center;">
+        <div style="font-size:2.5rem;color:var(--danger-red);margin-bottom:1rem;">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 style="color:var(--danger-red);margin-bottom:0.5rem;">Failed to load data</h3>
+        <p style="color:var(--text-light);">${message}</p>
+        <button onclick="refreshData()" class="action-btn primary" style="margin-top:1rem;">
+          <i class="fa-solid fa-rotate-right"></i> Retry
+        </button>
+      </td>
+    </tr>`;
+}
+
+// ================= MAIN INIT =================
+document.addEventListener("DOMContentLoaded", async () => {
+  const tableBody        = document.getElementById("clientTableBody");
+  const searchInput      = document.getElementById("clientSearchInput");
+  const showingCount     = document.getElementById("showingCount");
+  const totalCount       = document.getElementById("totalCount");
   const clientTotalEntries = document.getElementById("clientTotalEntries");
-  
-  // Get data from localStorage
-  function getAllClientData() {
-    const data = JSON.parse(localStorage.getItem("clients")) || [];
-    console.log("Loaded from localStorage:", data);
-    return data;
-  }
-  
-  // Store data globally
-  window.rawClientData = getAllClientData();
-  window.clientData = [...window.rawClientData];
+
+  // Fetch from SheetDB
+  window.rawClientData = await fetchClientsFromSheetDB();
+  window.clientData    = [...window.rawClientData];
   window.currentFilter = 'all';
-  
-  // Calculate stats and update counts
+
+  // Sort by SL
+  window.rawClientData = [...window.rawClientData].sort((a, b) => Number(a.sl) - Number(b.sl));
+
   function calculateStats() {
-    const totalClients = window.rawClientData.length;
-    console.log("Total clients:", totalClients);
-    
-    if (totalCount) totalCount.textContent = totalClients;
-    if (showingCount) showingCount.textContent = totalClients;
-    if (clientTotalEntries) {
-      clientTotalEntries.textContent = `${totalClients} ${totalClients === 1 ? 'Entry' : 'Entries'}`;
-    }
-    
-    console.log("Updated counts - Total:", totalClients);
+    const t = window.rawClientData.length;
+    if (totalCount)        totalCount.textContent = t;
+    if (showingCount)      showingCount.textContent = t;
+    if (clientTotalEntries) clientTotalEntries.textContent = `${t} ${t === 1 ? 'Entry' : 'Entries'}`;
   }
-  
-  // Render table with enhanced styling
+
   function renderTable(data) {
     if (!tableBody) return;
-    
     tableBody.innerHTML = "";
-    
     if (data.length === 0) {
       tableBody.innerHTML = `
         <tr>
-          <td colspan="10" style="padding: 3rem; text-align: center;">
-            <div style="font-size: 3rem; color: var(--border-color); margin-bottom: 1rem;">
+          <td colspan="10" style="padding:3rem;text-align:center;">
+            <div style="font-size:3rem;color:var(--border-color);margin-bottom:1rem;">
               <i class="fa-solid fa-user-slash"></i>
             </div>
-            <h3 style="color: var(--text-secondary); margin-bottom: 0.5rem;">No clients found</h3>
-            <p style="color: var(--text-light);">Add your first client using the "Add New Client" button</p>
+            <h3 style="color:var(--text-secondary);margin-bottom:0.5rem;">No clients found</h3>
+            <p style="color:var(--text-light);">Try a different filter or search term</p>
           </td>
-        </tr>
-      `;
+        </tr>`;
       return;
     }
-    
+
     data.forEach(item => {
       const tr = document.createElement("tr");
-      
       const hasPolicy = item.policyNo !== "-" && item.policyNo !== "";
-      const hasName = item.name !== "-";
-      
-      const nameAvatar = hasName ? 
-        `<div class="client-avatar">${item.name.charAt(0)}</div>` :
-        `<div class="client-avatar" style="background: var(--danger-red);">?</div>`;
-      
+      const hasName   = item.name !== "-";
+
+      const nameAvatar = hasName
+        ? `<div class="client-avatar">${item.name.charAt(0)}</div>`
+        : `<div class="client-avatar" style="background:var(--danger-red);">?</div>`;
+
       const formatCell = (value, isMonetary = false, isImportant = false) => {
-        if (value === "-" || value === "" || value === null || value === undefined) {
-          return `<span style="color: var(--text-light); font-style: italic;">-</span>`;
-        }
-        const colorClass = isMonetary ? (isImportant ? 'style="color: var(--success-green);"' : '') : '';
+        if (value === "-" || value === "" || value === null || value === undefined)
+          return `<span style="color:var(--text-light);font-style:italic;">-</span>`;
+        const colorClass = isMonetary && isImportant ? 'style="color:var(--success-green);"' : '';
         return `<span ${colorClass}>${value}</span>`;
       };
-      
-      const rowClass = hasPolicy ? "complete-entry" : "incomplete-entry";
-      
-      tr.className = rowClass;
+
+      tr.className = hasPolicy ? "complete-entry" : "incomplete-entry";
       tr.setAttribute('data-sl', item.sl);
       tr.setAttribute('data-has-policy', hasPolicy);
-      
       tr.ondblclick = () => showClientDetails(item.sl);
-      
+
       tr.innerHTML = `
-        <td style="font-weight: 800; color: #1d4ed8; background: rgba(59, 130, 246, 0.08); text-align: center; font-size: 1.1rem; border-right: 2px solid #dbeafe;">
+        <td style="font-weight:800;color:#1d4ed8;background:rgba(59,130,246,0.08);text-align:center;font-size:1.1rem;border-right:2px solid #dbeafe;">
           <strong>${item.sl}</strong>
         </td>
         <td>
-          <div style="display: flex; align-items: center;">
+          <div style="display:flex;align-items:center;">
             ${nameAvatar}
             <div>
-              <div style="font-weight: 600; color: var(--text-primary);">${formatCell(item.name)}</div>
+              <div style="font-weight:600;color:var(--text-primary);">${formatCell(item.name)}</div>
               ${!hasName ? '<div class="warning-text">Name Required</div>' : ''}
             </div>
           </div>
@@ -208,11 +201,11 @@ document.addEventListener("DOMContentLoaded", () => {
           ${formatCell(item.policyNo)}
           ${!hasPolicy ? '<div class="warning-text">Policy Required</div>' : ''}
         </td>
-        <td style="text-align: center; min-width: 90px;">${formatCell(item.doc)}</td>
+        <td style="text-align:center;min-width:90px;">${formatCell(item.doc)}</td>
         <td>${formatCell(item.tableNo)}</td>
-        <td style="font-weight: 600;">${formatCell(item.premium, true, true)}</td>
+        <td style="font-weight:600;">${formatCell(item.premium, true, true)}</td>
         <td>${formatCell(item.premiumType)}</td>
-        <td style="font-weight: 700; color: var(--secondary-purple);">${formatCell(item.sumAsset, true)}</td>
+        <td style="font-weight:700;color:var(--secondary-purple);">${formatCell(item.sumAsset, true)}</td>
         <td>${formatPolicyDisplay(item.tableNo, item.policyName)}</td>
         <td>
           <div class="table-row-actions">
@@ -222,140 +215,97 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="action-icon action-edit" title="Edit Client" onclick="editClient(${item.sl})">
               <i class="fa-solid fa-pen"></i>
             </div>
-            <div class="action-icon action-delete" title="Delete Client" onclick="deleteClient(${item.sl})" style="background: rgba(239, 71, 111, 0.15); color: var(--danger-red); border: 1px solid rgba(239, 71, 111, 0.3);">
+            <div class="action-icon action-delete" title="Delete Client" onclick="deleteClient(${item.sl})"
+              style="background:rgba(239,71,111,0.15);color:var(--danger-red);border:1px solid rgba(239,71,111,0.3);">
               <i class="fa-solid fa-trash"></i>
             </div>
           </div>
-        </td>
-      `;
-      
-      tr.addEventListener('mouseenter', () => {
-        tr.style.backgroundColor = 'var(--primary-blue-light)';
-      });
-      
-      tr.addEventListener('mouseleave', () => {
-        if (!tr.classList.contains('selected')) {
-          tr.style.backgroundColor = '';
-        }
-      });
-      
+        </td>`;
+
+      tr.addEventListener('mouseenter', () => { tr.style.backgroundColor = 'var(--primary-blue-light)'; });
+      tr.addEventListener('mouseleave', () => { if (!tr.classList.contains('selected')) tr.style.backgroundColor = ''; });
+
       tableBody.appendChild(tr);
     });
+
+    setTimeout(enhanceMobileExperience, 100);
   }
-  
-  // Filter table data
-  window.filterTableData = function(filterType) {
+
+  // Filter + search
+  window.filterTableData = function (filterType) {
     window.currentFilter = filterType;
     let filtered = [...window.rawClientData];
-    
-    switch(filterType) {
-      case 'withPolicy':
-        filtered = filtered.filter(item => item.policyNo !== "-" && item.policyNo !== "");
-        break;
-      case 'noPolicy':
-        filtered = filtered.filter(item => item.policyNo === "-" || item.policyNo === "");
-        break;
-      case 'blank':
-        filtered = filtered.filter(item => item.name === "-");
-        break;
-      default:
-        filtered = [...window.rawClientData];
+
+    switch (filterType) {
+      case 'withPolicy': filtered = filtered.filter(i => i.policyNo !== "-" && i.policyNo !== ""); break;
+      case 'noPolicy':   filtered = filtered.filter(i => i.policyNo === "-" || i.policyNo === "");  break;
+      case 'blank':      filtered = filtered.filter(i => i.name === "-"); break;
     }
-    
-    const searchTerm = searchInput.value.toLowerCase();
+
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : "";
     if (searchTerm) {
       filtered = filtered.filter(item =>
         item.sl.toString().includes(searchTerm) ||
-        (item.name && item.name.toLowerCase().includes(searchTerm)) ||
-        (item.policyNo && item.policyNo.toLowerCase().includes(searchTerm)) ||
-        (item.tableNo && item.tableNo.toLowerCase().includes(searchTerm)) ||
+        (item.name        && item.name.toLowerCase().includes(searchTerm))        ||
+        (item.policyNo    && item.policyNo.toLowerCase().includes(searchTerm))    ||
+        (item.tableNo     && item.tableNo.toLowerCase().includes(searchTerm))     ||
         (item.premiumType && item.premiumType.toLowerCase().includes(searchTerm)) ||
-        (item.sumAsset && item.sumAsset.toLowerCase().includes(searchTerm)) ||
-        (item.policyName && item.policyName.toLowerCase().includes(searchTerm))
+        (item.sumAsset    && item.sumAsset.toLowerCase().includes(searchTerm))    ||
+        (item.policyName  && item.policyName.toLowerCase().includes(searchTerm))
       );
     }
-    
+
     window.clientData = filtered;
     renderTable(filtered);
     if (showingCount) showingCount.textContent = filtered.length;
   };
-  
-  // Search functionality
+
   if (searchInput) {
-    searchInput.addEventListener("input", (e) => {
-      const value = e.target.value.toLowerCase();
-      window.filterTableData(window.currentFilter);
-    });
+    searchInput.addEventListener("input", () => window.filterTableData(window.currentFilter));
   }
-  
-  // Sort data by SL number (ascending)
-  function sortDataBySL(data) {
-    return [...data].sort((a, b) => Number(a.sl) - Number(b.sl));
-  }
-  
-  // Initialize the table
-  window.rawClientData = sortDataBySL(window.rawClientData);
+
   calculateStats();
   renderTable(window.rawClientData);
   window.filterTableData('all');
-  
-  console.log("Table initialized with", window.rawClientData.length, "clients");
 });
 
 // ================= HELPER FUNCTIONS =================
 
 function editClient(sl) {
-  const client = window.clientData.find(c => c.sl === sl) || 
-                 window.rawClientData.find(c => c.sl === sl);
-  
-  if (client) {
-    window.location.href = `../add_client/add.html?edit=${sl}`;
-  }
+  window.location.href = `../add_client/add.html?edit=${sl}`;
 }
 
-function deleteClient(sl) {
+async function deleteClient(sl) {
   if (!confirm(`Are you sure you want to delete client SL: ${sl}?`)) return;
 
-  const targetSl = Number(sl);
-  let savedClients = JSON.parse(localStorage.getItem("clients")) || [];
-  savedClients = savedClients.filter(c => Number(c.sl) !== targetSl);
-  localStorage.setItem("clients", JSON.stringify(savedClients));
+  try {
+    const response = await fetch(`${SHEETDB_API}/${encodeURIComponent("Sl. No.")}/${encodeURIComponent(sl)}`, { method: 'DELETE' });
+    if (!response.ok) throw new Error(`Delete failed: ${response.status}`);
 
-  window.rawClientData = savedClients;
-  window.clientData = [...savedClients];
-
-  if (window.filterTableData) {
-    window.filterTableData(window.currentFilter || 'all');
+    window.rawClientData = window.rawClientData.filter(c => Number(c.sl) !== Number(sl));
+    window.clientData    = window.clientData.filter(c => Number(c.sl) !== Number(sl));
+    if (window.filterTableData) window.filterTableData(window.currentFilter || 'all');
+    alert(`✅ Client SL ${sl} deleted successfully`);
+  } catch (err) {
+    alert(`❌ Failed to delete: ${err.message}`);
   }
-
-  if (typeof calculateStats === "function") {
-    calculateStats();
-  }
-
-  alert(`✅ Client SL ${targetSl} deleted successfully`);
 }
 
 function showClientDetails(sl) {
-  const client = window.clientData.find(c => c.sl === sl) || 
-                 window.rawClientData.find(c => c.sl === sl);
-  
+  const client = window.clientData.find(c => Number(c.sl) === Number(sl)) ||
+                 window.rawClientData.find(c => Number(c.sl) === Number(sl));
   if (!client) return;
-  
-  const modal = document.getElementById('clientDetailModal');
+
+  const modal   = document.getElementById('clientDetailModal');
   const content = document.getElementById('clientDetailContent');
-  
   if (!modal || !content) return;
-  
-  // Get detected policy name from table number
+
   const detectedPolicyName = getPolicyNameFromTableNo(client.tableNo);
-  const showOriginalName = client.policyName && client.policyName !== detectedPolicyName && client.policyName !== "-";
-  
+  const showOriginalName   = client.policyName && client.policyName !== detectedPolicyName && client.policyName !== "-";
+
   content.innerHTML = `
-  <!-- HEADER -->
   <div class="detail-header">
-    <div class="detail-avatar">
-      ${client.name !== '-' ? client.name.charAt(0) : '?'}
-    </div>
+    <div class="detail-avatar">${client.name !== '-' ? client.name.charAt(0) : '?'}</div>
     <div>
       <h2>${client.name !== '-' ? client.name : 'No Name'}</h2>
       <p>SL: ${client.sl}</p>
@@ -364,20 +314,10 @@ function showClientDetails(sl) {
       </span>
     </div>
   </div>
-
-  <!-- FINANCIAL SUMMARY -->
   <div class="detail-money">
-    <div>
-      <span>Premium</span>
-      <strong>${client.premium !== '-' ? client.premium : '—'}</strong>
-    </div>
-    <div>
-      <span>Sum Assured</span>
-      <strong>${client.sumAsset !== '-' ? client.sumAsset : '—'}</strong>
-    </div>
+    <div><span>Premium</span><strong>${client.premium !== '-' ? client.premium : '—'}</strong></div>
+    <div><span>Sum Assured</span><strong>${client.sumAsset !== '-' ? client.sumAsset : '—'}</strong></div>
   </div>
-
-  <!-- DETAILS -->
   <div class="detail-grid">
     <div><label>Policy No</label><p>${client.policyNo || '—'}</p></div>
     <div><label>DOC</label><p>${client.doc || '—'}</p></div>
@@ -386,24 +326,25 @@ function showClientDetails(sl) {
     <div class="full">
       <label>Policy Name</label>
       <p>
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <div style="font-weight: 700; color: var(--text-primary); font-size: 1.1rem;">
-            ${detectedPolicyName}
-          </div>
-          ${client.tableNo && (client.tableNo.includes('814') || client.tableNo.includes('820')) ? 
-            `<span style="display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; background: ${client.tableNo.includes('814') ? 'rgba(16, 185, 129, 0.15)' : 'rgba(59, 130, 246, 0.15)'}; color: ${client.tableNo.includes('814') ? 'var(--success-green)' : 'var(--primary-blue)'}; border: 1px solid ${client.tableNo.includes('814') ? 'rgba(16, 185, 129, 0.3)' : 'rgba(59, 130, 246, 0.3)'}; width: fit-content;">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="font-weight:700;color:var(--text-primary);font-size:1.1rem;">${detectedPolicyName}</div>
+          ${client.tableNo && (client.tableNo.includes('814') || client.tableNo.includes('820')) ?
+            `<span style="display:inline-block;padding:4px 12px;border-radius:12px;font-size:0.85rem;font-weight:700;
+              background:${client.tableNo.includes('814') ? 'rgba(16,185,129,0.15)' : 'rgba(59,130,246,0.15)'};
+              color:${client.tableNo.includes('814') ? 'var(--success-green)' : 'var(--primary-blue)'};
+              border:1px solid ${client.tableNo.includes('814') ? 'rgba(16,185,129,0.3)' : 'rgba(59,130,246,0.3)'};
+              width:fit-content;">
               ${client.tableNo.includes('814') ? '🟢 814 series (Jeevan Anand)' : '🔵 820 series (Endowment Plan)'}
             </span>` : ''}
-          ${showOriginalName ? 
-            `<div style="font-size: 0.85rem; color: var(--text-light); margin-top: 4px;">
-              <i class="fa-solid fa-note-sticky" style="margin-right: 6px;"></i>Original: ${client.policyName}
+          ${showOriginalName ?
+            `<div style="font-size:0.85rem;color:var(--text-light);margin-top:4px;">
+              <i class="fa-solid fa-note-sticky" style="margin-right:6px;"></i>Original: ${client.policyName}
             </div>` : ''}
         </div>
       </p>
     </div>
-  </div>
-`;
-  
+  </div>`;
+
   modal.style.display = 'flex';
   modal.setAttribute('data-current-sl', sl);
 }
@@ -415,360 +356,203 @@ function closeModal() {
 
 function editCurrentClient() {
   const modal = document.getElementById('clientDetailModal');
-  const sl = modal.getAttribute('data-current-sl');
-  if (sl) {
-    editClient(parseInt(sl));
-    closeModal();
-  }
+  const sl    = modal.getAttribute('data-current-sl');
+  if (sl) { editClient(parseInt(sl)); closeModal(); }
 }
 
 function refreshData() {
-    location.reload();
+  location.reload();
 }
 
-// ================= SIMPLE EXPORT FUNCTION =================
+// ================= FILTER BUTTONS =================
+function filterData(filterType) {
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+  if (event && event.target) {
+    let btn = event.target;
+    while (btn && !btn.classList.contains('filter-btn')) btn = btn.parentElement;
+    if (btn) btn.classList.add('active');
+  }
+  if (window.filterTableData) window.filterTableData(filterType);
+}
+
+// ================= EXPORT (JSON download) =================
 function exportData() {
-  const dataToExport = window.clientData && window.clientData.length
-    ? window.clientData
-    : window.rawClientData;
+  const dataToExport = (window.clientData && window.clientData.length)
+    ? window.clientData : window.rawClientData;
 
   if (!dataToExport || dataToExport.length === 0) {
-    alert("❌ No data to export");
-    return;
+    alert("❌ No data to export"); return;
   }
 
-  // Sort data by SL number before exporting
-  const sortedData = [...dataToExport].sort((a, b) => Number(a.sl) - Number(b.sl));
-  
-  // Create export object
-  const exportObject = {
-    clients: sortedData
-  };
-
-  // Convert to JSON string
-  const jsonText = JSON.stringify(exportObject, null, 2);
-
-  // Create TXT file
-const blob = new Blob([jsonText], { type: "application/json;charset=utf-8" });
-
-  const url = URL.createObjectURL(blob);
-
-  const link = document.createElement("a");
-  link.href = url;
- link.download = `lic-data-${new Date().toISOString().split("T")[0]}.json`;
-
-
+  const sorted     = [...dataToExport].sort((a, b) => Number(a.sl) - Number(b.sl));
+  const jsonText   = JSON.stringify({ clients: sorted }, null, 2);
+  const blob       = new Blob([jsonText], { type: "application/json;charset=utf-8" });
+  const url        = URL.createObjectURL(blob);
+  const link       = document.createElement("a");
+  link.href        = url;
+  link.download    = `lic-data-${new Date().toISOString().split("T")[0]}.json`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-
   URL.revokeObjectURL(url);
 
-  // Show success message
   const exportBtn = document.querySelector(".export-btn");
   if (exportBtn) {
     const original = exportBtn.innerHTML;
     exportBtn.innerHTML = '<i class="fa-solid fa-check"></i> Exported';
-    setTimeout(() => {
-      exportBtn.innerHTML = original;
-    }, 2000);
+    setTimeout(() => { exportBtn.innerHTML = original; }, 2000);
   }
 }
 
-function addNewClient() {
-  window.location.href = "../add_client/add.html";
-}
-
-function filterData(filterType) {
-  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
-  
-  if (window.filterTableData) {
-    window.filterTableData(filterType);
-  }
-}
-
-// Close modal when clicking outside
-document.addEventListener('DOMContentLoaded', function() {
-  const modal = document.getElementById('clientDetailModal');
-  if (modal) {
-    modal.addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeModal();
-      }
-    });
-  }
-  
-  setTimeout(() => {
-    if (window.rawClientData && window.rawClientData.length === 0) {
-      const data = JSON.parse(localStorage.getItem("clients")) || [];
-      if (data.length > 0) {
-        console.log("Auto-refreshing data on load...");
-        window.rawClientData = data;
-        calculateStats();
-        window.filterTableData('all');
-      }
-    }
-  }, 100);
-});
-
+// ================= IMPORT =================
 function importData() {
   let fileInput = document.getElementById("importJsonInput");
-
-  // যদি input আগে না থাকে, dynamically তৈরি করবে
   if (!fileInput) {
     fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = ".json,.txt";
-    fileInput.id = "importJsonInput";
-    fileInput.style.display = "none";
+    fileInput.type = "file"; fileInput.accept = ".json,.txt";
+    fileInput.id = "importJsonInput"; fileInput.style.display = "none";
     document.body.appendChild(fileInput);
   }
-
   fileInput.click();
-
   fileInput.onchange = function () {
     const file = fileInput.files[0];
     if (!file) return;
-
     const reader = new FileReader();
-
     reader.onload = function (e) {
-      const text = e.target.result.trim();
-
-      // 🔁 EXACTLY reuse existing paste-import logic
       const textarea = document.getElementById("importConsoleTextarea");
-      if (!textarea) {
-        alert("Import console not found");
-        return;
-      }
-
-      textarea.value = text;
-
-      // existing function call (DO NOT TOUCH)
+      if (!textarea) { alert("Import console not found"); return; }
+      textarea.value = e.target.result.trim();
       applyImportConsole();
     };
-
     reader.readAsText(file);
     fileInput.value = "";
   };
 }
-
 
 function closeImportConsole() {
   document.getElementById("importConsoleModal").style.display = "none";
   document.getElementById("importConsoleTextarea").value = "";
 }
 
-// Global variables for conflict resolution
-window.importState = {
-  conflicts: [],
-  nonDuplicates: [],
-  decisions: {}, // sl -> 'replace' or 'skip'
-  totalImportCount: 0
-};
+// Global import state
+window.importState = { conflicts: [], nonDuplicates: [], decisions: {}, totalImportCount: 0 };
 
-function applyImportConsole() {
+async function applyImportConsole() {
   const rawText = document.getElementById("importConsoleTextarea").value.trim();
-
-  if (!rawText) {
-    alert("❌ No data pasted");
-    return;
-  }
+  if (!rawText) { alert("❌ No data pasted"); return; }
 
   try {
     const parsed = JSON.parse(rawText);
     let newClientsArray = [];
 
-    // Parse different JSON formats
-    if (parsed.clients && typeof parsed.clients === "string") {
+    if (parsed.clients && typeof parsed.clients === "string")
       newClientsArray = JSON.parse(parsed.clients);
-    } else if (parsed.clients && Array.isArray(parsed.clients)) {
+    else if (parsed.clients && Array.isArray(parsed.clients))
       newClientsArray = parsed.clients;
-    } else if (Array.isArray(parsed)) {
+    else if (Array.isArray(parsed))
       newClientsArray = parsed;
-    } else if (typeof parsed === "object") {
+    else if (typeof parsed === "object")
       newClientsArray = [parsed];
-    } else {
+    else
       throw new Error("Unsupported data format");
-    }
 
-    // Normalize SL as number
-    newClientsArray = newClientsArray.map(c => ({
-      ...c,
-      sl: Number(c.sl)
-    }));
+    newClientsArray = newClientsArray.map(c => ({ ...c, sl: Number(c.sl) }));
 
-    // Get existing data
-    const existingClients = JSON.parse(localStorage.getItem("clients")) || [];
-    
-    // Reset import state
+    // Get existing data from SheetDB
+    const existingClients = window.rawClientData || [];
+
     window.importState = {
-      conflicts: [],
-      nonDuplicates: [],
-      decisions: {},
+      conflicts: [], nonDuplicates: [], decisions: {},
       totalImportCount: newClientsArray.length
     };
 
-    // Separate conflicts and non-duplicates
     newClientsArray.forEach(newClient => {
-      const existingIndex = existingClients.findIndex(item => 
-        Number(item.sl) === Number(newClient.sl)
-      );
-      
-      if (existingIndex !== -1) {
-        // Conflict found
-        window.importState.conflicts.push({
-          sl: newClient.sl,
-          existing: existingClients[existingIndex],
-          new: newClient,
-          index: existingIndex
-        });
-        // Default decision is 'skip'
+      const exists = existingClients.find(i => Number(i.sl) === Number(newClient.sl));
+      if (exists) {
+        window.importState.conflicts.push({ sl: newClient.sl, existing: exists, new: newClient });
         window.importState.decisions[newClient.sl] = 'skip';
       } else {
-        // New entry
         window.importState.nonDuplicates.push(newClient);
       }
     });
 
-    // If there are conflicts, show conflict resolution modal
     if (window.importState.conflicts.length > 0) {
       showConflictResolutionModal();
     } else {
-      // No conflicts, proceed directly
-      finishImport();
+      await finishImport();
     }
-
   } catch (err) {
-    alert("❌ Invalid data format. Please paste valid JSON data.\n\nError: " + err.message);
-    console.error("Import error:", err);
+    alert("❌ Invalid data format.\n\nError: " + err.message);
   }
 }
 
 function showConflictResolutionModal() {
-  const modal = document.getElementById("conflictResolutionModal");
+  const modal        = document.getElementById("conflictResolutionModal");
   const conflictList = document.getElementById("conflictList");
-  const totalImport = document.getElementById("totalImportCount");
-  const newEntries = document.getElementById("newEntriesCount");
-  const duplicates = document.getElementById("duplicatesCount");
-  const replaceCount = document.getElementById("replaceCount");
-  
-  // Update summary
-  totalImport.textContent = window.importState.totalImportCount;
-  newEntries.textContent = window.importState.nonDuplicates.length;
-  duplicates.textContent = window.importState.conflicts.length;
-  
-  // Count current replace decisions
-  const currentReplaceCount = Object.values(window.importState.decisions)
-    .filter(decision => decision === 'replace').length;
-  replaceCount.textContent = currentReplaceCount;
-  
-  // Build conflict list
+
+  document.getElementById("totalImportCount").textContent = window.importState.totalImportCount;
+  document.getElementById("newEntriesCount").textContent  = window.importState.nonDuplicates.length;
+  document.getElementById("duplicatesCount").textContent  = window.importState.conflicts.length;
+  document.getElementById("replaceCount").textContent =
+    Object.values(window.importState.decisions).filter(d => d === 'replace').length;
+
   conflictList.innerHTML = '';
-  
   window.importState.conflicts.forEach(conflict => {
     const decision = window.importState.decisions[conflict.sl] || 'skip';
-    
-    // Get policy names from table number for display
-    const existingPolicyName = getPolicyNameFromTableNo(conflict.existing.tableNo);
-    const newPolicyName = getPolicyNameFromTableNo(conflict.new.tableNo);
-    
-    const conflictItem = document.createElement('div');
-    conflictItem.className = 'conflict-item';
-    conflictItem.innerHTML = `
+    const existingPN = getPolicyNameFromTableNo(conflict.existing.tableNo);
+    const newPN      = getPolicyNameFromTableNo(conflict.new.tableNo);
+    const item = document.createElement('div');
+    item.className = 'conflict-item';
+    item.innerHTML = `
       <div class="conflict-item-header">
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
           <div class="conflict-sl">SL: ${conflict.sl}</div>
-          <div style="font-weight: 600; color: #e5e7eb;">
-            ${conflict.existing.name || conflict.new.name || 'Unnamed Client'}
-          </div>
+          <div style="font-weight:600;color:#e5e7eb;">${conflict.existing.name || conflict.new.name || 'Unnamed'}</div>
         </div>
         <div class="conflict-buttons">
-          <button class="conflict-btn skip ${decision === 'skip' ? 'selected' : ''}" 
-                  onclick="setConflictDecision(${conflict.sl}, 'skip')">
+          <button class="conflict-btn skip ${decision === 'skip' ? 'selected' : ''}" onclick="setConflictDecision(${conflict.sl}, 'skip')">
             <i class="fa-solid fa-ban"></i> Keep Existing
           </button>
-          <button class="conflict-btn replace ${decision === 'replace' ? 'selected' : ''}" 
-                  onclick="setConflictDecision(${conflict.sl}, 'replace')">
+          <button class="conflict-btn replace ${decision === 'replace' ? 'selected' : ''}" onclick="setConflictDecision(${conflict.sl}, 'replace')">
             <i class="fa-solid fa-check"></i> Replace with New
           </button>
         </div>
       </div>
-      
       <div class="conflict-comparison">
         <div class="existing-data">
-          <div class="data-label">
-            <i class="fa-solid fa-database" style="color: #ef4444;"></i>
-            <span>EXISTING ENTRY</span>
-          </div>
-          <div class="data-value ${!conflict.existing.name || conflict.existing.name === '-' ? 'missing' : ''}">
-            <strong>Name:</strong> ${conflict.existing.name || 'Not Set'}
-          </div>
-          <div class="data-value ${!conflict.existing.policyNo || conflict.existing.policyNo === '-' ? 'missing' : ''}">
-            <strong>Policy No:</strong> ${conflict.existing.policyNo || 'Not Set'}
-          </div>
-          <div class="data-value ${!conflict.existing.tableNo || conflict.existing.tableNo === '-' ? 'missing' : ''}">
-            <strong>Table No:</strong> ${conflict.existing.tableNo || 'Not Set'}
-          </div>
-          <div class="data-value">
-            <strong>Policy Type:</strong> ${existingPolicyName !== conflict.existing.tableNo ? `<span style="color: ${conflict.existing.tableNo && conflict.existing.tableNo.includes('814') ? '#10b981' : conflict.existing.tableNo && conflict.existing.tableNo.includes('820') ? '#3b82f6' : '#e5e7eb'}">${existingPolicyName}</span>` : '—'}
-          </div>
+          <div class="data-label"><i class="fa-solid fa-database" style="color:#ef4444;"></i><span>EXISTING ENTRY</span></div>
+          <div class="data-value"><strong>Name:</strong> ${conflict.existing.name || 'Not Set'}</div>
+          <div class="data-value"><strong>Policy No:</strong> ${conflict.existing.policyNo || 'Not Set'}</div>
+          <div class="data-value"><strong>Table No:</strong> ${conflict.existing.tableNo || 'Not Set'}</div>
+          <div class="data-value"><strong>Policy Type:</strong> ${existingPN !== conflict.existing.tableNo ? existingPN : '—'}</div>
         </div>
-        
         <div class="new-data">
-          <div class="data-label">
-            <i class="fa-solid fa-file-import" style="color: #22c55e;"></i>
-            <span>NEW ENTRY</span>
-          </div>
-          <div class="data-value ${!conflict.new.name || conflict.new.name === '-' ? 'missing' : ''}">
-            <strong>Name:</strong> ${conflict.new.name || 'Not Set'}
-          </div>
-          <div class="data-value ${!conflict.new.policyNo || conflict.new.policyNo === '-' ? 'missing' : ''}">
-            <strong>Policy No:</strong> ${conflict.new.policyNo || 'Not Set'}
-          </div>
-          <div class="data-value ${!conflict.new.tableNo || conflict.new.tableNo === '-' ? 'missing' : ''}">
-            <strong>Table No:</strong> ${conflict.new.tableNo || 'Not Set'}
-          </div>
-          <div class="data-value">
-            <strong>Policy Type:</strong> ${newPolicyName !== conflict.new.tableNo ? `<span style="color: ${conflict.new.tableNo && conflict.new.tableNo.includes('814') ? '#10b981' : conflict.new.tableNo && conflict.new.tableNo.includes('820') ? '#3b82f6' : '#e5e7eb'}">${newPolicyName}</span>` : '—'}
-          </div>
+          <div class="data-label"><i class="fa-solid fa-file-import" style="color:#22c55e;"></i><span>NEW ENTRY</span></div>
+          <div class="data-value"><strong>Name:</strong> ${conflict.new.name || 'Not Set'}</div>
+          <div class="data-value"><strong>Policy No:</strong> ${conflict.new.policyNo || 'Not Set'}</div>
+          <div class="data-value"><strong>Table No:</strong> ${conflict.new.tableNo || 'Not Set'}</div>
+          <div class="data-value"><strong>Policy Type:</strong> ${newPN !== conflict.new.tableNo ? newPN : '—'}</div>
         </div>
-      </div>
-    `;
-    
-    conflictList.appendChild(conflictItem);
+      </div>`;
+    conflictList.appendChild(item);
   });
-  
-  // Close import console and show conflict modal
+
   document.getElementById("importConsoleModal").style.display = "none";
   modal.style.display = "flex";
 }
 
 function setConflictDecision(sl, decision) {
   window.importState.decisions[sl] = decision;
-  
-  // Update UI
-  const replaceCount = document.getElementById("replaceCount");
-  const currentReplaceCount = Object.values(window.importState.decisions)
-    .filter(d => d === 'replace').length;
-  replaceCount.textContent = currentReplaceCount;
-  
-  // Re-render the conflict item
   showConflictResolutionModal();
 }
 
 function skipAllDuplicates() {
-  window.importState.conflicts.forEach(conflict => {
-    window.importState.decisions[conflict.sl] = 'skip';
-  });
+  window.importState.conflicts.forEach(c => { window.importState.decisions[c.sl] = 'skip'; });
   showConflictResolutionModal();
 }
 
 function replaceAllDuplicates() {
-  window.importState.conflicts.forEach(conflict => {
-    window.importState.decisions[conflict.sl] = 'replace';
-  });
+  window.importState.conflicts.forEach(c => { window.importState.decisions[c.sl] = 'replace'; });
   showConflictResolutionModal();
 }
 
@@ -777,155 +561,107 @@ function cancelConflictResolution() {
   document.getElementById("importConsoleTextarea").value = "";
 }
 
-function applyConflictResolution() {
-  // Get existing clients
-  const existingClients = JSON.parse(localStorage.getItem("clients")) || [];
-  const mergedClients = [...existingClients];
-  
-  // Apply decisions for conflicts
-  let replacedCount = 0;
-  let skippedCount = 0;
-  
-  window.importState.conflicts.forEach(conflict => {
+async function applyConflictResolution() {
+  let replacedCount = 0, skippedCount = 0;
+  const toAdd = [...window.importState.nonDuplicates];
+
+  // Handle conflicts
+  for (const conflict of window.importState.conflicts) {
     const decision = window.importState.decisions[conflict.sl];
-    
     if (decision === 'replace') {
-      // Replace existing entry
-      const existingIndex = mergedClients.findIndex(item => 
-        Number(item.sl) === Number(conflict.sl)
-      );
-      
-      if (existingIndex !== -1) {
-        mergedClients[existingIndex] = conflict.new;
+      try {
+        await fetch(`${SHEETDB_API}/Sl. No./${conflict.sl}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: conflict.new })
+        });
         replacedCount++;
-      }
+      } catch (err) { console.error("Replace failed for SL:", conflict.sl, err); }
     } else {
-      // Skip - keep existing
       skippedCount++;
     }
-  });
-  
-  // Add non-duplicates
-  window.importState.nonDuplicates.forEach(client => {
-    mergedClients.push(client);
-  });
-  
-  // Sort by SL
-  mergedClients.sort((a, b) => Number(a.sl) - Number(b.sl));
-  
-  // Save to localStorage
-  localStorage.setItem("clients", JSON.stringify(mergedClients));
-  
-  // Show success message with emojis and formatting
-  const successMessage = `
-✅ IMPORT SUCCESSFUL!
+  }
 
-┌─────────────────────────────┐
-│ 📊 Import Summary           │
-├─────────────────────────────┤
-│ Total in import: ${window.importState.totalImportCount.toString().padStart(3)} │
-│ New entries added: ${window.importState.nonDuplicates.length.toString().padStart(3)} │
-│ Duplicates replaced: ${replacedCount.toString().padStart(3)} │
-│ Duplicates skipped: ${skippedCount.toString().padStart(3)} │
-│ Total clients now: ${mergedClients.length.toString().padStart(3)} │
-└─────────────────────────────┘
+  // Add new entries in bulk if any
+  if (toAdd.length > 0) {
+    try {
+      await fetch(SHEETDB_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: toAdd })
+      });
+    } catch (err) { console.error("Bulk insert failed:", err); }
+  }
 
-🎉 Database updated successfully!
-`;
-  
-  alert(successMessage);
-  
-  // Close modal and refresh page
+  const total = (window.rawClientData.length - replacedCount) + toAdd.length + replacedCount;
+  alert(`✅ IMPORT SUCCESSFUL!\n\n📊 Import Summary\n` +
+    `Total in import: ${window.importState.totalImportCount}\n` +
+    `New entries added: ${toAdd.length}\n` +
+    `Duplicates replaced: ${replacedCount}\n` +
+    `Duplicates skipped: ${skippedCount}\n\n🎉 Database updated!`);
+
   document.getElementById("conflictResolutionModal").style.display = "none";
   location.reload();
 }
 
-function finishImport() {
-  // For imports without conflicts
-  const existingClients = JSON.parse(localStorage.getItem("clients")) || [];
-  const mergedClients = [...existingClients, ...window.importState.nonDuplicates];
-  
-  // Sort by SL
-  mergedClients.sort((a, b) => Number(a.sl) - Number(b.sl));
-  
-  // Save to localStorage
-  localStorage.setItem("clients", JSON.stringify(mergedClients));
-  
-  // Show success message
-  const successMessage = `
-✅ IMPORT SUCCESSFUL!
-
-┌─────────────────────────────┐
-│ 📊 Import Summary           │
-├─────────────────────────────┤
-│ Total imported: ${window.importState.totalImportCount.toString().padStart(3)} │
-│ New entries added: ${window.importState.nonDuplicates.length.toString().padStart(3)} │
-│ Duplicates found: 0        │
-│ Total clients now: ${mergedClients.length.toString().padStart(3)} │
-└─────────────────────────────┘
-
-🎉 All entries added successfully!
-`;
-  
-  alert(successMessage);
-  
-  // Close modal and refresh page
-  document.getElementById("importConsoleModal").style.display = "none";
-  document.getElementById("importConsoleTextarea").value = "";
-  location.reload();
+async function finishImport() {
+  const toAdd = window.importState.nonDuplicates;
+  if (toAdd.length === 0) {
+    alert("ℹ️ No new entries to add."); return;
+  }
+  try {
+    const response = await fetch(SHEETDB_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: toAdd })
+    });
+    if (!response.ok) throw new Error(`Insert failed: ${response.status}`);
+    alert(`✅ IMPORT SUCCESSFUL!\n\n📊 Total imported: ${window.importState.totalImportCount}\n` +
+      `New entries added: ${toAdd.length}\n🎉 All entries added!`);
+    document.getElementById("importConsoleModal").style.display = "none";
+    document.getElementById("importConsoleTextarea").value = "";
+    location.reload();
+  } catch (err) {
+    alert("❌ Import failed: " + err.message);
+  }
 }
 
-// এই ফাংশনটি JS ফাইলের শেষে যোগ করুন
+function addNewClient() {
+  window.location.href = "../add_client/add.html";
+}
+
+// ================= MODAL CLOSE ON OUTSIDE CLICK =================
+document.addEventListener('DOMContentLoaded', function () {
+  const modal = document.getElementById('clientDetailModal');
+  if (modal) {
+    modal.addEventListener('click', function (e) {
+      if (e.target === this) closeModal();
+    });
+  }
+});
+
+// ================= MOBILE ENHANCEMENTS =================
 function enhanceMobileExperience() {
-  // টাচ ইভেন্টের জন্য অপটিমাইজেশন
-  const actionIcons = document.querySelectorAll('.action-icon');
-  actionIcons.forEach(icon => {
+  document.querySelectorAll('.action-icon').forEach(icon => {
     icon.style.cursor = 'pointer';
     icon.style.userSelect = 'none';
     icon.style.webkitTapHighlightColor = 'transparent';
   });
-  
-  // টেবিল রো টাচ ইভেন্ট
-  const tableRows = document.querySelectorAll('#clientTableMain tbody tr');
-  tableRows.forEach(row => {
+  document.querySelectorAll('#clientTableMain tbody tr').forEach(row => {
     row.style.cursor = 'pointer';
-    row.addEventListener('touchstart', function() {
-      this.style.backgroundColor = 'var(--primary-blue-light)';
-    });
-    
-    row.addEventListener('touchend', function() {
-      setTimeout(() => {
-        this.style.backgroundColor = '';
-      }, 300);
-    });
+    row.addEventListener('touchstart', function () { this.style.backgroundColor = 'var(--primary-blue-light)'; });
+    row.addEventListener('touchend',   function () { setTimeout(() => { this.style.backgroundColor = ''; }, 300); });
   });
 }
 
-// DOM লোড হওয়ার পর কল করুন
-document.addEventListener('DOMContentLoaded', () => {
-  // ... আপনার বাকি কোড ...
-  
-  // মোবাইল এক্সপেরিয়েন্স এনহ্যান্স করুন
-  setTimeout(enhanceMobileExperience, 500);
-  
-  // SL কলামের জন্য স্পেশাল ফরম্যাটিং
-  formatSLColumn();
-});
-
-// SL কলাম ফরম্যাট করার ফাংশন
-function formatSLColumn() {
-  const slCells = document.querySelectorAll('#clientTableMain td:nth-child(1)');
-  slCells.forEach(cell => {
-    const slValue = cell.textContent.trim();
-    if (slValue && !isNaN(slValue)) {
-      // 3 digit এর জন্য স্পেস যোগ
-      const formattedSL = String(slValue).padStart(3, ' ');
-      cell.innerHTML = `<span style="display: inline-block; width: 30px; text-align: right;">${formattedSL}</span>`;
-    }
+window.addEventListener('resize', function () {
+  document.querySelectorAll('#clientTableMain td:nth-child(1)').forEach(cell => {
+    const v = cell.textContent.trim();
+    if (v && !isNaN(v)) cell.innerHTML = `<span style="display:inline-block;width:30px;text-align:right;">${String(v).padStart(3,' ')}</span>`;
   });
-}
-
-// টেবিল রি-রেন্ডার করার সময় কল করুন
-window.addEventListener('resize', function() {
-  formatSLColumn();
 });
+
+// CSS spinner animation (injected once)
+const style = document.createElement('style');
+style.textContent = `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`;
+document.head.appendChild(style);
