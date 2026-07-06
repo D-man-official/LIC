@@ -349,45 +349,53 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
-      // Use data attributes for easier filtering
-      card.querySelector(".undo-btn").addEventListener("click", function() {
-        const sl = parseInt(this.getAttribute("data-sl"));
-        const isSpecial = this.getAttribute("data-special") === "true";
-        
-        // Debug log (you can remove this in production)
-        console.log(`Undo clicked: SL ${sl}, isSpecial: ${isSpecial}`);
-        
-        // Filter from dailyStatus
-        dailyStatus = dailyStatus.filter(d => {
-          if (isSpecial) {
-            return !(d.sl === sl && d.isSpecial === true);
-          } else {
-            return !(d.sl === sl && (!d.isSpecial || d.isSpecial === false));
-          }
-        });
-        
-        localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
+// Use data attributes for easier filtering
+card.querySelector(".undo-btn").addEventListener("click", function () {
+  const sl = parseInt(this.getAttribute("data-sl"));
+  const isSpecial = this.getAttribute("data-special") === "true";
 
-        // Filter from payment data
-        const paymentKey = `payment-${activeDate}`;
-        let paymentData = JSON.parse(localStorage.getItem(paymentKey)) || [];
-        
-        paymentData = paymentData.filter(p => {
-          if (isSpecial) {
-            return !(p.sl === sl && p.isSpecial === true);
-          } else {
-            return !(p.sl === sl && (!p.isSpecial || p.isSpecial === false));
-          }
-        });
-        
-        localStorage.setItem(paymentKey, JSON.stringify(paymentData));
+  console.log("========== UNDO ==========");
+  console.log("SL =", sl);
+  console.log("isSpecial =", isSpecial);
 
-        // Update today's collection amount
-        const newTotal = paymentData.reduce((sum, p) => sum + Number(p.amount), 0);
-        localStorage.setItem("todayCollectionAmount", newTotal);
+  console.log(
+    "Before:",
+    JSON.parse(localStorage.getItem(dailyKey))
+  );
 
-        location.reload();
-      });
+  // Filter from dailyStatus
+  dailyStatus = dailyStatus.filter(d => {
+    if (isSpecial) {
+      return !(Number(d.sl) === sl && d.isSpecial === true);
+    } else {
+      return !(Number(d.sl) === sl && (!d.isSpecial || d.isSpecial === false));
+    }
+  });
+
+  console.log("After:", dailyStatus);
+
+  localStorage.setItem(dailyKey, JSON.stringify(dailyStatus));
+
+  // Filter from payment data
+  const paymentKey = `payment-${activeDate}`;
+  let paymentData = JSON.parse(localStorage.getItem(paymentKey)) || [];
+
+  paymentData = paymentData.filter(p => {
+    if (isSpecial) {
+      return !(Number(p.sl) === sl && p.isSpecial === true);
+    } else {
+      return !(Number(p.sl) === sl && (!p.isSpecial || p.isSpecial === false));
+    }
+  });
+
+  localStorage.setItem(paymentKey, JSON.stringify(paymentData));
+
+  // Update today's collection amount
+  const newTotal = paymentData.reduce((sum, p) => sum + Number(p.amount), 0);
+  localStorage.setItem("todayCollectionAmount", newTotal);
+
+  location.reload();
+}); 
 
       collectedBody.appendChild(card);
     });
