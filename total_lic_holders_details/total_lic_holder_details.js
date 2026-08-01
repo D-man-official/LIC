@@ -1,5 +1,5 @@
 // ================= SHEETDB API CONFIG =================
-const SHEETDB_API = "https://sheetdb.io/api/v1/rzuqukl6peo56";
+const SHEETDB_API = "https://sheetdb.io/api/v1/w8to698e5pgcn";
 
 // ================= KEYBOARD SHORTCUTS =================
 document.addEventListener('DOMContentLoaded', function () {

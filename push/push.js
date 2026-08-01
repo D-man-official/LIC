@@ -1,5 +1,5 @@
 // ===== SheetDB API =====
-const SHEETDB_API_PUSH = "https://sheetdb.io/api/v1/rzuqukl6peo56";
+const SHEETDB_API_PUSH = "https://sheetdb.io/api/v1/w8to698e5pgcn";
 
 document.addEventListener("DOMContentLoaded", () => {
 
